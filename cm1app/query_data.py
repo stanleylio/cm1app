@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#import sys
+#sys.path.append('/home/nuc/node')
 from json import dumps
 from storage.storage import storage_read_only
 from helper import *
@@ -13,6 +15,7 @@ def query_data(dbfile,time_col,node,variable,minutes):
         variables = store.get_list_of_columns(node)
         if variable in variables:
             r = store.read_last_N_minutes(node,time_col,minutes,cols=[time_col,variable],nonnull=variable)
+            #print r
             if r is not None:
                 d = {time_col:[dt2ts(t) for t in r[time_col]],
                      variable:r[variable]}
@@ -86,4 +89,9 @@ def read_water_depth(dbfile,time_col,node,baro_avg=None):
 
     #return float('nan'),float('nan')
     return None
+
+
+#if '__main__' == __name__:
+#    print query_data('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
+    
 

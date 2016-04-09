@@ -44,6 +44,8 @@ def route_makahaN(site,name):
 
             # water depth
             d['wd'] = read_water_depth(dbfile,time_col,node)
+            if d['wd'][1] < 0:
+                d['wd'] = d['wd'][0],None
 
             # optode stuff
             cols = ['O2Concentration','AirSaturation','Temperature']

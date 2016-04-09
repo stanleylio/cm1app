@@ -28,6 +28,14 @@ function uM2mgL(um) {
 	return um*1e-6*(2*16)/1e-3;
 }
 
+function formatwd(d) {
+	if ((d === null) || (d < 0)) {
+		return '- m - ft.';
+	} else {
+		return d.toFixed(2) + 'm ' + m2ft(d).toFixed(1) + 'ft.';
+	}
+}
+
 //var d = JSON.parse(met_data);
 $.getJSON('/poh/data/meteorological.json',function(d) {
 	//console.log(d);
@@ -93,7 +101,8 @@ $.getJSON('/poh/data/makaha/makaha1.json',function(d) {
 		tmp.find('.panel-heading .panel-title').append('Mākāhā 1');
 		tmp.find('.panel-body')
 		.append($('<h1/>',{
-			text: d.wd[1].toFixed(2) + 'm ' + m2ft(d.wd[1]).toFixed(1) + 'ft.',
+			//text: d.wd[1].toFixed(2) + 'm ' + m2ft(d.wd[1]).toFixed(1) + 'ft.',
+			text: formatwd(d.wd[1]),
 			class:'panel-field',
 			'data-ts':d.wd[0],
 			}))
@@ -133,7 +142,8 @@ $.getJSON('/poh/data/makaha/makaha2.json',function(d) {
 		tmp.find('.panel-heading .panel-title').append('Kahoʻokele (Mākāhā 2)');
 		tmp.find('.panel-body')
 		.append($('<h1/>',{
-			text: d.wd[1].toFixed(2) + 'm ' + m2ft(d.wd[1]).toFixed(1) + 'ft.',
+			//text: d.wd[1].toFixed(2) + 'm ' + m2ft(d.wd[1]).toFixed(1) + 'ft.',
+			text: formatwd(d.wd[1]),
 			class:'panel-field',
 			'data-ts':d.wd[0],
 			}))
@@ -187,7 +197,8 @@ $.getJSON('/poh/data/makaha/triplemakahab.json',function(d) {
 		tmp.find('.panel-heading .panel-title').append('Triple Mākāhā b');
 		tmp.find('.panel-body')
 		.append($('<h1/>',{
-			text: d.wd[1].toFixed(2) + 'm ' + m2ft(d.wd[1]).toFixed(1) + 'ft.',
+			//text: d.wd[1].toFixed(2) + 'm ' + m2ft(d.wd[1]).toFixed(1) + 'ft.',
+			text: formatwd(d.wd[1]),
 			class:'panel-field',
 			'data-ts':d.wd[0],
 			}))

@@ -19,8 +19,8 @@ def dev():
     return render_template('index.html')
 
 # There is currently only one site so the landing page is the poh landing page.
+#@app.route('/poh/systemstatus/')
 @app.route('/')
-@app.route('/poh/systemstatus/')
 def route_systemstatus():
     return render_template('systemstatus.html')
 

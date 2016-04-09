@@ -36,7 +36,7 @@ def data_dashboard(site):
             S[node] = {}
             S[node]['name'] = get_name(site,node)
             S[node]['location'] = get_location(site,node)
-            S[node]['latest_non_null'] = {}
+            S[node]['latest_non_null'] = {}     # these should be optional. dashboard should still show without red/green status TODO
             #print node,S[node]['node-name']
             for var in get_list_of_disp_vars(site,node):
                 tmp = s.read_latest_non_null(node,time_col,var)
