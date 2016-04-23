@@ -6,6 +6,7 @@ from storage.storage import storage_read_only
 from helper import *
 from numpy import mean,median
 from scipy.signal import medfilt
+from datetime import datetime,timedelta
 
 def query_data(dbfile,time_col,node,variable,minutes):
     """Get the latest (not necessarily fresh) "minutes" minutes of samples"""
@@ -44,7 +45,7 @@ def read_baro_avg(dbfile,time_col):
     t = []
     for table in tables:
         r = store.read_last_N(table,time_col)
-        if r is not None:
+        if r is not None and datetime.utcnow() - r[time_col][0] < timedelta(minutes=30):
             t.append(dt2ts(r[time_col][0]))
             if 'P_180' in r:
                 p.append(r['P_180'][0]/1e3)
