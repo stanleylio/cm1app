@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#import sys
-#sys.path.append('/home/nuc/node')
+import sys
+sys.path.append('/home/nuc/node')
 from json import dumps
 from storage.storage import storage_read_only
 from helper import *
@@ -39,18 +39,25 @@ def read_latest_group_average(dbfile,time_col,node,variable):
             return (mean(d[time_col]),mean(d[variable]))
 
 def read_baro_avg(dbfile,time_col):
+    from config.config_support import get_range
     store = storage_read_only(dbfile=dbfile)
     tables = store.get_list_of_tables()
     p = []
     t = []
     for table in tables:
         r = store.read_last_N(table,time_col)
-        if r is not None and datetime.utcnow() - r[time_col][0] < timedelta(minutes=30):
-            t.append(dt2ts(r[time_col][0]))
+        # Explicit freshness check is more robust, but median(t) is cleaner.
+        if r is not None and \
+           datetime.utcnow() - r[time_col][0] < timedelta(minutes=30):
+# OH MAN.
             if 'P_180' in r:
-                p.append(r['P_180'][0]/1e3)
+                if r['P_180'][0] in get_range('poh',table,'P_180'):
+                    t.append(dt2ts(r[time_col][0]))
+                    p.append(r['P_180'][0]/1e3)
             if 'P_280' in r:
-                p.append(r['P_280'][0])
+                if r['P_280'][0] in get_range('poh',table,'P_280'):
+                    t.append(dt2ts(r[time_col][0]))
+                    p.append(r['P_280'][0])
     #print zip(tables,p)
     try:
         t = [t[k] if v is not None else None for k,v in enumerate(p)]
