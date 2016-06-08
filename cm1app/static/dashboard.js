@@ -105,7 +105,7 @@
 		//console.log(data.data_src);
 		//console.log(data.data_src_name);
 		//var title = $('<h2>System Status</h2><h4>' + data.data_src_name + '</h4><p><a href="' + data.gmap_link + '">' + data.location + '</a></p>');
-		var title = $('<h4>' + data.data_src_name + '</h4><p><a href="' + data.gmap_link + '">' + data.location + '</a></p>');
+		var title = $('<h4>' + data.data_src_name + '</h4><p><a href="' + data.gmap_link + '" target="_blank">' + data.location + '</a></p>');
 		var nodes = keys(data.nodes);
 		//console.log(nodes);
 		var ul = $('<ul class="list-group"></ul>');

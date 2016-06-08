@@ -60,7 +60,7 @@ def data_dashboard(site):
                 
                 S[node]['latest_non_null'][var] = r
 
-        # TODO: clean this up, use the config files!
+        # TODO: clean this up, use the config files
         if 'poh' == site:
             r = {'site':site,
                  'data_src':'base-003',
@@ -72,8 +72,8 @@ def data_dashboard(site):
             r = {'site':site,
                  'data_src':'base-002',
                  'data_src_name':'Base Station #2 (BBB-based)',
-                 'location':'Somewhere on Coconut Island in a water tank',
-                 'gmap_link':'https://goo.gl/maps/akrBBXLNUCo',
+                 'location':'In a water tank somewhere on Coconut Island',
+                 'gmap_link':'https://goo.gl/maps/2YYpJ6Ru6692',
                  'nodes':S}
 
         return dumps(r,separators=(',',':'))

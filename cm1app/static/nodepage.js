@@ -25,6 +25,10 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 		var unit = readings[i][3];
 		var range = readings[i][4];
 		
+		if (null === unit) {
+			unit = '-';
+		}
+		
 		var valid = true;
 		if (typeof range != 'undefined') {
 			if ((!(range[0] === null)) && (val < range[0])) {

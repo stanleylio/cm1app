@@ -23,6 +23,10 @@
 			var description = d.description;
 			var samples = d.samples;
 			
+			if (null === unit) {
+				unit = '(unitless)';
+			}
+			
 			var ts = samples.Timestamp;
 			if ('ReceptionTime' in samples) {
 				ts = samples.ReceptionTime;
