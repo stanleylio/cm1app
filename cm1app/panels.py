@@ -10,7 +10,7 @@ from storage.storage import storage_read_only
 from query_data import query_data,read_latest_group_average,read_baro_avg,read_water_depth
 
 
-dbfile = '/home/nuc/node/www/poh/storage/sensor_data.db'    # TODO: centralize
+#dbfile = '/home/nuc/node/www/poh/storage/sensor_data.db'    # TODO: centralize
 time_col = 'ReceptionTime'
 
 @app.route('/<site>/widgets/panels/')
@@ -41,6 +41,7 @@ def route_makahaN(site,name):
         try:
             node = m[name]
             d = {}
+            dbfile = get_dbfile(site)
 
             # water depth
             d['wd'] = read_water_depth(dbfile,time_col,node)
@@ -70,6 +71,8 @@ def route_makahaN(site,name):
 @app.route('/<site>/data/meteorological.json')
 def data_meteorological(site):
     if 'poh' == site:
+        dbfile = get_dbfile(site)
+        
         air_t = read_latest_group_average(dbfile,time_col,'node-007','T_280')
         baro = read_baro_avg(dbfile,time_col)
         wind_avg = read_latest_group_average(dbfile,time_col,'node-007','Wind_average')

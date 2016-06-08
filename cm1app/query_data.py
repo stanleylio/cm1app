@@ -8,6 +8,7 @@ from numpy import mean,median
 from scipy.signal import medfilt
 from datetime import datetime,timedelta
 
+
 def query_data(dbfile,time_col,node,variable,minutes):
     """Get the latest (not necessarily fresh) "minutes" minutes of samples"""
     store = storage_read_only(dbfile=dbfile)

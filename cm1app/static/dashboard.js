@@ -1,5 +1,7 @@
 (function() {
+
 	function keys(d) {
+	// get a list of "keys" of a "dictionary"
 		var keys = [];
 		for (var key in d) {
 			if (d.hasOwnProperty(key)) {
@@ -82,8 +84,10 @@
 		}
 	}
 
-	function color_status(d) {
-		$('#dashboard ul').children().each(function(idx) {
+	function color_status(d,table_label) {
+		var label = ['#',table_label,' ul'].join('');
+		//$('#dashboard_poh ul').children().each(function(idx) {
+		$(label).children().each(function(idx) {
 			var node_id = $(this).data('node_id');
 			var tmp = node_status(d[node_id]['latest_non_null']);
 			if ('online' === tmp) {
@@ -96,9 +100,7 @@
 		});
 	}
 	
-	var l = '/poh/data/dashboard.json';
-	// build a table of nodes
-	$.getJSON(l,function(data) {
+	function build_table(data) {
 		//console.log(data.site);
 		//console.log(data.data_src);
 		//console.log(data.data_src_name);
@@ -112,23 +114,33 @@
 			var name = data.nodes[node_id]['name'];
 			var loc = data.nodes[node_id]['location'];
 			var li = $('<a/>',{
-				href:'/poh/nodepage/' + node_id,
+				href:'/' + data.site + '/nodepage/' + node_id,
 				class:"list-group-item",
 				'data-node_id':node_id,
 				text:node_id + ' - ' + name});
 			li.prop('title',loc);
 			ul.append(li);
 		}
-		$('#dashboard').html(title.add(ul));
+		$('#dashboard_' + data.site).html(title.add(ul));
 		
 		// color the table of nodes
-		color_status(data.nodes);
-	});
+		color_status(data.nodes,'dashboard_' + data.site);
+	}
+	
+// TODO: refactor this
+	// build a table of nodes for PoH
+	var l = '/poh/data/dashboard.json';
+	$.getJSON(l,build_table);
+
+	// build a table of nodes for Coconut Island
+	var l = '/coconut/data/dashboard.json';
+	$.getJSON(l,build_table);
 
 	// auto refresh color of nodes in the background
 	window.setInterval(function() {
 		$.getJSON(l,function(data) {
-			color_status(data.nodes);
+			color_status(data.nodes,'dashboard_poh');
+			color_status(data.nodes,'dashboard_coconut');
 		});
 	},5*60*1000);
 })();

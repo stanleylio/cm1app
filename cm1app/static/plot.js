@@ -1,5 +1,7 @@
 (function() {
-	var site = 'poh';
+	//alert(site);
+	//alert(node_id);
+	//alert(variable);
 	gen_plot(site,node_id,variable,variable + ' of ' + node_id);
 
 	function tzcorrect(ts) {

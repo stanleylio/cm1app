@@ -1,5 +1,7 @@
 (function() {
-$.getJSON("/poh/nodepage/" + node_id + ".json",function(d) {
+// global: site, node_id
+	
+$.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	//console.log(d);
 	
 	//[node name, node location in the site, ndoe description, latest_group_averages]
@@ -33,7 +35,7 @@ $.getJSON("/poh/nodepage/" + node_id + ".json",function(d) {
 			}
 		}
 
-		var l = '/poh/nodepage/' + node_id + '/' + tag;
+		var l = '/' + site + '/nodepage/' + node_id + '/' + tag;
 		$('<tr/>')
 			.append($('<td/>').append($('<a/>',{href:l,text:tag})))
 			.append($('<td/>',{text:val,'data-ts':ts,'data-valid':valid}))
@@ -65,8 +67,7 @@ $.getJSON("/poh/nodepage/" + node_id + ".json",function(d) {
 	for (var i = 0; i < readings.length; i++) {
 		//console.log(readings[i][0]);
 		var caption = $('<div/>',{id:readings[i][0] + '_caption',class:'caption','data-tag':readings[i][0]});
-		var imglink = '/static/poh/' + node_id + '/' + readings[i][0] + '.png';
-		//var imglink = '/poh/nodepage/' + node_id + '/' + readings[i][0] + '.png';
+		var imglink = '/static/' + site + '/' + node_id + '/' + readings[i][0] + '.png';
 		var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':readings[i][0] + ' of ' + node_id});
 		a.append(caption);
 		a.append($('<img/>',{src:imglink,class:'img-responsive'}));
@@ -77,7 +78,7 @@ $.getJSON("/poh/nodepage/" + node_id + ".json",function(d) {
 
 	// Add caption to each plot in the static plot grid
 	$('div.caption').each(function(i,v) {
-		$.getJSON('/static/poh/' + node_id + '/' + readings[i][0] + '.json',function(d) {
+		$.getJSON('/static/' + site + '/' + node_id + '/' + readings[i][0] + '.json',function(d) {
 			var span = d['time_end'] - d['time_begin'];
 			var nday = Math.floor(span/24/60/60);
 			var remain = span % (24*60*60);

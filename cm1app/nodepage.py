@@ -19,17 +19,19 @@ time_col = 'ReceptionTime'
 @app.route('/<site>/nodepage/<node>/')
 def route_poh_node(site,node):
     """Page for individual node"""
-    if 'poh' == site:
+    if site in ['poh','coconut']:
         dbfile = get_dbfile(site)
         s = storage_read_only(dbfile=dbfile)
         if node.replace('-','_') in s.get_list_of_tables():
-            return render_template('nodepage.html',node_id=node)
+            return render_template('nodepage.html',
+                                   site=site,
+                                   node_id=node)
     return 'mildly defensive'
 
 @app.route('/<site>/nodepage/<node>/<variable>/')
 def route_poh_node_var(site,node,variable):
     """plotly page for a single variable"""
-    if 'poh' == site:
+    if site in ['poh','coconut']:
         return render_template('varplotly.html',
                                site=site,
                                node_id=node,
@@ -43,7 +45,7 @@ def route_poh_node_var(site,node,variable):
 # the latter just get the last group mean, which could be None
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site,node):
-    if 'poh' == site:
+    if site in ['poh','coconut']:
         dbfile = get_dbfile(site)
         S = [get_name(site,node),
              get_location(site,node),
@@ -64,4 +66,4 @@ def data_site_node(site,node):
             R.append(r)
         S.append(R)
         return dumps(S,separators=(',',':'))
-    return 'mildly defensive'
+    return 'creeping normality'

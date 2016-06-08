@@ -12,6 +12,7 @@ from config.config_support import get_unit,get_description
 from panels import *
 from dashboard import *
 from nodepage import *
+from s1 import *
 
 
 @app.route('/dev/')
@@ -26,8 +27,9 @@ def route_systemstatus():
 
 @app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site,node,variable):
-    """Example: http://192.168.0.21/poh/data/node-009/d2w.json?minutes=1"""
-    if 'poh' == site:
+    """Examples: http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
+http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
+    if site in ['poh','coconut']:
         print(' | '.join([site,node,variable]))
 
         minutes = request.args.get('minutes')
@@ -39,6 +41,10 @@ def site_node_variable(site,node,variable):
 
         unit = get_unit(site,node,variable)
         desc = get_description(site,node,variable)
+
+        dbfile = get_dbfile(site)
+        print dbfile
+        
         d = query_data(dbfile,time_col,node,variable,minutes)
         d = {'unit':unit,
              'description':desc,
