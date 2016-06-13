@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# handle real-time data from base station(s) in the field
 import traceback
 import sys
 sys.path.append('/home/nuc/node')

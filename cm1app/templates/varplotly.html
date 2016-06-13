@@ -12,7 +12,21 @@
 			<div class="page-header row">
 				<div class="col-xs-12"><h2>Interactive Plot</h2></div>
 			</div>
-
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="btn-group" data-toggle="buttons">
+						<label class="btn btn-primary">
+							<input type="radio" name="options" id="option_7d" autocomplete="off" checked> 7 days
+						</label>
+						<label class="btn btn-primary">
+							<input type="radio" name="options" id="option_12h" autocomplete="off"> 12 hours
+						</label>
+						<label class="btn btn-primary">
+							<input type="radio" name="options" id="option_1h" autocomplete="off"> 1 hour
+						</label>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-xs-12"><div id="plot"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
 			</div>
@@ -20,5 +34,5 @@
 	</div>
 </div>
 <script src="{{ url_for('static',filename='plotly-latest.min.js') }}" type="text/javascript"></script>
-<script src="{{ url_for('static',filename='plot.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static',filename='varplot.js') }}" type="text/javascript"></script>
 {% endblock %}

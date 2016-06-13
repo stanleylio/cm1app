@@ -2,7 +2,18 @@
 	//alert(site);
 	//alert(node_id);
 	//alert(variable);
-	gen_plot(site,node_id,variable,variable + ' of ' + node_id);
+
+	$('#option_7d').on('click',function() {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
+	});
+	$('#option_12h').on('click',function() {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*12);
+	});
+	$('#option_1h').on('click',function() {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60);
+	});
+
+	gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
 
 	function tzcorrect(ts) {
 		// convert POSIX timestamps to Date in local time zone
@@ -14,11 +25,10 @@
 		return ts;
 	}
 	
-	function gen_plot(site,node,variable,linelabel) {
-		var datapath = '/' + site + '/data/' + node + '/' + variable + '.json?minutes=' + 60*24*7;
+	function gen_plot(site,node,variable,linelabel,span) {
+		var datapath = '/' + site + '/data/' + node + '/' + variable + '.json?minutes=' + span;
 		console.log(datapath);
 		$.getJSON(datapath,function(d) {
-			
 			var unit = d.unit;
 			var description = d.description;
 			var samples = d.samples;
@@ -36,7 +46,7 @@
 			var x = samples[variable];
 			
 			var layout = {
-				title: description + ', ' + node_id,
+				title: description + ' from ' + node_id,
 				titlefont: {
 					family: 'Helvetica, monospace',
 					size: 20,
@@ -68,10 +78,9 @@
 			var traces = [trace1];
 			
 			$('#plot').empty();
-			Plotly.plot( $('#plot')[0],
-						traces,
-						layout
-						);
+			//Plotly.plot( $('#plot')[0],traces,layout);
+			Plotly.newPlot( $('#plot')[0],traces,layout);
+			
 		}).fail(function(jqxhr,textStatus,error) {
 			console.log('gen_plot() .getJSON() failed');
 			console.log(textStatus);
