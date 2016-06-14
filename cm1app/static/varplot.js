@@ -3,15 +3,31 @@
 	//alert(node_id);
 	//alert(variable);
 
-	$('#option_7d').on('click',function() {
+$("#options_past :input").change(function() {
+	//console.log(this); // points to the clicked input button
+	if ('option_7d' === $(this).attr('id')) {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
+	} else if ('option_24h' === $(this).attr('id')) {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24);
+	} else if ('option_1h' === $(this).attr('id')) {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60);
+	}
+});
+
+// this stopped working after adding bootstrap.min.js and doing things "the proper way"...
+//http://stackoverflow.com/questions/9262827/twitter-bootstrap-onclick-event-on-buttons-radio
+	/*$('#option_7d').on('click',function() {
+//alert("7d");
 		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
 	});
-	$('#option_12h').on('click',function() {
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*12);
+	$('#option_24h').on('click',function() {
+//alert("24h");
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24);
 	});
 	$('#option_1h').on('click',function() {
+//alert("1h");
 		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60);
-	});
+	});*/
 
 	gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
 
@@ -33,8 +49,9 @@
 			var description = d.description;
 			var samples = d.samples;
 			
+			var ylabel = variable + ', ' + unit;
 			if (null === unit) {
-				unit = '(unitless)';
+				ylabel = variable;
 			}
 			
 			var ts = samples.Timestamp;
@@ -64,7 +81,7 @@
 				}
 				},
 				yaxis: {
-					title: variable + ', ' + unit,
+					title: ylabel,
 					titlefont: {
 					family: 'Helvetica, monospace',
 					size: 18,
