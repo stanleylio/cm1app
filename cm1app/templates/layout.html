@@ -9,10 +9,12 @@
 		<script src="{{ url_for('static',filename='jquery/jquery.min.js') }}" type="text/javascript"></script>
 		<script src="{{ url_for('static',filename='bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
 		<title>{% block title %}{% endblock %} | UH Coastal Monitoring</title>
+		{% include 'navbar.html' %}
 	</head>
 	<body>
 		<script src="{{ url_for('static',filename='jquery.timeago.js') }}" type="text/javascript"></script>
 		<script src="{{ url_for('static',filename='jquery-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
+		
 		<div id="content">{% block content %}{% endblock %}</div>
 		
 		<div class="text-center" style="color:#C8C8C8; font-size:xx-small;">

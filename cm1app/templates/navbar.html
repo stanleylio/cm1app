@@ -1,0 +1,59 @@
+{% block navbar %}
+<style>
+body { padding-top: 50px; }
+</style>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">UH Coastal Monitoring</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Paepae <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <!--li><a href="#">Dashboard</a></li>
+            <li role="separator" class="divider"></li-->
+            <li><a href="/poh/nodepage/node-001/">node-001</a></li>
+            <li><a href="/poh/nodepage/node-004/">node-004</a></li>
+			<li><a href="/poh/nodepage/node-007/">node-007</a></li>
+			<li><a href="/poh/nodepage/node-008/">node-008</a></li>
+			<li><a href="/poh/nodepage/node-009/">node-009</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="http://grogdata.soest.hawaii.edu/poh/widgets/panels/">By m?k?h?</a></li>
+          </ul>
+        </li>
+        <!--li><a href="#">Coconut</a></li-->
+		<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Coconut <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+			<li><a href="http://grogdata.soest.hawaii.edu/coconut/nodepage/node-021/">node-021</a></li>
+          </ul>
+		</li>
+		<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Misc. <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+			<li><a href="/static/t5/us.png">Water Depth from Ultrasonics</a></li>
+			<li><a href="/static/t2/">PoH Base Station Cabinet</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="/static/msb228/node-019/">UHM MSB Environmentals</a></li>
+			<li><a href="/static/t4/rh.png">UHM MSB Humidity</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="/debug/">Database Latest Samples (PoH)</a></li>
+			<!--li><a href="/dev/">Experimental stuff</a></li-->
+          </ul>
+		</li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+{% endblock %}
