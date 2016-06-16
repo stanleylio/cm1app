@@ -1,29 +1,42 @@
 (function() {
 // global: site, node_id
+
+	// from dashboard.js
+	function keys(d) {
+	// get a list of "keys" of a "dictionary"
+		var keys = [];
+		for (var key in d) {
+			if (d.hasOwnProperty(key)) {
+				keys.push(key);
+			}
+		}
+		return keys.sort();
+	}
 	
 $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	//console.log(d);
-	
-	//[node name, node location in the site, ndoe description, latest_group_averages]
 	
 	// - - - - -
 	// table of latest readings
 	// - - - - -
 	var header = $('div.page-header div');
-	header.append($('<h1/>',{text:d[0]}))
-		.append($('<h4/>',{text:node_id + ' @ ' + d[1]}))
-		.append($('<p/>',{text:d[2]}));
+	header.append($('<h1/>',{text:d['name']}))
+		.append($('<h4/>',{text:node_id + ' @ ' + d['location']}))
+		.append($('<p/>',{text:d['note']}));
 	var table = $('<table class="table table-striped table-hover table-condensed"/>');
-	var thead = $("<thead><tr><th>Variable</th><th>Value</th><th>Unit</th></tr></thead>");
+	var thead = $("<thead><tr><th>Variable</th><th>Value</th><th>Unit</th><th>Description</th></tr></thead>");
 	var tbody = $('<tbody/>');
-	var readings = d[3];
-	for (var i = 0; i < readings.length; i++) {
+	var readings = d['readings'];
+
+	//for (var i = 0; i < keys(readings).length; i++) {
+	for (var i in readings) {
 		//console.log($('<td/>',{text:readings[i][0]}).prop('outerHTML'));
-		var tag = readings[i][0];	// is there a self-aware data type out there?
-		var ts = readings[i][1];
-		var val = readings[i][2];
-		var unit = readings[i][3];
-		var range = readings[i][4];
+		var tag = readings[i]['var'];
+		var ts = readings[i]['ts'];
+		var val = readings[i]['val'];
+		var unit = readings[i]['unit'];
+		var range = readings[i]['range'];
+		var description = readings[i]['desc'];
 		
 		if (null === unit) {
 			unit = '-';
@@ -44,6 +57,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 			.append($('<td/>').append($('<a/>',{href:l,text:tag})))
 			.append($('<td/>',{text:val,'data-ts':ts,'data-valid':valid}))
 			.append($('<td/>',{text:unit}))
+			.append($('<td/>',{text:description}))
 		.appendTo(tbody);
 	}
 	table.append(thead).append(tbody);
@@ -68,11 +82,12 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	// - - - - -
 	// static plot grid stuff
 	// - - - - -
-	for (var i = 0; i < readings.length; i++) {
+	//for (var i = 0; i < readings.length; i++) {
+	for (var i in readings) {
 		//console.log(readings[i][0]);
-		var caption = $('<div/>',{id:readings[i][0] + '_caption',class:'caption','data-tag':readings[i][0]});
-		var imglink = '/static/' + site + '/' + node_id + '/' + readings[i][0] + '.png';
-		var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':readings[i][0] + ' of ' + node_id});
+		var caption = $('<div/>',{id:readings[i]['var'] + '_caption',class:'caption','data-tag':readings[i]['var']});
+		var imglink = '/static/' + site + '/' + node_id + '/' + readings[i]['var'] + '.png';
+		var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':readings[i]['var'] + ' of ' + node_id});
 		a.append(caption);
 		a.append($('<img/>',{src:imglink,class:'img-responsive'}));
 		var patch = $('<div class="col-xs-12 col-sm-6 col-lg-4"/>');
@@ -82,7 +97,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 
 	// Add caption to each plot in the static plot grid
 	$('div.caption').each(function(i,v) {
-		$.getJSON('/static/' + site + '/' + node_id + '/' + readings[i][0] + '.json',function(d) {
+		$.getJSON('/static/' + site + '/' + node_id + '/' + readings[i]['var'] + '.json',function(d) {
 			var span = d['time_end'] - d['time_begin'];
 			var nday = Math.floor(span/24/60/60);
 			var remain = span % (24*60*60);
