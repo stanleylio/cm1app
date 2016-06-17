@@ -23,7 +23,7 @@ def route_poh_node(site,node):
             return render_template('nodepage.html',
                                    site=site,
                                    node_id=node)
-    return 'mildly defensive'
+    return 'The answer you didn\'t want, to the question you didn\'t ask'
 
 @app.route('/<site>/nodepage/<node>/<variable>/')
 def route_poh_node_var(site,node,variable):

@@ -1,18 +1,18 @@
 (function() {
 // global: site, node_id
 
-	// from dashboard.js
-	function keys(d) {
-	// get a list of "keys" of a "dictionary"
-		var keys = [];
-		for (var key in d) {
-			if (d.hasOwnProperty(key)) {
-				keys.push(key);
-			}
+// from dashboard.js
+function keys(d) {
+// get a list of "keys" of a "dictionary"
+	var keys = [];
+	for (var key in d) {
+		if (d.hasOwnProperty(key)) {
+			keys.push(key);
 		}
-		return keys.sort();
 	}
-	
+	return keys.sort();
+}
+
 $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	//console.log(d);
 	

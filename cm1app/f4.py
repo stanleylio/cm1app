@@ -52,6 +52,10 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
         return dumps(d,separators=(',',':'))
     return 'Eddie might go'
 
+@app.route('/about/')
+def about():
+    return render_template('about.html')
+
 @app.route('/debug/')
 def debug():
     #dbfile = '/home/nuc/data/base-003/storage/sensor_data.db'
