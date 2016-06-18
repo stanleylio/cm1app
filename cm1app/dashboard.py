@@ -31,11 +31,13 @@ def route_dashboard(site):
 @app.route('/<site>/data/dashboard.json')
 def data_dashboard(site):
     if site in ['poh','coconut']:
-        dbfile = get_dbfile(site)
-        s = storage_read_only(dbfile=dbfile)
         nodes = get_list_of_nodes(site)
+
         S = {}
         for node in nodes:
+            dbfile = get_dbfile(site,node)      # this is so tricky... dbfile depends on (site,node), not just (site)
+            s = storage_read_only(dbfile=dbfile)
+            
             units = get_unit_map(site,node)
             S[node] = {}
             S[node]['name'] = get_name(site,node)

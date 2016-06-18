@@ -42,7 +42,7 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
         unit = get_unit(site,node,variable)
         desc = get_description(site,node,variable)
 
-        dbfile = get_dbfile(site)
+        dbfile = get_dbfile(site,node)
         print dbfile
         
         d = query_data(dbfile,time_col,node,variable,minutes)

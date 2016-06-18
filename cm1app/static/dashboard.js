@@ -119,7 +119,9 @@
 				'data-node_id':node_id,
 				text:node_id + ' - ' + name});
 			li.prop('title',loc);
+if ('node-026' != node_id) {
 			ul.append(li);
+}
 		}
 		$('#dashboard_' + data.site).html(title.add(ul));
 		
