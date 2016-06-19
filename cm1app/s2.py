@@ -24,34 +24,31 @@ def PRINT(s):
     #pass
     print(s)
 
-def api_parse1(m,key):
-    #signature = base64.b64decode(request.form['s'])
-    #key = RSA.importKey(key)
-    #h = SHA512.new(m)
-    #verifier = PKCS1_v1_5.new(key)
-    #if verifier.verify(h,signature):
-    if True:
-        return {'dt':datetime.utcnow(),'m':m}
-    else:
-        PRINT('api_parse1(): bad signature')
-        return None
+def verify(m,key):
+    signature = base64.b64decode(request.form['s'])
+    key = RSA.importKey(key)
+    h = SHA512.new(m)
+    verifier = PKCS1_v1_5.new(key)
+    return verifier.verify(h,signature)
 
 @app.route('/<site>/api/s2/submit',methods=['POST'])
 def s2submit(site):
     if 'poh' == site:
         client = request.args.get('client',None)
-#        key = get_public_key(site,client)
-        key = None
+        key = get_public_key(site,client)
 
         dt = datetime.utcnow()
         
         try:
             m = request.form['m']
-            m = api_parse1(m,key)
-            if m is not None:
-                print 'transmission time {}, reception time {}'.format(m['dt'],dt)
-                d = json.loads(json.loads(m['m']))
-                pretty_print(d)
+            if verify(m,key):
+                #with open('/home/nuc/cm1app/comatose2.txt','a',0) as f:
+                with open('/home/nuc/data/base-003/from_web_api/comatose2.txt','a',0) as f:
+                    f.write('{},{}\n'.format(datetime.utcnow(),m))
+
+                #d = json.loads(json.loads(m))     # WHAT???? rq5 only works with this
+                d = json.loads(m)  # WHAT?? WHY? rq4 works with this?
+                #pretty_print(d)
 
                 dbfile = r'/home/nuc/data/base-003/from_web_api/sensor_data.db'
                 store = None
@@ -65,15 +62,13 @@ def s2submit(site):
 
                 if store is not None:
                     d = {k: ts2dt(d[k]) if k in ['ReceptionTime','Timestamp'] else d[k] for k in d}
-                    #for k in d:
-                        #if k in ['ReceptionTime','Timestamp']:
-                            #d[k] = ts2dt(d[k])
                     store.write(d['node'],d)
-
-                return 'sample saved'
+                    return 'sample saved'
+                else:
+                    print 's2::s2submit(): store is None, sth is wrong with storage::storage()'
         except:
             traceback.print_exc()
-            print 'the culprit:'
+            print 's2::s2submit(): the culprit:'
             print m
     return 'Fate saw the jewel in me, and pawed the heart apart to have it.'
 

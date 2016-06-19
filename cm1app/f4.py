@@ -12,7 +12,7 @@ from config.config_support import get_unit,get_description
 from panels import *
 from dashboard import *
 from nodepage import *
-from s1 import *
+#from s1 import *
 from s2 import *
 
 
