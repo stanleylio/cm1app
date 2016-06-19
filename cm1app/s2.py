@@ -42,6 +42,7 @@ def s2submit(site):
         try:
             m = request.form['m']
             if verify(m,key):
+            #if True:
                 #with open('/home/nuc/cm1app/comatose2.txt','a',0) as f:
                 with open('/home/nuc/data/base-003/from_web_api/comatose2.txt','a',0) as f:
                     f.write('{},{}\n'.format(datetime.utcnow(),m))
@@ -61,11 +62,14 @@ def s2submit(site):
                     store = storage(dbfile=dbfile)
 
                 if store is not None:
-                    d = {k: ts2dt(d[k]) if k in ['ReceptionTime','Timestamp'] else d[k] for k in d}
+                    # what the hack?
+                    d = {k: ts2dt(d[k]) if k in ['ReceptionTime','Timestamp','dt_seabird'] else d[k] for k in d}
+                    # what a hack?? now I need to remember to add any field that is supposed
+                    # to be datetime.datetime here.
                     store.write(d['node'],d)
                     return 'sample saved'
                 else:
-                    print 's2::s2submit(): store is None, sth is wrong with storage::storage()'
+                    print 'sth is wrong with storage::storage()'
         except:
             traceback.print_exc()
             print 's2::s2submit(): the culprit:'
