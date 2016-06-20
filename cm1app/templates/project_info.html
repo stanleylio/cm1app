@@ -10,7 +10,19 @@
 	<div class="row">
 		<div class="col-md-8 col-md-push-2">
 			<h3>Coastal Monitoring</h3>
-			<p>In addition to the <a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/Research_benthic_boundary.html">recent work</a> we've done on cabled, networked, nearshore observatories, we have been <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1538697&amp;HistoricalAwards=false">funded by NSF</a> for development and testing of custom, inexpensive, multi-parameter dataloggers with  integrated RF telemetry capability to allow for wireless streaming of data from sensor mininodes to an internet-connected base node. We have partnered with long-time collaborator, <a href="http://paepaeoheeia.org/">Paepae o He`eia</a>, to implement this wireless coastal sensor network in the He`eia ahupua`a (watershed) to assist with environmental restoration and management efforts and engage K-12 and undergrad audiences in STEM training. Note that the spaces, links, and datasets provided here are rapidly evolving and largely preliminary. Please contact <a href="mailto:glazer@hawaii.edu">Brian Glazer</a> with any project related questions, or <a href="mailto:hlio@hawaii.edu">Stanley Lio</a> with technical questions.</p>
+			<div class="row">
+				<div class="col-sm-3 col-sm-push-9">
+					<a href="{{ url_for('static',filename='loc1b.jpg') }}" data-lightbox="sat1" data-title="He'eia Fishpond Satellite View">
+						<figure class="figure">
+							<img src="{{ url_for('static',filename='loc1b.jpg') }}" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
+						</figure>
+					</a>
+				</div>
+				<div class="col-sm-9 col-sm-pull-3">
+					<p>In addition to the <a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/Research_benthic_boundary.html">recent work</a> we've done on cabled, networked, nearshore observatories, we have been <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1538697&amp;HistoricalAwards=false">funded by NSF</a> for development and testing of custom, inexpensive, multi-parameter dataloggers with  integrated RF telemetry capability to allow for wireless streaming of data from sensor mininodes to an internet-connected base node. We have partnered with long-time collaborator, <a href="http://paepaeoheeia.org/">Paepae o He`eia</a>, to implement this wireless coastal sensor network in the He`eia ahupua`a (watershed) to assist with environmental restoration and management efforts and engage K-12 and undergrad audiences in STEM training. Note that the spaces, links, and datasets provided here are rapidly evolving and largely preliminary. Please contact <a href="mailto:glazer@hawaii.edu">Brian Glazer</a> with any project related questions, or <a href="mailto:hlio@hawaii.edu">Stanley Lio</a> with technical questions.
+					</p>
+				</div>
+			</div>
 
 			<hr>
 			
@@ -28,9 +40,15 @@
 			<p>node-008 and node-009 are topside ultrasonic sensors measuring water level to corroborate submerged pressure sensors.</p>
 			<p>All data are presented in near-real-time, and thus are provisional and subject to revision during quality assurance and quality control data processing. More sophisticated data analyses are currently under development. More information on He'eia Fishpond can be found <a href="http://nakilohonuaoheeia.squarespace.com/" target="_blank">here</a> and <a href="paepaeoheeia.org" target="_blank">here</a>. Full datasets for all sensors at each node are available through links at the left or by exploring the <a href="/">interactive dashboard</a>.</p>
 		</div>
+		
+		<div class="visible-xs"><hr></div>
+		
 		<div class="col-md-2 col-md-pull-8">
 			<div id="dashboard_poh"><img src="{{ url_for('static',filename='circleball.gif') }}"></div>
 		</div>
+		
+		<div class="visible-xs"><hr></div>
+		
 		<div class="col-md-2">
 			<h4>About</h4>
 			<p><a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1538697">Project Abstract</a></p>
