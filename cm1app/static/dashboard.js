@@ -1,7 +1,7 @@
 (function() {
 
 	function keys(d) {
-	// get a list of "keys" of a "dictionary"
+	// get the list of "keys" of a given "dictionary"
 		var keys = [];
 		for (var key in d) {
 			if (d.hasOwnProperty(key)) {
@@ -46,7 +46,7 @@
 				console.log(e.message);
 			}
 			return 1;
-		//}).reduce((p,c) => p + c);
+		//}).reduce((p,c) => p + c);	// Safari doesn't like the arrow.
 		}).reduce(function(pv,cv,i,a) {
 			return pv + cv;
 		});
@@ -104,9 +104,12 @@
 		//console.log(data.site);
 		//console.log(data.data_src);
 		//console.log(data.data_src_name);
-		//var title = $('<h2>System Status</h2><h4>' + data.data_src_name + '</h4><p><a href="' + data.gmap_link + '">' + data.location + '</a></p>');
-		//var title = $('<h4>' + data.data_src_name + '</h4><p><a href="' + data.gmap_link + '" target="_blank">' + data.location + '</a></p>');
-		var title = $('<h4><a href="' + data.gmap_link + '" target="_blank">' + data.location + '</a></h4><p>Data source: ' + data.data_src_name + '</p>');
+
+		// determinte whether to show site location and data source
+		var title = $('<div></div>');
+		if (! $('#dashboard_' + data.site).data('status-only')) {
+			title = $('<h4><a href="' + data.gmap_link + '" target="_blank">' + data.location + '</a></h4><p>Data source: ' + data.data_src_name + '</p>');
+		}
 		var nodes = keys(data.nodes);
 		//console.log(nodes);
 		var ul = $('<ul class="list-group"></ul>');
@@ -120,9 +123,7 @@
 				'data-node_id':node_id,
 				text:node_id + ' - ' + name});
 			li.prop('title',loc);
-//if ('node-026' != node_id) {
 			ul.append(li);
-//}
 		}
 		$('#dashboard_' + data.site).html(title.add(ul));
 		
@@ -130,7 +131,6 @@
 		color_status(data.nodes,'dashboard_' + data.site);
 	}
 	
-// TODO: refactor this
 	// build a table of nodes for PoH
 	var l = '/poh/data/dashboard.json';
 	$.getJSON(l,build_table);
