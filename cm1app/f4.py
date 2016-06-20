@@ -16,10 +16,6 @@ from nodepage import *
 from s2 import *
 
 
-@app.route('/dev/')
-def dev():
-    return render_template('index.html')
-
 # There is currently only one site so the landing page is the poh landing page.
 #@app.route('/poh/systemstatus/')
 @app.route('/')
@@ -56,6 +52,20 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
 @app.route('/about/')
 def about():
     return render_template('about.html')
+
+@app.route('/tech/')
+def tech():
+    return render_template('tech.html')
+
+# - - -
+
+@app.route('/dev/')
+def dev():
+    return render_template('index.html')
+
+@app.route('/dev2/')
+def dev2():
+    return render_template('project_info.html')
 
 @app.route('/debug/')
 def debug():

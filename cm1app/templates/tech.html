@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Technology{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="page-header">Technology</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-4 col-sm-push-8">
+			<a href="loc1b.jpg" data-lightbox="sat1" data-title="He'eia Fishpond Satellite View"><img src="{{ url_for('static',filename='loc1b.jpg') }}" class="img_responsive" alt="He'eia fishpond satellite" style="width:100%"></a>
+			<br>
+		</div>
+		<div class="col-sm-8 col-sm-pull-4">
+			<h3>System Overview</h3>
+			<p>The custom data loggers are installed at each ocean-facing makaha, as shown in the satellite photo of the fishpond. In addition to logging the collected data locally, readings are transmitted to an x86 base station nearby via 900MHz XBee transceivers. The base station uploads the received data periodically to a server at the University of Hawaii. Measurements are then processed and made <a href="/">publicly available</a>.</p>
+
+			<h3>Implementation</h3>
+			<h4>Hardware</h4>
+			<p>Research-grade oxygen optodes as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. Beaglebone Black single-board computers aided by Arduinos control and query the sensors for readings according to a set schedule.</p>
+			<h4>Software</h4>
+			<p>sample timing; retry on failure; handle sensor failure gracefully; communication (error detection, "ping")</p>
+			
+			<p>..... put a data path diagram here instead. IO/control: Python; storage: SQL database + CSV; analysis + visualization: matplotlib + flot + Plotly + MATLAB + R; presentation: PHP + jQuery AJAX + JSON + Python + node.js</p>
+			
+			<h4>Power</h4>
+			<p>All nodes are powered by solar panels with battery backup. Depending on power consumption, battery size ranges from portable USB packs to lead acid car batteries are used.</p>
+			
+			<h4>Low cost alternatives</h4>
+			<p><a href="puck.JPG" data-lightbox="hack1"><img src="puck.JPG" alt="copper epoxy" class="img_responsive" style="width:20%"></a></p>
+			<p>anti-biofouling + waterproofing</p>
+		</div>
+	</div>
+
+	<hr>
+	
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>Bench Tests</h3>
+			<p>characterize and compare low-cost MEMS sensors: accuracy, resolution/precision, noise/variance, drift/bias/stability, ease of deployment (mechanical: waterproofing)</p>
+			<div id="tester"></div>
+			<br><br>
+		</div>
+	</div>
+</div>
+{% endblock %}
