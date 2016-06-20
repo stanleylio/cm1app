@@ -63,7 +63,7 @@ def tech():
 def dev():
     return render_template('index.html')
 
-@app.route('/dev2/')
+@app.route('/project_info/')
 def dev2():
     return render_template('project_info.html')
 
