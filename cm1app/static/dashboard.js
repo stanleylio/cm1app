@@ -141,8 +141,12 @@
 
 	// auto refresh color of nodes in the background
 	window.setInterval(function() {
+		var l = '/poh/data/dashboard.json';
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_poh');
+		});
+		var l = '/coconut/data/dashboard.json';
+		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_coconut');
 		});
 	},5*60*1000);

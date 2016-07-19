@@ -31,6 +31,10 @@ def verify(m,key):
     verifier = PKCS1_v1_5.new(key)
     return verifier.verify(h,signature)
 
+
+cmap = {'poh':r'/home/nuc/data/base-003/from_web_api/comatose2.txt'}
+dbmap = {'poh':r'/home/nuc/data/base-003/from_web_api/sensor_data.db'}
+
 @app.route('/<site>/api/s2/submit',methods=['POST'])
 def s2submit(site):
     if 'poh' == site:
@@ -43,15 +47,17 @@ def s2submit(site):
             m = request.form['m']
             if verify(m,key):
             #if True:
-                #with open('/home/nuc/cm1app/comatose2.txt','a',0) as f:
-                with open('/home/nuc/data/base-003/from_web_api/comatose2.txt','a',0) as f:
+                # Data coming in are already parsed and clean (known nodes, proper name tags
+                # for variables etc.). Don't go "parse_message()" on them.
+                with open(cmap[site],'a',0) as f:
                     f.write('{},{}\n'.format(datetime.utcnow(),m))
 
-                #d = json.loads(json.loads(m))     # WHAT???? rq5 only works with this
-                d = json.loads(m)  # WHAT?? WHY? rq4 works with this?
-                #pretty_print(d)
+                #d = json.loads(json.loads(m))   # WHAT?? rq5 only works with this
+                d = json.loads(m)               # but rq4 works with this?
+                #pretty_print(d)    # don't print - anything printed would be considered
+                # error message by Apache
 
-                dbfile = r'/home/nuc/data/base-003/from_web_api/sensor_data.db'
+                dbfile = dbmap[site]
                 store = None
                 if not exists(dbfile):
                     s = get_schema(site)

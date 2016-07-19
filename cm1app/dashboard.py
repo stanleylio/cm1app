@@ -75,7 +75,7 @@ def data_dashboard(site):
         elif 'coconut' == site:
             r = {'site':site,
                  'data_src':'base-002',
-                 'data_src_name':'Base Station #2 (BBB-in-a-box)',
+                 'data_src_name':'Apex controller public XML feed',
                  'location':'Coconut Island, Kane\'ohe',
                  'gmap_link':'https://goo.gl/maps/2YYpJ6Ru6692',
                  'nodes':S}

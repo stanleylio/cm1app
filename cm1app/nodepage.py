@@ -57,11 +57,19 @@ def data_site_node(site,node):
         variables = sorted(get_list_of_disp_vars(site,node),key=lambda x: x.lower())
         for k,var in enumerate(variables):
             d = read_latest_group_average(dbfile,time_col,node,var)
-            r = {'var':var,
-                 'ts':round(d[0],1),
-                 'val':round(d[1],3),
-                 'unit':units[var],
-                 'desc':get_description(site,node,var)}
+            if d is not None:
+                r = {'var':var,
+                     'ts':round(d[0],1),
+                     'val':round(d[1],3),
+                     'unit':units[var],
+                     'desc':get_description(site,node,var)}
+            else:
+                # no data for this variable in the db
+                r = {'var':var,
+                     'ts':None,
+                     'val':None,
+                     'unit':None,
+                     'desc':None}
 # Technical debt... you WILL have to pay it back sooner or later.
 # There's no shortcut in this cold, harsh world.
             #r = [var,round(d[0],1),round(d[1],3),units[var]]

@@ -85,30 +85,45 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	//for (var i = 0; i < readings.length; i++) {
 	for (var i in readings) {
 		//console.log(readings[i][0]);
-		var caption = $('<div/>',{id:readings[i]['var'] + '_caption',class:'caption','data-tag':readings[i]['var']});
-		var imglink = '/static/' + site + '/' + node_id + '/' + readings[i]['var'] + '.png';
-		var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':readings[i]['var'] + ' of ' + node_id});
+		var variable = readings[i]['var'];
+		var caption = $('<div/>',{id:variable + '_caption',class:'caption','data-tag':variable});
+		var imglink = '/static/' + site + '/' + node_id + '/' + variable + '.png';
+		//var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':variable + ' of ' + node_id});
+
+		var a = $('<div/>',{class:'thumbnail'});
 		a.append(caption);
-		a.append($('<img/>',{src:imglink,class:'img-responsive'}));
+		
+		// now only the img is a link, not the whole patch
+		// lightbox: add data-lightbox to the image link, not to the image
+		//var tmp = $('<a/>',{href:imglink,'data-lightbox':"plots",'data-title':variable + ' of ' + node_id});
+		var tmp = $('<a/>',{href:imglink,'data-lightbox':"plots",'data-title':variable});
+		tmp.append($('<img/>',{src:imglink,class:'img-responsive'}));
+		a.append(tmp);
+		
+		//a.append($('<img/>',{src:imglink,class:'img-responsive'}));
 		var patch = $('<div class="col-xs-12 col-sm-6 col-lg-4"/>');
 		patch.append(a);
 		$('#static_plots').append(patch);
 	}
 
-	// Add caption to each plot in the static plot grid
+	// generate the caption for each plot in the static plot grid
 	$('div.caption').each(function(i,v) {
-		$.getJSON('/static/' + site + '/' + node_id + '/' + readings[i]['var'] + '.json',function(d) {
+		var variable = $(v).data('tag');
+		//$.getJSON('/static/' + site + '/' + node_id + '/' + readings[i]['var'] + '.json',function(d) {
+		$.getJSON('/static/' + site + '/' + node_id + '/' + variable + '.json',function(d) {
 			var span = d['time_end'] - d['time_begin'];
 			var nday = Math.floor(span/24/60/60);
 			var remain = span % (24*60*60);
 			var nhour = Math.floor(span/60/60);
-			span = Math.floor(remain/3600) + " hours";
+			span = Math.floor(remain/3600) + ' hours';
 			if (nday > 0) {
-				span = nday + " days, " + span;
+				span = nday + ' days, ' + span;
 			}
-			$(v).append($('<h4/>',{text:$(v).data('tag')}));
+			$(v).append($('<h4/>',{text:variable}));
+			//var imglink_bounded = '/static/' + site + '/bounded/' + node_id + '/' + variable + '.png';
+			//$(v).append($('<h4><a href="' + imglink_bounded + '" title="filtered plot">' + variable + '</a></h4>'));
 			$(v).append($('<p/>',{text:'Plot generated ' + $.timeago(new Date(d['plot_generated_at']*1000))}));
-			$(v).append($('<p/>',{text: d['data_point_count'] + ' pts. | ' + span}));
+			$(v).append($('<p/>',{text: d['data_point_count'] + ' pts., ' + span}));
 			$(v).append($('<p/>',{text: 'Last sample in plot: ' + $.timeago(new Date(d['time_end']*1000))}));
 		});
 	});
@@ -119,7 +134,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 		'resizeDuration':200,
 		'fadeDuration':200,
 		'wrapAround':false,
-		'albumLabel':'static plots'
+		'albumLabel':node_id
 	})
 });
 })();

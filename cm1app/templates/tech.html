@@ -23,30 +23,52 @@
 
 			<h3>Implementation</h3>
 			<h4>Hardware</h4>
-			<p>Research-grade oxygen optodes as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. Beaglebone Black single-board computers aided by Arduinos control and query the sensors for readings according to a set schedule.</p>
-			<h4>Software</h4>
-			<p>sample scheduling; retry on failure; gracefully handle sensor failure; communication (error detection, "ping")</p>
+			<p>Research-grade oxygen optodes as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. Beaglebone Black single-board computers (SBCs) aided by Arduinos control and query the sensors for readings according to a set schedule.</p>
 			
-			<p>IO/control: Python; storage: SQLite; analysis and visualization: matplotlib, Plotly, and MATLAB; presentation: bootstrap + jQuery</p>
+			<h4>Software</h4>
+			<p>The primary tasks for the Python programs on the SBCs are:
+				<ul>
+					<li>Regularly read the sensors, store and broadcast the collected data</li>
+					<li>Gracefully handle malfunctioning / decommissioned sensor</li>
+					<li>Respond to base station query for unscheduled sampling</li>
+				</ul>
+			</p>
+			
+			<p>
+				<figure class="figure">
+					<a href="{{ url_for('static',filename='df1.png') }}"><img src="{{ url_for('static',filename='df1.png') }}" class="figure-img img-fluid img-rounded img_responsive" alt="Dataflow Diagram" style="width:100%"></a>
+				</figure>
+			</p>
+			
+			<p>Collected data are stored locally on each node as well as transmitted to nearby site base station. Base stations store and relay collected data to a UH web server for processing and presentation.</p>
+			
+			<p>Software and programming languages used:
+				<ul>
+					<li>I/O control: Python, C</li>
+					<li>Data storage: SQLite</li>
+					<li>Analysis and visualization: matplotlib, plotly and MATLAB</li>
+					<li>Web presentation: bootstrap + jQuery/AJAX + Flask (Python)</li>
+				</ul>
+			</p>
 			
 			<h4>Power</h4>
-			<p>All nodes are powered by solar panels with battery backup. Depending on power consumption, battery size ranges from portable USB packs to lead acid car batteries are used.</p>
+			<p>All nodes are powered by solar panels with battery backup. Depending on power consumption, batteries ranging from portable USB battery pack to sealed lead acid car battery are used.</p>
 			
-			<h4>Low cost alternatives</h4>
+			<!--h4>Custom Low-cost Sensors</h4>
 			<p><a href="puck.JPG" data-lightbox="hack1"><img src="puck.JPG" alt="copper epoxy" class="img_responsive" style="width:20%"></a></p>
-			<p>anti-biofouling + waterproofing</p>
+			<p>anti-biofouling + waterproofing</p-->
 		</div>
 	</div>
 
 	<hr>
 	
-	<div class="row">
+	<!--div class="row">
 		<div class="col-xs-12">
 			<h3>Bench Tests</h3>
 			<p>characterize and compare low-cost MEMS sensors: accuracy, resolution/precision, noise/variance, drift/bias/stability, ease of deployment (mechanical: waterproofing)</p>
 			<div id="tester"></div>
 			<br><br>
 		</div>
-	</div>
+	</div-->
 </div>
 {% endblock %}
