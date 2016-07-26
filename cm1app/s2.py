@@ -72,7 +72,7 @@ def s2submit(site):
                     d = {k: ts2dt(d[k]) if k in ['ReceptionTime','Timestamp','dt_seabird'] else d[k] for k in d}
                     # what a hack?? now I need to remember to add any field that is supposed
                     # to be datetime.datetime here.
-                    store.write(d['node'],d)
+                    store.write(d)
                     return 'sample saved'
                 else:
                     print 'sth is wrong with storage::storage()'
