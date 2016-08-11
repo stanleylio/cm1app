@@ -4,14 +4,33 @@
 <div class="container" style="margin-top: 20px">
 	<div class="row">
 		<div class="col-xs-12">
-			<h2>Experimental projects / sandbox...</h2>
+			<h2>sandbox...</h2>
 		</div>
 	</div>
 	
 	<div class="row">
 		<div class="col-xs-12">
-			<h3><a href="/project_info">project info</a></h3>
+			<h3>Temporary River Makaha stuff</h3>
+			<h4><a href="/static/poh/river/O2.png">O2</a></h4>
+			<h4><a href="/static/poh/river/air.png">Saturation</a></h4>
+			<h4><a href="/static/poh/river/temp.png">Temperature</a></h4>
+			<h4><a href="/static/poh/river/kph1.txt">Voltage reports</a></h4>
+			<h4><a href="/static/poh/river/MEASUREMENT.txt">Optode readings</a></h4>
+			<h4>Fields in a voltage report (left to right)</h4>
+			<ul>
+				<li><a href="/static/poh/river/tx_id.png">tx_id</a>: # of times XBee Tx is called</li>
+				<li><a href="/static/poh/river/bad_char_count.png">bad_char_count</a> (# of non-ASCII characters received from sensor so far)</li>
+				<li><a href="/static/poh/river/ticker.png">ticker</a>: internal 1Hz &quot;clock&quot;</li>
+				<li>last_transmitted (ticker and last_transmitted should be max 20min apart)</li>
+				<li>last_received (ticker and last_received should be max 20min apart)
+				<li><a href="/static/poh/river/Vcc.png">Vcc</a> (should be 3.3V)</li>
+				<li><a href="/static/poh/river/Vbatt.png">Vbatt</a> (should be 5V)</li>
+			</ul>
+			<p>Note 1: 3835 optode sends some control characters with every message, so bad_char_count is expected to be non-zero;</p>
+			<p>Note 2: uC resets (via WDT trap) if ticker - last_transmitted &gt; 20 minutes. Same for last_received.</p>
+			<hr>
 			<h3><a href="/tech">technology</a></h3>
+			<h3><a href="/project">project info</a></h3>
 		</div>
 	</div>
 
@@ -55,16 +74,16 @@
 
 	<div class="row">
 		<div class="col-xs-9">
+			<p>bootstrap blockquote tag</p>
 			<blockquote cite="http://quoteinvestigator.com/2010/07/11/confused/">Theory is when you know everything but nothing works. Practice is when everything works but no one knows why. In our lab, theory and practice are combined: nothing works and no one knows why.</blockquote>
 			<blockquote>The SS Google has permanently docked at the Port of Three Rivers. If Mohammed won’t move to Mountain View, then Mountain View will move to Mohammed as he graduates from Carnegie Mellon University.</blockquote>
 			<blockquote>Sometimes I think the surest sign that intelligent life exists elsewhere in the universe is that none of it has tried to contact us.</blockquote>
-			<blockquote>Increasing longevity means more old age not more youth.</blockquote>
 			<br><br>
 		</div>
 		<div class="col-xs-3">
 			<figure class="figure">
 				<img src="http://imgs.xkcd.com/comics/compiling.png" class="figure-img img-fluid img-responsive" alt="cvf">
-				<figcaption class="figure-caption">Also the #1 reason to get your dev better tool.</figcaption>
+				<figcaption class="figure-caption">this is figcaption inside figure</figcaption>
 			</figure>
 		</div>
 	</div>
