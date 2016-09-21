@@ -1,0 +1,13 @@
+{% block footer %}
+<div class="text-center" style="color:#C8C8C8; font-size:xx-small;">
+	<hr>
+	<a href="https://www.soest.hawaii.edu/soestwp/research/" target="_blank"><img src="{{ url_for('static',filename='soest_oval_textblock_307C_white_2000px.jpg') }}" height="50" width="68"/></a>
+	<br><br>
+	<div id="cc"></div>
+	<script>
+		//$("#cc").append('<p><a href="http://www2.hawaii.edu/~hlio" target="_blank">&copy; Stanley Hou In Lio, ' + new Date().getFullYear() + '</a></p>').append('<p>hlio [at] soest.hawaii.edu</p>');
+		//$("#cc").append('<p><a href="https://www.soest.hawaii.edu/" target="_blank">&copy; SOEST, ' + new Date().getFullYear() + '</a></p>').append('<p>hlio [at] soest.hawaii.edu</p>');
+		$("#cc").append('<p><a href="https://www.soest.hawaii.edu/" target="_blank">&copy; SOEST, ' + new Date().getFullYear() + '</a></p>');
+	</script>
+</div>
+{% endblock %}

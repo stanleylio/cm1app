@@ -1,23 +1,23 @@
 (function() {
 	//alert(site);
-	//alert(node_id);
+	//alert(node);
 	//alert(variable);
 
 $("#options_past :input").change(function() {
 	//console.log(this); // points to the clicked input button
 	if ('option_7d' === $(this).attr('id')) {
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
-	} else if ('option_3d' === $(this).attr('id')) {
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*3);
+		gen_plot(site,node,variable,variable + ' of ' + node,60*24*7);
+	/*} else if ('option_3d' === $(this).attr('id')) {
+		gen_plot(site,node,variable,variable + ' of ' + node,60*24*3);*/
 	} else if ('option_24h' === $(this).attr('id')) {
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24);
+		gen_plot(site,node,variable,variable + ' of ' + node,60*24);
 	} else if ('option_1h' === $(this).attr('id')) {
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60);
+		gen_plot(site,node,variable,variable + ' of ' + node,60);
 	}
 });
 
-	//gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
-	gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*3);	// duh. this has to match the active button...
+	gen_plot(site,node,variable,variable + ' of ' + node,60*24*7);
+	//gen_plot(site,node,variable,variable + ' of ' + node,60*24*3);	// duh. this has to match the active button...
 
 	function tzcorrect(ts) {
 		// convert POSIX timestamps to Date in local time zone
@@ -51,7 +51,7 @@ $("#options_past :input").change(function() {
 			var x = samples[variable];
 			
 			var layout = {
-				title: description + ' from ' + node_id,
+				title: description + ' from ' + node,
 				titlefont: {
 					family: 'Helvetica, monospace',
 					size: 20,

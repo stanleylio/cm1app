@@ -1,5 +1,5 @@
 (function() {
-// global: site, node_id
+// global: site, node
 
 // from dashboard.js
 function keys(d) {
@@ -13,7 +13,7 @@ function keys(d) {
 	return keys.sort();
 }
 
-$.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
+$.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 	//console.log(d);
 	
 	// - - - - -
@@ -21,7 +21,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	// - - - - -
 	var header = $('div.page-header div');
 	header.append($('<h1/>',{text:d['name']}))
-		.append($('<h4/>',{text:node_id + ' @ ' + d['location']}))
+		.append($('<h4/>',{text:node + ' @ ' + d['location']}))
 		.append($('<p/>',{text:d['note']}));
 	var table = $('<table class="table table-striped table-hover table-condensed"/>');
 	var thead = $("<thead><tr><th>Variable</th><th>Value</th><th>Unit</th><th>Description</th></tr></thead>");
@@ -52,7 +52,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 			}
 		}
 
-		var l = '/' + site + '/nodepage/' + node_id + '/' + tag;
+		var l = '/' + site + '/nodepage/' + node + '/' + tag;
 		$('<tr/>')
 			.append($('<td/>').append($('<a/>',{href:l,text:tag})))
 			.append($('<td/>',{text:val,'data-ts':ts,'data-valid':valid}))
@@ -87,15 +87,15 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 		//console.log(readings[i][0]);
 		var variable = readings[i]['var'];
 		var caption = $('<div/>',{id:variable + '_caption',class:'caption','data-tag':variable});
-		var imglink = '/static/' + site + '/' + node_id + '/' + variable + '.png';
-		//var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':variable + ' of ' + node_id});
+		var imglink = '/static/' + site + '/' + node + '/' + variable + '.png';
+		//var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':variable + ' of ' + node});
 
 		var a = $('<div/>',{class:'thumbnail'});
 		a.append(caption);
 		
 		// now only the img is a link, not the whole patch
 		// lightbox: add data-lightbox to the image link, not to the image
-		//var tmp = $('<a/>',{href:imglink,'data-lightbox':"plots",'data-title':variable + ' of ' + node_id});
+		//var tmp = $('<a/>',{href:imglink,'data-lightbox':"plots",'data-title':variable + ' of ' + node});
 		var tmp = $('<a/>',{href:imglink,'data-lightbox':"plots",'data-title':variable});
 		tmp.append($('<img/>',{src:imglink,class:'img-responsive'}));
 		a.append(tmp);
@@ -109,8 +109,8 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 	// generate the caption for each plot in the static plot grid
 	$('div.caption').each(function(i,v) {
 		var variable = $(v).data('tag');
-		//$.getJSON('/static/' + site + '/' + node_id + '/' + readings[i]['var'] + '.json',function(d) {
-		$.getJSON('/static/' + site + '/' + node_id + '/' + variable + '.json',function(d) {
+		//$.getJSON('/static/' + site + '/' + node + '/' + readings[i]['var'] + '.json',function(d) {
+		$.getJSON('/static/' + site + '/' + node + '/' + variable + '.json',function(d) {
 			var span = d['time_end'] - d['time_begin'];
 			var nday = Math.floor(span/24/60/60);
 			var remain = span % (24*60*60);
@@ -120,7 +120,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 				span = nday + ' days, ' + span;
 			}
 			$(v).append($('<h4/>',{text:variable}));
-			//var imglink_bounded = '/static/' + site + '/bounded/' + node_id + '/' + variable + '.png';
+			//var imglink_bounded = '/static/' + site + '/bounded/' + node + '/' + variable + '.png';
 			//$(v).append($('<h4><a href="' + imglink_bounded + '" title="filtered plot">' + variable + '</a></h4>'));
 			$(v).append($('<p/>',{text:'Plot generated ' + $.timeago(new Date(d['plot_generated_at']*1000))}));
 			$(v).append($('<p/>',{text: d['data_point_count'] + ' pts., ' + span}));
@@ -134,7 +134,7 @@ $.getJSON('/' + site + '/nodepage/' + node_id + '.json',function(d) {
 		'resizeDuration':200,
 		'fadeDuration':200,
 		'wrapAround':false,
-		'albumLabel':node_id
+		'albumLabel':node
 	})
 });
 })();

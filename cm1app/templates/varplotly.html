@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
-{% block title %}{{ node_id }}{% endblock %}
+{% block title %}{{ node }}{% endblock %}
 {% block content %}
 <div class="container-fluid">
 	<script>
 		var site = '{{ site }}';
-		var node_id = '{{ node_id }}';
+		var node = '{{ node }}';
 		var variable = '{{ variable }}';
 	</script>
 	<div class="row">
@@ -15,12 +15,12 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<div id="options_past" class="btn-group" data-toggle="buttons">
-						<label class="btn btn-primary">
-							<input type="radio" name="options" id="option_7d" autocomplete="off"> 7 days
-						</label>
 						<label class="btn btn-primary active">
-							<input type="radio" name="options" id="option_3d" autocomplete="off" checked> 3 days
+							<input type="radio" name="options" id="option_7d" autocomplete="off" checked> 7 days
 						</label>
+						<!--label class="btn btn-primary active">
+							<input type="radio" name="options" id="option_3d" autocomplete="off" checked> 3 days
+						</label-->
 						<label class="btn btn-primary">
 							<input type="radio" name="options" id="option_24h" autocomplete="off"> 24 hours
 						</label>
@@ -31,7 +31,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-xs-12"><div id="plot"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
+				<div class="col-xs-12"><div id="plot" style="min-width: 640px;"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
 			</div>
 		</div>
 	</div>

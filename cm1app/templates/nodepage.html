@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}{{ node_id }}{% endblock %}
+{% block title %}{{ node }}{% endblock %}
 {% block content %}
 <meta http-equiv="refresh" content="600">
 <link href="{{ url_for('static',filename='nodepage.css') }}" rel="stylesheet" type="text/css">
@@ -7,7 +7,7 @@
 <div class="container-fluid">
 	<script>
 		var site = '{{ site }}';
-		var node_id = '{{ node_id }}';
+		var node = '{{ node }}';
 	</script>
 		
 	<div class="row">

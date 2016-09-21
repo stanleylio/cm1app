@@ -13,6 +13,7 @@ from dashboard import *
 from nodepage import *
 #from s1 import *
 from s2 import *
+from datetime import datetime,timedelta
 
 
 logger = logging.getLogger(__name__)
@@ -29,33 +30,43 @@ def route_systemstatus():
 def site_node_variable(site,node,variable):
     """Examples: http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
 http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
+    logger.debug((site,node,variable))
     if site not in ['poh','coconut']:
         logger.error('no such site: {}'.format(site))
         return 'Eddie might go'
     
-    #print(' | '.join([site,node,variable]))
-
+    begin = request.args.get('begin')
+    end = request.args.get('end')
     minutes = request.args.get('minutes')
-    if minutes is None:
-        minutes = 24*60
-    logger.info('minutes={}'.format(minutes))
 
-    variable = str(variable)    # storage.py doesn't like unicode variable names...
-
+    variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
     unit = get_unit(site,node,variable)
     desc = get_description(site,node,variable)
 
-    #dbfile = get_dbfile(site,node)
-    #print(dbfile)
-    
     d = {'unit':unit,
          'description':desc,
          'samples':None}
-    #d = query_data(dbfile,time_col,node,variable,minutes)
-    r = query_data(site,node,variable,minutes)
-    #d = query_time_range(site,node,variable,datetime.utcnow - timedelta(minutes=1))
-    if r is not None:
-        d['samples'] = r
+    
+    if begin is not None:
+        begin = float(begin)
+        if end is None:
+            end = dt2ts(datetime.utcnow())     # assumption: database time too is in UTC
+        else:
+            end = float(end)
+        if begin < end:
+            logger.debug('from {} to {}'.format(begin,end))
+            r = query_time_range(site,node,variable,begin,end)
+        else:
+            errmsg = 'begin must be < end: {},{}'.format(begin,end)
+            logger.error(errmsg)
+            return dumps({'error':errmsg},separators=(',',':'))
+    else:
+        if minutes is None:
+            minutes = 24*60
+        logger.debug('minutes={}'.format(minutes))
+        r = query_data(site,node,variable,minutes)
+        
+    d['samples'] = r
     return dumps(d,separators=(',',':'))
 
 @app.route('/about/')

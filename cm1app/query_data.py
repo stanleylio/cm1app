@@ -50,8 +50,9 @@ def query_time_range(site,node,variable,begin,end=None):
             d = {time_col:[dt2ts(t) for t in r[time_col]],
                  variable:r[variable]}
             return d
-    d = {'error':'no record for {}'.format((site,node,variable))}
-    return d
+    #d = {'error':'no record for {}'.format((site,node,variable))}
+    logger.warning('no record for {}'.format((site,node,variable)))
+    return None
 
 # can't do this, they are not equivalent:
 # one gets the latest data (they may not be recent data)

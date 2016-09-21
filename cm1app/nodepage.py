@@ -24,7 +24,7 @@ def route_poh_node(site,node):
         if node.replace('-','_') in s.get_list_of_tables():
             return render_template('nodepage.html',
                                    site=site,
-                                   node_id=node)
+                                   node=node)
     return 'The answer you didn\'t want, to the question you didn\'t ask'
 
 @app.route('/<site>/nodepage/<node>/<variable>/')
@@ -33,9 +33,16 @@ def route_poh_node_var(site,node,variable):
     if site in ['poh','coconut']:
         return render_template('varplotly.html',
                                site=site,
-                               node_id=node,
+                               node=node,
                                variable=variable)
     return 'thought provoking'
+
+@app.route('/<site>/dataportal/<node>/<variable>/')
+def route_dataportal(site,node,variable):
+    return render_template('dataportal.html',
+                           site=site,
+                           node=node,
+                           variable=variable)
 
 # TODO
 # pretty sure I can merge this with dashboard.py::data_dashboard()
