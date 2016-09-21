@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys
+import sys,logging
 sys.path.append('/home/nuc/node')
 from json import dumps
 from storage.storage import storage_read_only
@@ -7,40 +7,85 @@ from helper import *
 from numpy import mean,median
 from scipy.signal import medfilt
 from datetime import datetime,timedelta
+from os.path import exists
 
 
-def query_data(dbfile,time_col,node,variable,minutes):
-    """Get the latest (not necessarily fresh) "minutes" minutes of samples"""
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+def validate(site,node,variable):
+    dbfile = get_dbfile(site,node)
+    if dbfile is None or not exists(dbfile):
+        logger.error('no dbfile for {}'.format((site,node,variable)))
+        return None
     store = storage_read_only(dbfile=dbfile)
     table = node.replace('-','_')
-    if table in store.get_list_of_tables():
-        variables = store.get_list_of_columns(node)
-        if variable in variables:
-            r = store.read_last_N_minutes(node,time_col,minutes,cols=[time_col,variable],nonnull=variable)
-            #print r
-            if r is not None:
-                d = {time_col:[dt2ts(t) for t in r[time_col]],
-                     variable:r[variable]}
-            else:
-                d = {'error':'no record for {}'.format(variable)}
-        else:
-            d = {'error':'no such variable: {}'.format(variable)}
+    if table not in store.get_list_of_tables():
+        logger.error('table {} not found'.format(table))
+        return None
+    variables = store.get_list_of_columns(node)
+    if variable not in variables:
+        logger.error('variable {} not found'.format(variable))
+        return None
+    if 'ReceptionTime' in variables:
+        time_col = 'ReceptionTime'
+    elif 'Timestamp' in variables:
+        time_col = 'Timestamp'
     else:
-        d = {'error':'no such node: {}'.format(node)}
+        logger.error('no time stamp found in db')
+        return None
+    return (store,table,time_col)
+
+def query_time_range(site,node,variable,begin,end=None):
+    tmp = validate(site,node,variable)
+    if tmp is not None:
+        store,table,time_col = tmp
+        if type(begin) is float:
+            begin = ts2dt(begin)
+        if type(end) is float:
+            end = ts2dt(end)
+        r = store.read_time_range(node,time_col,[time_col,variable],begin,end)
+        if r is not None:
+            d = {time_col:[dt2ts(t) for t in r[time_col]],
+                 variable:r[variable]}
+            return d
+    d = {'error':'no record for {}'.format((site,node,variable))}
     return d
 
-def read_latest_group_average(dbfile,time_col,node,variable):
-    d = query_data(dbfile,time_col,node,variable,1)
-    if 'error' in d:
-        return None
-    else:
+# can't do this, they are not equivalent:
+# one gets the latest data (they may not be recent data)
+# the other gets the data (if any) in a given period of time
+#def query_data(site,node,variable,minutes):
+    #end = datetime.utcnow()
+    #begin = end - timedelta(minutes=minutes)
+    #return query_time_range(site,node,variable,begin,end)
+
+def query_data(site,node,variable,minutes):
+    """Get the latest "minutes" worth of samples.
+Note: the latest samples in the database may not be recent (sensor could be dead)."""
+    tmp = validate(site,node,variable)
+    if tmp is not None:
+        store,table,time_col = tmp
+        r = store.read_last_N_minutes(node,time_col,minutes,cols=[time_col,variable],nonnull=variable)
+        if r is not None:
+            d = {time_col:[dt2ts(t) for t in r[time_col]],
+                 variable:r[variable]}
+            return d
+    d = {'error':'no record for {}'.format((site,node,variable))}
+    return d
+
+def read_latest_group_average(site,time_col,node,variable):
+    d = query_data(site,node,variable,1)
+    if d is not None:
         if len(d[variable]) > 3:
             return (mean(d[time_col]),mean(medfilt(d[variable],3)))
         else:
             return (mean(d[time_col]),mean(d[variable]))
 
-def read_baro_avg(dbfile,time_col):
+def read_baro_avg(site,time_col):
     from config.config_support import get_range
+    dbfile = get_dbfile(site)
     store = storage_read_only(dbfile=dbfile)
     tables = store.get_list_of_tables()
     p = []
@@ -82,11 +127,11 @@ def qaqc(site,node,variable,reading):
     #return reading
     return True
 
-def read_water_depth(dbfile,time_col,node,baro_avg=None):
+def read_water_depth(site,time_col,node,baro_avg=None):
     """Get water depth in meter."""
     if baro_avg is None:
-        t,baro_avg = read_baro_avg(dbfile,time_col)
-    r = read_latest_group_average(dbfile,time_col,node,'P_5803')
+        t,baro_avg = read_baro_avg(site,time_col)
+    r = read_latest_group_average(site,time_col,node,'P_5803')
     if r is not None:
         if qaqc('poh',node,'P_5803',r[1]):
             wd = (r[1] - baro_avg)*1e3/(1.03e3*9.8)
@@ -100,7 +145,7 @@ def read_water_depth(dbfile,time_col,node,baro_avg=None):
     return None
 
 
-#if '__main__' == __name__:
+if '__main__' == __name__:
 #    print query_data('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
+    print(query_time_range('poh','node-008','d2w',datetime.utcnow() - timedelta(hours=1)))
     
-

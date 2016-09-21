@@ -7,7 +7,7 @@ from cm1app import app
 from json import dumps
 from helper import *
 from storage.storage import storage_read_only
-from query_data import query_data,read_latest_group_average,read_baro_avg,read_water_depth
+from query_data import read_latest_group_average,read_baro_avg,read_water_depth
 
 
 #dbfile = '/home/nuc/node/www/poh/storage/sensor_data.db'    # TODO: centralize
@@ -41,10 +41,10 @@ def route_makahaN(site,name):
         try:
             node = m[name]
             d = {}
-            dbfile = get_dbfile(site)
+            #dbfile = get_dbfile(site)
 
             # water depth
-            d['wd'] = read_water_depth(dbfile,time_col,node)
+            d['wd'] = read_water_depth(site,time_col,node)
             if d['wd'][1] < 0:
                 d['wd'] = d['wd'][0],None
 
@@ -53,7 +53,7 @@ def route_makahaN(site,name):
             #units = [u'µM','%',u'℃℉']
             for col in cols:
                 try:
-                    d[col] = read_latest_group_average(dbfile,time_col,node,col)
+                    d[col] = read_latest_group_average(site,time_col,node,col)
                 except:
                     traceback.print_exc()
         except KeyError:
@@ -62,8 +62,8 @@ def route_makahaN(site,name):
         # special case for makaha 2...
         # everything is a special case... just like chemistry.
         if 'makaha2' == name:
-            d['Turbidity_FLNTU'] = read_latest_group_average(dbfile,time_col,'node-003','Turbidity_FLNTU')
-            d['Chlorophyll_FLNTU'] = read_latest_group_average(dbfile,time_col,'node-003','Chlorophyll_FLNTU')
+            d['Turbidity_FLNTU'] = read_latest_group_average(site,time_col,'node-003','Turbidity_FLNTU')
+            d['Chlorophyll_FLNTU'] = read_latest_group_average(site,time_col,'node-003','Chlorophyll_FLNTU')
 
         return dumps(d,separators=(',',':'))
     return 'Nessun Dorma'
@@ -71,12 +71,12 @@ def route_makahaN(site,name):
 @app.route('/<site>/data/meteorological.json')
 def data_meteorological(site):
     if 'poh' == site:
-        dbfile = get_dbfile(site)
+        #dbfile = get_dbfile(site)
         
-        air_t = read_latest_group_average(dbfile,time_col,'node-007','T_280')
-        baro = read_baro_avg(dbfile,time_col)
-        wind_avg = read_latest_group_average(dbfile,time_col,'node-007','Wind_average')
-        rh = read_latest_group_average(dbfile,time_col,'node-007','RH_280')
+        air_t = read_latest_group_average(site,time_col,'node-007','T_280')
+        baro = read_baro_avg(site,time_col)
+        wind_avg = read_latest_group_average(site,time_col,'node-007','Wind_average')
+        rh = read_latest_group_average(site,time_col,'node-007','RH_280')
 
         d = {'air_t':(round(air_t[0],1),round(air_t[1],1)),
              'baro_p':(round(baro[0],1),round(baro[1],1)),

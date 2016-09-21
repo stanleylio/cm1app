@@ -45,7 +45,7 @@ def route_poh_node_var(site,node,variable):
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site,node):
     if site in ['poh','coconut']:
-        dbfile = get_dbfile(site,node)
+        #dbfile = get_dbfile(site,node)
         S = {'name':get_name(site,node),
              'location':get_location(site,node),
              'note':get_note(site,node),
@@ -56,7 +56,8 @@ def data_site_node(site,node):
         R = {}
         variables = sorted(get_list_of_disp_vars(site,node),key=lambda x: x.lower())
         for k,var in enumerate(variables):
-            d = read_latest_group_average(dbfile,time_col,node,var)
+            #d = read_latest_group_average(dbfile,time_col,node,var)
+            d = read_latest_group_average(site,time_col,node,var)
             if d is not None:
                 r = {'var':var,
                      'ts':round(d[0],1),

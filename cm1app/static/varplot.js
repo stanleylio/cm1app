@@ -7,6 +7,8 @@ $("#options_past :input").change(function() {
 	//console.log(this); // points to the clicked input button
 	if ('option_7d' === $(this).attr('id')) {
 		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
+	} else if ('option_3d' === $(this).attr('id')) {
+		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*3);
 	} else if ('option_24h' === $(this).attr('id')) {
 		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24);
 	} else if ('option_1h' === $(this).attr('id')) {
@@ -14,22 +16,8 @@ $("#options_past :input").change(function() {
 	}
 });
 
-// this stopped working after adding bootstrap.min.js and doing things "the proper way"...
-//http://stackoverflow.com/questions/9262827/twitter-bootstrap-onclick-event-on-buttons-radio
-	/*$('#option_7d').on('click',function() {
-//alert("7d");
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
-	});
-	$('#option_24h').on('click',function() {
-//alert("24h");
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24);
-	});
-	$('#option_1h').on('click',function() {
-//alert("1h");
-		gen_plot(site,node_id,variable,variable + ' of ' + node_id,60);
-	});*/
-
-	gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
+	//gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*7);
+	gen_plot(site,node_id,variable,variable + ' of ' + node_id,60*24*3);	// duh. this has to match the active button...
 
 	function tzcorrect(ts) {
 		// convert POSIX timestamps to Date in local time zone
@@ -69,24 +57,24 @@ $("#options_past :input").change(function() {
 					size: 20,
 					color: '#7f7f7f'
 				},
-				autosize: false,
-				width: 960,
-				height: 500,
+				//autosize: false,
+				//width: 960,
+				//height: 500,
 				xaxis: {
-				title: new Date().toString().split(/(\(.*\))/)[1],
-				titlefont: {
-					family: 'Helvetica, monospace',
-					size: 18,
-					color: '#7f7f7f'
-				}
+					title: new Date().toString().split(/(\(.*\))/)[1],
+					titlefont: {
+						family: 'Helvetica, monospace',
+						size: 18,
+						color: '#7f7f7f'
+					}
 				},
 				yaxis: {
 					title: ylabel,
 					titlefont: {
-					family: 'Helvetica, monospace',
-					size: 18,
-					color: '#7f7f7f'
-				}
+						family: 'Helvetica, monospace',
+						size: 18,
+						color: '#7f7f7f'
+					}
 				},
 				margin: { l:100, r:50, b:80, t:50, pad:4 },
 			};
