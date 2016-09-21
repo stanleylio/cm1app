@@ -7,7 +7,7 @@ from json import dumps
 from helper import *
 from storage.storage import storage_read_only
 from config.config_support import get_unit,get_description
-from query_data import query_time_range
+from query_data import query_data,query_time_range
 from panels import *
 from dashboard import *
 from nodepage import *

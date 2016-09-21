@@ -137,11 +137,9 @@ def read_water_depth(site,time_col,node,baro_avg=None):
             wd = (r[1] - baro_avg)*1e3/(1.03e3*9.8)
             return r[0],wd
         else:
-            print('QAQC failed in read_water_depth()')
+            logger.error('QAQC failed in read_water_depth()')
     else:
-        print('No P_5803 data to calculate water depth')
-
-    #return float('nan'),float('nan')
+        logger.error('No P_5803 data to calculate water depth')
     return None
 
 
