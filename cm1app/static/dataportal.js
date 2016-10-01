@@ -7,7 +7,7 @@ $(function () {
 		//console.log(data);
 		//console.log(data['samples'][time_col]);
 		
-		jsondata = data;
+		jsondata = data;	// save a copy for later use
 		
         $('#container').highcharts('StockChart', {
 			chart: {
@@ -57,7 +57,7 @@ $(function () {
 			},
 			yAxis: {
 				title: {
-					text: "it's beyond my paygrade"
+					text: "return service requested"
 				}
 			},
             series: [{
@@ -75,7 +75,7 @@ $(function () {
                     hover: {
                         lineWidthPlus: 0
                     }
-                }
+                },
             }],
 			credits: {
 				enabled: false

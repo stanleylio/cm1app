@@ -4,6 +4,7 @@ sys.path.append('/home/nuc/node')
 from flask import Flask,render_template,request
 from cm1app import app
 from json import dumps
+from datetime import datetime,timedelta
 from helper import *
 from storage.storage import storage_read_only
 from config.config_support import get_unit,get_description
@@ -12,8 +13,8 @@ from panels import *
 from dashboard import *
 from nodepage import *
 #from s1 import *
-from s2 import *
-from datetime import datetime,timedelta
+#from s2 import *
+from s3 import *
 
 
 logger = logging.getLogger(__name__)

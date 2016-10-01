@@ -20,10 +20,6 @@ from helper import *
 from os.path import exists
 
 
-def PRINT(s):
-    #pass
-    print(s)
-
 def verify(m,key):
     signature = base64.b64decode(request.form['s'])
     key = RSA.importKey(key)
@@ -32,9 +28,10 @@ def verify(m,key):
     return verifier.verify(h,signature)
 
 
-cmap = {'poh':r'/home/nuc/data/base-003/from_web_api/comatose2.txt'}
-dbmap = {'poh':r'/home/nuc/data/base-003/from_web_api/sensor_data.db'}
+cmap = {'poh':r'/home/nuc/data/base-004/from_web_api/comatose2.txt'}
+dbmap = {'poh':r'/home/nuc/data/base-004/from_web_api/sensor_data.db'}
 
+# OBSOLETE. Kept here to catch anyone using this old endpoint.
 @app.route('/<site>/api/s2/submit',methods=['POST'])
 def s2submit(site):
     if 'poh' == site:
@@ -75,10 +72,10 @@ def s2submit(site):
                     store.write(d)
                     return 'sample saved'
                 else:
-                    print 'sth is wrong with storage::storage()'
+                    print('sth is wrong with storage::storage()')
         except:
             traceback.print_exc()
-            print 's2::s2submit(): the culprit:'
-            print m
+            print('s2::s2submit(): the culprit:')
+            print(m)
     return 'Fate saw the jewel in me, and pawed the heart apart to have it.'
 
