@@ -93,9 +93,15 @@
 			var tmp = node_status(d[node_id]['latest_non_null']);
 			if ('online' === tmp) {
 				$(this).addClass('list-group-item-success');
+				$(this).removeClass('list-group-item-warning');
+				$(this).removeClass('list-group-item-danger');
 			} else if ('bad_sensor' === tmp) {
+				$(this).removeClass('list-group-item-success');
 				$(this).addClass('list-group-item-warning');
+				$(this).removeClass('list-group-item-danger');
 			} else if ('offline' === tmp) {
+				$(this).removeClass('list-group-item-success');
+				$(this).removeClass('list-group-item-warning');
 				$(this).addClass('list-group-item-danger');
 			}
 		});
