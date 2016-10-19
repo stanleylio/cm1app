@@ -1,8 +1,8 @@
 $(function () {
 	var time_col = 'ReceptionTime';
-	var minutes = 90*24*60;
-	//var minutes = 60;
-	var json = null;
+	var minutes = 30*24*60;
+	var jsondata = null;
+	
 	$.getJSON('/' + site + '/data/' + node + '/' + variable + '.json?minutes=' + minutes,function(data) {
 		//console.log(data);
 		//console.log(data['samples'][time_col]);
@@ -13,9 +13,6 @@ $(function () {
 			chart: {
 				zoomType: 'x',
 			},
-            rangeSelector: {
-                selected: 2
-            },
             title: {
                 text: data.description + ' (' + site + ' > ' + node + ' >  ' + variable + ')',
             },
@@ -28,8 +25,9 @@ $(function () {
 								['hour',[1,6,12]],
 								['day',[1]],
 								['week',[1]],
-								['month',[1]]],
-						groupPixelWidth: 10,
+								['month',[1]],
+								],
+						groupPixelWidth: 5,
 					}
 				}
 			},
@@ -53,17 +51,25 @@ $(function () {
 					},{
 						type:'all',
 						text:'All'
-					}]
+					}],
+				selected: 2,
+			},
+			xAxis: {
+				ordinal: false,
+				title: {
+					text: 'Time (UTC)'
+				}
 			},
 			yAxis: {
 				title: {
-					text: "return service requested"
+					text: data.unit,
 				}
 			},
             series: [{
                 name: variable,
 				data: _.zip(_.map(data['samples'][time_col],function(t) {return 1000*t;}),data['samples'][variable]),
                 lineWidth: 0,
+				//dashStyle: 'longdash',
                 marker: {
                     enabled: true,
                     radius: 2

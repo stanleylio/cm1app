@@ -52,7 +52,8 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 			}
 		}
 
-		var l = '/' + site + '/nodepage/' + node + '/' + tag;
+		//var l = '/' + site + '/nodepage/' + node + '/' + tag;
+		var l = '/' + site + '/dataportal/' + node + '/' + tag;
 		$('<tr/>')
 			.append($('<td/>').append($('<a/>',{href:l,text:tag})))
 			.append($('<td/>',{text:val,'data-ts':ts,'data-valid':valid}))

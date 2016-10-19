@@ -7,7 +7,8 @@ from flask import request
 from datetime import datetime
 from cm1app import app
 from os.path import exists
-from s2 import verify
+#from s2 import verify
+from authstuff import validate_message
 
 
 logger = logging.getLogger(__name__)
@@ -30,7 +31,9 @@ def s3submit(site):
 
         try:
             m = request.form['m']
-            if verify(m,key):
+            sig = request.form['s']
+            #if verify(m,key):
+            if validate_message(m,sig,key):
                 with open(cmap[site],'a',0) as f:
                     f.write('{},{}\t{}\n'.format(datetime.utcnow(),site,m))
                 return '{"r":"saved"}'

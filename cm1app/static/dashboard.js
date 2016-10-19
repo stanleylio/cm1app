@@ -29,7 +29,7 @@
 				if (typeof range != 'undefined') {
 					//console.log(val,range);
 					if ((!(range[0] === null)) && (val < range[0])) {
-						console.log(v,val,range);
+						//console.log(v,val,range);
 						valid = false;
 					}
 					if ((!(range[1] === null)) && (val > range[1])) {

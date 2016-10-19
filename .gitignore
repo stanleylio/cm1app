@@ -1,9 +1,11 @@
 *.py[cod]
 
 env/
+obsolete/
 
 *.old
 sitemap.txt
 
 comatose.txt
 comatose2.txt
+
