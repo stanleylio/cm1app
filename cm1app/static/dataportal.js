@@ -113,7 +113,7 @@ $(function () {
 
 	// - - - - -
 	
-	function addpoint(data) {
+	/*function addpoint(data) {
 		if (!(chart == null)) {
 			//var series = chart.series[0];
 			var series = chart.series;
@@ -121,12 +121,8 @@ $(function () {
 			
 			// add the new point
 			var ts = Number(data['ts']*1000);
-			var d2w = Number(data['d2w']);
-			// 23'4.5" - 36.5" - d2w
-			//var wd = 6.1976 - d2w/1000.0;
-			//var vbatt = Number(data['Vbatt']);
-			series[0].addPoint([ts,d2w],true,shift);
-			//series[1].addPoint([ts,vbatt],true,shift);
+			var v = Number(data[variable]);
+			series[0].addPoint([ts,v],true,shift);
 		}
 	}
 		
@@ -141,7 +137,9 @@ $(function () {
 	ws.onmessage = function(evt) {
 		//console.log(evt.data);
 		var data = JSON.parse(evt.data);
-		addpoint(data);
+if ((data['node?'] === node) && (variable in data)) {
+			addpoint(data);
+		}
 	};
-	ws.onerror = function(evt) { console.log("error?") };
+	ws.onerror = function(evt) { console.log("error?") };*/
 });
