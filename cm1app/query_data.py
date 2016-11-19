@@ -15,6 +15,16 @@ logger.setLevel(logging.DEBUG)
 
 
 def validate(site,node,variable):
+    if site in ['makaipier'] and node in ['node-010']:
+        from storage.storage2 import storage_read_only as S
+        from storage.storage2 import auto_time_col,id2table
+        store = S()
+        table = id2table(node)
+        time_col = auto_time_col(store.get_list_of_columns(table))
+        return (store,table,time_col)
+
+    # legacy...
+    
     dbfile = get_dbfile(site,node)
     if dbfile is None or not exists(dbfile):
         logger.error('no dbfile for {}'.format((site,node,variable)))
@@ -70,7 +80,9 @@ Note: the latest samples in the database may not be recent (sensor could be dead
         store,table,time_col = tmp
         r = store.read_last_N_minutes(node,time_col,minutes,cols=[time_col,variable],nonnull=variable)
         if r is not None:
-            d = {time_col:[dt2ts(t) for t in r[time_col]],
+            if type(r[time_col][0]) is datetime:
+                r[time_col] = [dt2ts(t) for t in r[time_col]]
+            d = {time_col:r[time_col],
                  variable:r[variable]}
             return d
     d = {'error':'no record for {}'.format((site,node,variable))}

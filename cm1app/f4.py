@@ -32,8 +32,9 @@ def route_systemstatus():
 def site_node_variable(site,node,variable):
     """Examples: http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
 http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
+
     logger.debug((site,node,variable))
-    if site not in ['poh','coconut']:
+    if site not in ['poh','coconut','makaipier']:
         logger.error('no such site: {}'.format(site))
         return 'Eddie might go'
     
@@ -65,6 +66,7 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     else:
         if minutes is None:
             minutes = 24*60
+        minutes = float(minutes)
         logger.debug('minutes={}'.format(minutes))
         r = query_data(site,node,variable,minutes)
         

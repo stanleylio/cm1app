@@ -1,20 +1,22 @@
 $(function () {
 	var time_col = 'ReceptionTime';
-	var minutes = 30*24*60;
+	var minutes = 32*24*60;
 	var jsondata = null;
 	
 	$.getJSON('/' + site + '/data/' + node + '/' + variable + '.json?minutes=' + minutes,function(data) {
 		//console.log(data);
 		//console.log(data['samples'][time_col]);
-		
+
 		jsondata = data;	// save a copy for later use
+		
+		data = _.sortBy(_.zip(_.map(data['samples'][time_col],function(t) {return 1000*t;}),data['samples'][variable]),function(x) { return x[0]; });
 		
         $('#container').highcharts('StockChart', {
 			chart: {
 				zoomType: 'x',
 			},
             title: {
-                text: data.description + ' (' + site + ' > ' + node + ' >  ' + variable + ')',
+                text: jsondata.description + ' (' + site + ' > ' + node + ' >  ' + variable + ')',
             },
 			plotOptions: {
 				series: {
@@ -25,7 +27,6 @@ $(function () {
 								['hour',[1,6,12]],
 								['day',[1]],
 								['week',[1]],
-								['month',[1]],
 								],
 						groupPixelWidth: 5,
 					}
@@ -48,9 +49,9 @@ $(function () {
 						type:'month',
 						count: 1,
 						text: '1m'
-					},{
+					/*},{
 						type:'all',
-						text:'All'
+						text:'All'*/
 					}],
 				selected: 2,
 			},
@@ -62,12 +63,13 @@ $(function () {
 			},
 			yAxis: {
 				title: {
-					text: data.unit,
+					text: jsondata.unit,
 				}
 			},
             series: [{
                 name: variable,
-				data: _.zip(_.map(data['samples'][time_col],function(t) {return 1000*t;}),data['samples'][variable]),
+				//data: _.zip(_.map(data['samples'][time_col],function(t) {return 1000*t;}),data['samples'][variable]),
+				data: data,
                 lineWidth: 0,
 				//dashStyle: 'longdash',
                 marker: {
@@ -96,6 +98,7 @@ $(function () {
 	$('#download_button').click(function() {
 		$(this).attr('download',site + ',' + node + ',' + variable + '.csv');
 		var tmp = _.zip(jsondata['samples'][time_col],jsondata['samples'][variable]);
+		//var tmp = jsondata;
 		for (var i = 0; i < tmp.length; i++) {
 			tmp[i] = tmp[i].join(',');
 		}
