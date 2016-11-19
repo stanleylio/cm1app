@@ -2,6 +2,7 @@ $(function () {
 	var time_col = 'ReceptionTime';
 	var minutes = 32*24*60;
 	var jsondata = null;
+	var chart;
 	
 	$.getJSON('/' + site + '/data/' + node + '/' + variable + '.json?minutes=' + minutes,function(data) {
 		//console.log(data);
@@ -9,14 +10,16 @@ $(function () {
 
 		jsondata = data;	// save a copy for later use
 		
-		data = _.sortBy(_.zip(_.map(data['samples'][time_col],function(t) {return 1000*t;}),data['samples'][variable]),function(x) { return x[0]; });
+		// extract data into a list of (t,x), with t converted from s to ms, sorted by t
+		data = _.sortBy(_.zip(_.map(data['samples'][time_col],function(t) {return 1000*t;}), data['samples'][variable]),function(x) { return x[0]; });
 		
-        $('#container').highcharts('StockChart', {
+		chart = new Highcharts.StockChart({
 			chart: {
+				renderTo: 'container',
 				zoomType: 'x',
 			},
             title: {
-                text: jsondata.description + ' (' + site + ' > ' + node + ' >  ' + variable + ')',
+                text: jsondata.description + ' (' + site + ' > ' + node + ' > ' + variable + ')',
             },
 			plotOptions: {
 				series: {
@@ -107,4 +110,38 @@ $(function () {
 		var data = new Blob([csv]);
 		this.href = URL.createObjectURL(data);
 	});
+
+	// - - - - -
+	
+	function addpoint(data) {
+		if (!(chart == null)) {
+			//var series = chart.series[0];
+			var series = chart.series;
+			var shift = false;
+			
+			// add the new point
+			var ts = Number(data['ts']*1000);
+			var d2w = Number(data['d2w']);
+			// 23'4.5" - 36.5" - d2w
+			//var wd = 6.1976 - d2w/1000.0;
+			//var vbatt = Number(data['Vbatt']);
+			series[0].addPoint([ts,d2w],true,shift);
+			//series[1].addPoint([ts,vbatt],true,shift);
+		}
+	}
+		
+	var url = "ws://grog.soest.hawaii.edu:9001";
+	ws = new ReconnectingWebSocket(url);
+	ws.onopen = function(evt) {
+		//console.log(evt)
+	};
+	ws.onclose = function(evt) {
+		//console.log("closed")
+	};
+	ws.onmessage = function(evt) {
+		//console.log(evt.data);
+		var data = JSON.parse(evt.data);
+		addpoint(data);
+	};
+	ws.onerror = function(evt) { console.log("error?") };
 });
