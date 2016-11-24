@@ -3,7 +3,8 @@ import sys,logging
 sys.path.append('/home/nuc/node')
 from json import dumps
 from storage.storage import storage_read_only
-from helper import *
+from helper import *    #dt2ts,ts2dt,get_dbfile
+from config.config_support import get_dbfile
 from numpy import mean,median
 from scipy.signal import medfilt
 from datetime import datetime,timedelta
@@ -71,6 +72,7 @@ def query_time_range(site,node,variable,begin,end=None):
     #end = datetime.utcnow()
     #begin = end - timedelta(minutes=minutes)
     #return query_time_range(site,node,variable,begin,end)
+# I feel like I should give up the first case.
 
 def query_data(site,node,variable,minutes):
     """Get the latest "minutes" worth of samples.
@@ -97,13 +99,17 @@ def read_latest_group_average(site,time_col,node,variable):
             return (mean(d[time_col]),mean(d[variable]))
 
 def read_baro_avg(site,time_col):
-    from config.config_support import get_range
-    dbfile = get_dbfile(site)
-    store = storage_read_only(dbfile=dbfile)
-    tables = store.get_list_of_tables()
+    from config.config_support import get_range,get_list_of_nodes
+
     p = []
     t = []
-    for table in tables:
+    nodes = get_list_of_nodes(site)
+    for node in nodes:
+        table = node.replace('-','_')
+        dbfile = get_dbfile(site,node)
+        store = storage_read_only(dbfile=dbfile)
+    #tables = store.get_list_of_tables()
+    #for table in tables:
         r = store.read_last_N(table,time_col)
         # Explicit freshness check is more robust, but median(t) is cleaner.
         if r is not None and \

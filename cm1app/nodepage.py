@@ -7,7 +7,7 @@ from cm1app import app
 from json import dumps
 from helper import *
 from storage.storage import storage_read_only
-from config.config_support import get_list_of_disp_vars,get_name,get_unit_map,get_location,get_note,get_range,get_description
+from config.config_support import get_list_of_disp_vars,get_name,get_unit_map,get_location,get_note,get_range,get_description,get_list_of_nodes
 from query_data import read_latest_group_average
 
 
@@ -18,16 +18,17 @@ time_col = 'ReceptionTime'
 @app.route('/<site>/nodepage/<node>/')
 def route_poh_node(site,node):
     """Page for individual node"""
-    if site in ['poh','coconut']:
-        dbfile = get_dbfile(site,node)
-        s = storage_read_only(dbfile=dbfile)
-        if node.replace('-','_') in s.get_list_of_tables():
+    if site in ['poh','coconut','makaipier','msb228']:
+        #dbfile = get_dbfile(site,node)
+        #s = storage_read_only(dbfile=dbfile)
+        #if node.replace('-','_') in s.get_list_of_tables():
+        if node in get_list_of_nodes(site):
             return render_template('nodepage.html',
                                    site=site,
                                    node=node)
     return 'The answer you didn\'t want, to the question you didn\'t ask'
 
-@app.route('/<site>/nodepage/<node>/<variable>/')
+'''@app.route('/<site>/nodepage/<node>/<variable>/')
 def route_poh_node_var(site,node,variable):
     """plotly page for a single variable"""
     if site in ['poh','coconut']:
@@ -36,6 +37,7 @@ def route_poh_node_var(site,node,variable):
                                node=node,
                                variable=variable)
     return 'thought provoking'
+'''
 
 @app.route('/<site>/dataportal/<node>/<variable>/')
 def route_dataportal(site,node,variable):
@@ -51,19 +53,16 @@ def route_dataportal(site,node,variable):
 # the latter just get the last group mean, which could be None
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site,node):
-    if site in ['poh','coconut']:
-        #dbfile = get_dbfile(site,node)
+    if site in ['poh','coconut','makaipier','msb228']:
         S = {'name':get_name(site,node),
              'location':get_location(site,node),
              'note':get_note(site,node),
-             #'location':'Paepae o He\'eia, Kane\'ohe',
          }
         
         units = get_unit_map(site,node)
         R = {}
         variables = sorted(get_list_of_disp_vars(site,node),key=lambda x: x.lower())
         for k,var in enumerate(variables):
-            #d = read_latest_group_average(dbfile,time_col,node,var)
             d = read_latest_group_average(site,time_col,node,var)
             if d is not None:
                 r = {'var':var,

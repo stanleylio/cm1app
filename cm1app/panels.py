@@ -37,7 +37,8 @@ def route_makahaN(site,name):
         if name not in ['makaha1','makaha2','triplemakahab']:
             return '{}? nice try.'.format(name)
 
-        m = {'makaha1':'node-004','makaha2':'node-003','triplemakahab':'node-001'} # map from makaha number to node ID
+        #m = {'makaha1':'node-004','makaha2':'node-003','triplemakahab':'node-001'} # map from makaha number to node ID
+        m = {'makaha1':'node-004','triplemakahab':'node-001'} # map from makaha number to node ID
         try:
             node = m[name]
             d = {}

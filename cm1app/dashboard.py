@@ -7,7 +7,7 @@ from cm1app import app
 from json import dumps
 from helper import *
 from storage.storage import storage_read_only
-from config.config_support import get_list_of_nodes,get_list_of_disp_vars,get_name,get_unit_map,get_location,get_range
+from config.config_support import get_list_of_nodes,get_list_of_disp_vars,get_name,get_unit_map,get_location,get_range,get_dbfile
 
 
 #dbfile = '/home/nuc/data/base-003/storage/sensor_data.db'

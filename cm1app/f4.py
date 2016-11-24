@@ -5,7 +5,7 @@ from flask import Flask,render_template,request
 from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
-from helper import *
+from helper import dt2ts
 from storage.storage import storage_read_only
 from config.config_support import get_unit,get_description
 from query_data import query_data,query_time_range
@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-# There is currently only one site so the landing page is the poh landing page.
 #@app.route('/poh/systemstatus/')
 @app.route('/')
 def route_systemstatus():
@@ -53,7 +52,7 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     if begin is not None:
         begin = float(begin)
         if end is None:
-            end = dt2ts(datetime.utcnow())     # assumption: database time too is in UTC
+            end = dt2ts()     # assumption: database time too is in UTC
         else:
             end = float(end)
         if begin < end:

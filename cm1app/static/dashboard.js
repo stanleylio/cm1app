@@ -143,8 +143,8 @@
 	$.getJSON(l,build_table);
 
 	// build a table of nodes for Coconut Island
-	var l = '/coconut/data/dashboard.json';
-	$.getJSON(l,build_table);
+	//var l = '/coconut/data/dashboard.json';
+	//$.getJSON(l,build_table);
 
 	// auto refresh color of nodes in the background
 	window.setInterval(function() {
@@ -152,9 +152,9 @@
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_poh');
 		});
-		var l = '/coconut/data/dashboard.json';
+		/*var l = '/coconut/data/dashboard.json';
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_coconut');
-		});
+		});*/
 	},5*60*1000);
 })();
