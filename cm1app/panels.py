@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import traceback
-import sys
-sys.path.append('/home/nuc/node')
+import sys,traceback
+from os.path import expanduser
+sys.path.append(expanduser('~'))
 from flask import Flask,render_template
 from cm1app import app
 from json import dumps
-from helper import *
-from storage.storage import storage_read_only
+from node.helper import *
+from node.storage.storage import storage_read_only
 from query_data import read_latest_group_average,read_baro_avg,read_water_depth
 
 

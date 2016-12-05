@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 import traceback,sys,logging
-sys.path.append('/home/nuc/node')
+from os.path import expanduser
+sys.path.append(expanduser('~'))
 from flask import Flask,render_template,request
 from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
-from helper import dt2ts
-from storage.storage import storage_read_only
-from config.config_support import get_unit,get_description
+from node.helper import dt2ts
+from node.storage.storage import storage_read_only
+from node.config.config_support import get_unit,get_description
 from query_data import query_data,query_time_range
 from panels import *
 from dashboard import *
 from nodepage import *
-#from s1 import *
-#from s2 import *
 from s3 import *
 import v4
 

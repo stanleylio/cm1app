@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import sys,logging
-sys.path.append('/home/nuc/node')
+from os.path import expanduser
+sys.path.append(expanduser('~'))
 from json import dumps
-from storage.storage import storage_read_only
-from helper import *    #dt2ts,ts2dt,get_dbfile
-from config.config_support import get_dbfile
+from node.storage.storage import storage_read_only
+from node.helper import *    #dt2ts,ts2dt,get_dbfile
+from node.config.config_support import get_dbfile
 from numpy import mean,median
 from scipy.signal import medfilt
 from datetime import datetime,timedelta
@@ -16,15 +17,17 @@ logger.setLevel(logging.DEBUG)
 
 
 def validate(site,node,variable):
+    """Check if there's a db for the given (site,node), and
+select a time column."""
     if site in ['makaipier'] and node in ['node-010']:
         from storage.storage2 import storage_read_only as S
         from storage.storage2 import auto_time_col,id2table
-        store = S()
+        store = S()     # storage2 uses MySQL. No more "path to db" problem.
         table = id2table(node)
         time_col = auto_time_col(store.get_list_of_columns(table))
         return (store,table,time_col)
 
-    # legacy...
+    # legacy sqlite stuff
     
     dbfile = get_dbfile(site,node)
     if dbfile is None or not exists(dbfile):
@@ -44,7 +47,7 @@ def validate(site,node,variable):
     elif 'Timestamp' in variables:
         time_col = 'Timestamp'
     else:
-        logger.error('no time stamp found in db')
+        logger.error('no timestamp found in db')
         return None
     return (store,table,time_col)
 

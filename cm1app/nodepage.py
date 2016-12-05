@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-import traceback
-import sys
-sys.path.append('/home/nuc/node')
+import sys,traceback
+from os.path import expanduser
+sys.path.append(expanduser('~'))
 from flask import Flask,render_template,Markup,send_from_directory
 from cm1app import app
 from json import dumps
-from helper import *
-from storage.storage import storage_read_only
-from config.config_support import get_list_of_disp_vars,get_name,get_unit_map,get_location,get_note,get_range,get_description,get_list_of_nodes
+from node.helper import *
+from node.storage.storage import storage_read_only
+from node.config.config_support import get_list_of_disp_vars,get_name,\
+     get_unit_map,get_location,get_note,get_range,get_description,\
+     get_list_of_nodes
 from query_data import read_latest_group_average
 
 
