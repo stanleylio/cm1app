@@ -24,7 +24,7 @@ logger.setLevel(logging.DEBUG)
 #@app.route('/poh/systemstatus/')
 @app.route('/')
 def route_systemstatus():
-    return render_template('systemstatus.html')
+    return render_template('index.html')
 
 @app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site,node,variable):
@@ -81,10 +81,10 @@ def tech():
 
 @app.route('/dev/')
 def dev():
-    return render_template('index.html')
+    return render_template('dev.html')
 
 @app.route('/project_info/')
-def dev2():
+def project_info():
     return render_template('project_info.html')
 
 @app.route('/debug/')
