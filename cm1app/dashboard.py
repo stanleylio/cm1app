@@ -65,6 +65,7 @@ def data_dashboard(site):
         # TODO: clean this up, use the config files
         # but where is the information that map site to config file and data source?
         # i.e., how does the code know to use 'base-003' for site 'poh'?
+        # if it has to be hard-coded somewhere, may as well put it in the code.
         if 'poh' == site:
             r = {'site':site,
                  'data_src':'base-003',

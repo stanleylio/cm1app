@@ -18,13 +18,29 @@ import v4
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 
 
-#@app.route('/poh/systemstatus/')
+# read: decimation (DSP)
+# dumb downsample for now. need an anti-aliasing filter and all that.
+# TODO
+def condense(d,max_count):
+    """recursively subsample d until len(d) <= max_count
+subsample at a 2:1 ratio"""
+    assert type(max_count) in [float,int]
+    if len(d) > max_count:
+        return condense(d[0::2],max_count)
+    return d
+
+
 @app.route('/')
-def route_systemstatus():
+def route_default():
     return render_template('index.html')
+
+@app.route('/dev/systemstatus/')
+def route_systemstatus():
+    return render_template('systemstatus.html')
+
 
 @app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site,node,variable):
@@ -32,13 +48,14 @@ def site_node_variable(site,node,variable):
 http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
 
     logger.debug((site,node,variable))
-    if site not in ['poh','coconut','makaipier']:
+    if site not in ['poh','coconut','makaipier','sf']:
         logger.error('no such site: {}'.format(site))
         return 'Eddie might go'
     
     begin = request.args.get('begin')
     end = request.args.get('end')
     minutes = request.args.get('minutes')
+    max_count = request.args.get('max_count')
 
     variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
     unit = get_unit(site,node,variable)
@@ -67,7 +84,19 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
         minutes = float(minutes)
         logger.debug('minutes={}'.format(minutes))
         r = query_data(site,node,variable,minutes)
-        
+
+    # deal with max_count
+    if 'error' not in r and max_count is not None:
+        max_count = int(max_count)
+        if max_count > 0:
+            assert 2 == len(r.keys())   # a time column and a variable column
+            time_col = list(set(r.keys()) - set([variable]))[0]
+            tmp = zip(r[time_col],r[variable])
+            tmp = condense(zip(r[time_col],r[variable]),max_count)
+            tmp = zip(*tmp)
+            r = {time_col:tmp[0],variable:tmp[1]}
+            #logger.debug(len(condense(tmp,max_count)))
+    
     d['samples'] = r
     return dumps(d,separators=(',',':'))
 

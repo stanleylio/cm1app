@@ -40,7 +40,7 @@
 				
 				// a reading is good if it is recent and within range
 				//if (((now - d[v][0]) <= 30*60 && valid)) {
-				if (((now - d[v][0]) <= 30*60 && valid)) {
+				if (((now - d[v][0]) <= 40*60 && valid)) {
 					return 0;
 				}
 			} catch(e) {
@@ -112,7 +112,7 @@
 		//console.log(data.data_src);
 		//console.log(data.data_src_name);
 
-		// determinte whether to show site location and data source
+		// determine whether to show site location and data source
 		var title = $('<div></div>');
 		if (! $('#dashboard_' + data.site).data('status-only')) {
 			title = $('<h4><a href="' + data.gmap_link + '" target="_blank">' + data.location + '</a></h4><p>Data source: ' + data.data_src_name + '</p>');

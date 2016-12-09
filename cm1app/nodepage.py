@@ -20,7 +20,7 @@ time_col = 'ReceptionTime'
 @app.route('/<site>/nodepage/<node>/')
 def route_poh_node(site,node):
     """Page for individual node"""
-    if site in ['poh','coconut','makaipier','msb228']:
+    if site in ['poh','coconut','makaipier','msb','sf']:
         #dbfile = get_dbfile(site,node)
         #s = storage_read_only(dbfile=dbfile)
         #if node.replace('-','_') in s.get_list_of_tables():
@@ -55,7 +55,7 @@ def route_dataportal(site,node,variable):
 # the latter just get the last group mean, which could be None
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site,node):
-    if site in ['poh','coconut','makaipier','msb228']:
+    if site in ['poh','coconut','makaipier','msb','sf']:
         S = {'name':get_name(site,node),
              'location':get_location(site,node),
              'note':get_note(site,node),

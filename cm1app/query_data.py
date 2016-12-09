@@ -19,7 +19,8 @@ logger.setLevel(logging.DEBUG)
 def validate(site,node,variable):
     """Check if there's a db for the given (site,node), and
 select a time column."""
-    if site in ['makaipier'] and node in ['node-010']:
+    #if site in ['makaipier','sf'] and node in ['node-010','node-011','node-012']:
+    if site in ['makaipier','sf']:
         from storage.storage2 import storage_read_only as S
         from storage.storage2 import auto_time_col,id2table
         store = S()     # storage2 uses MySQL. No more "path to db" problem.
@@ -69,13 +70,12 @@ def query_time_range(site,node,variable,begin,end=None):
     return None
 
 # can't do this, they are not equivalent:
-# one gets the latest data (they may not be recent data)
-# the other gets the data (if any) in a given period of time
+# one gets the latest data (they may not be recent data) (for the table on node_page)
+# the other gets the data (if any) in a given period of time (generic time range queries)
 #def query_data(site,node,variable,minutes):
     #end = datetime.utcnow()
     #begin = end - timedelta(minutes=minutes)
     #return query_time_range(site,node,variable,begin,end)
-# I feel like I should give up the first case.
 
 def query_data(site,node,variable,minutes):
     """Get the latest "minutes" worth of samples.
@@ -84,7 +84,7 @@ Note: the latest samples in the database may not be recent (sensor could be dead
     if tmp is not None:
         store,table,time_col = tmp
         r = store.read_last_N_minutes(node,time_col,minutes,cols=[time_col,variable],nonnull=variable)
-        if r is not None:
+        if r is not None and len(r[time_col]) > 0:
             if type(r[time_col][0]) is datetime:
                 r[time_col] = [dt2ts(t) for t in r[time_col]]
             d = {time_col:r[time_col],
