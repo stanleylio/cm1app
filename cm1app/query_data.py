@@ -3,9 +3,11 @@ import sys,logging
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from json import dumps
-from node.storage.storage import storage_read_only
 from node.helper import *    #dt2ts,ts2dt,get_dbfile
 from node.config.config_support import get_dbfile
+from node.storage.storage import storage_read_only
+from node.storage.storage2 import storage_read_only as S
+from node.storage.storage2 import auto_time_col,id2table
 from numpy import mean,median
 from scipy.signal import medfilt
 from datetime import datetime,timedelta
@@ -18,22 +20,19 @@ logger.setLevel(logging.DEBUG)
 
 def validate(site,node,variable):
     """Check if there's a db for the given (site,node), and
-select a time column."""
-    #if site in ['makaipier','sf'] and node in ['node-010','node-011','node-012']:
+also pick a time column if there is."""
     if site in ['makaipier','sf']:
-        from storage.storage2 import storage_read_only as S
-        from storage.storage2 import auto_time_col,id2table
         store = S()     # storage2 uses MySQL. No more "path to db" problem.
         table = id2table(node)
         time_col = auto_time_col(store.get_list_of_columns(table))
         return (store,table,time_col)
 
     # legacy sqlite stuff
-    
     dbfile = get_dbfile(site,node)
-    if dbfile is None or not exists(dbfile):
+    if dbfile is None:
         logger.error('no dbfile for {}'.format((site,node,variable)))
         return None
+    assert exists(dbfile)
     store = storage_read_only(dbfile=dbfile)
     table = node.replace('-','_')
     if table not in store.get_list_of_tables():
@@ -43,42 +42,36 @@ select a time column."""
     if variable not in variables:
         logger.error('variable {} not found'.format(variable))
         return None
-    if 'ReceptionTime' in variables:
-        time_col = 'ReceptionTime'
-    elif 'Timestamp' in variables:
-        time_col = 'Timestamp'
-    else:
-        logger.error('no timestamp found in db')
-        return None
+    time_col = auto_time_col(variables)
     return (store,table,time_col)
 
-def query_time_range(site,node,variable,begin,end=None):
+def query_time_range(site,node,variable,begin,end):
+    """Fetch samples collected in the given time period (if any)."""
+    assert type(begin) is float     # caller should ensure this
+    assert type(end) is float
+    
     tmp = validate(site,node,variable)
-    if tmp is not None:
-        store,table,time_col = tmp
-        if type(begin) is float:
-            begin = ts2dt(begin)
-        if type(end) is float:
-            end = ts2dt(end)
-        r = store.read_time_range(node,time_col,[time_col,variable],begin,end)
-        if r is not None:
-            d = {time_col:[dt2ts(t) for t in r[time_col]],
-                 variable:r[variable]}
-            return d
-    #d = {'error':'no record for {}'.format((site,node,variable))}
-    logger.warning('no record for {}'.format((site,node,variable)))
-    return None
+    if tmp is None:
+        logger.debug('Data source not found for the {} combo'.format((site,node,variable)))
+        return None
+    store,table,time_col = tmp
+    r = store.read_time_range(node,time_col,[time_col,variable],begin,end)
+    if r is None:
+        logger.debug('No record for {}'.format((site,node,variable)))
+        return None
+    d = {time_col:[dt2ts(t) for t in r[time_col]],variable:r[variable]}
+    return d
 
 # can't do this, they are not equivalent:
 # one gets the latest data (they may not be recent data) (for the table on node_page)
 # the other gets the data (if any) in a given period of time (generic time range queries)
-#def query_data(site,node,variable,minutes):
+#def get_last_N_minutes(site,node,variable,minutes):
     #end = datetime.utcnow()
     #begin = end - timedelta(minutes=minutes)
     #return query_time_range(site,node,variable,begin,end)
 
-def query_data(site,node,variable,minutes):
-    """Get the latest "minutes" worth of samples.
+def get_last_N_minutes(site,node,variable,minutes):
+    """Get the latest "minutes" worth of samples where the variable is not None/NaN.
 Note: the latest samples in the database may not be recent (sensor could be dead)."""
     tmp = validate(site,node,variable)
     if tmp is not None:
@@ -94,12 +87,14 @@ Note: the latest samples in the database may not be recent (sensor could be dead
     return d
 
 def read_latest_group_average(site,time_col,node,variable):
-    d = query_data(site,node,variable,1)
-    if d is not None:
-        if len(d[variable]) > 3:
-            return (mean(d[time_col]),mean(medfilt(d[variable],3)))
-        else:
-            return (mean(d[time_col]),mean(d[variable]))
+    d = get_last_N_minutes(site,node,variable,1)
+    if d is None:
+        logger.debug('No data for {} using {}'.format((site,node,variable),time_col))
+        return None
+    if len(d[variable]) > 3:
+        return (mean(d[time_col]),mean(medfilt(d[variable],3)))
+    else:
+        return (mean(d[time_col]),mean(d[variable]))
 
 def read_baro_avg(site,time_col):
     from config.config_support import get_range,get_list_of_nodes
@@ -166,6 +161,6 @@ def read_water_depth(site,time_col,node,baro_avg=None):
 
 
 if '__main__' == __name__:
-#    print query_data('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
+#    print get_last_N_minutes('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
     print(query_time_range('poh','node-008','d2w',datetime.utcnow() - timedelta(hours=1)))
     

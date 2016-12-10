@@ -9,7 +9,7 @@ from datetime import datetime,timedelta
 from node.helper import dt2ts
 from node.storage.storage import storage_read_only
 from node.config.config_support import get_unit,get_description
-from query_data import query_data,query_time_range
+from query_data import get_last_N_minutes,query_time_range
 from panels import *
 from dashboard import *
 from nodepage import *
@@ -23,6 +23,7 @@ logger.setLevel(logging.WARNING)
 
 # read: decimation (DSP)
 # dumb downsample for now. need an anti-aliasing filter and all that.
+# refactor this into an independent service. RPC sth.
 # TODO
 def condense(d,max_count):
     """recursively subsample d until len(d) <= max_count
@@ -41,7 +42,6 @@ def route_default():
 def route_systemstatus():
     return render_template('systemstatus.html')
 
-
 @app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site,node,variable):
     """Examples: http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
@@ -50,7 +50,7 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     logger.debug((site,node,variable))
     if site not in ['poh','coconut','makaipier','sf']:
         logger.error('no such site: {}'.format(site))
-        return 'Eddie might go'
+        return 'No such site: {}'.format(site)
     
     begin = request.args.get('begin')
     end = request.args.get('end')
@@ -83,7 +83,7 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
             minutes = 24*60
         minutes = float(minutes)
         logger.debug('minutes={}'.format(minutes))
-        r = query_data(site,node,variable,minutes)
+        r = get_last_N_minutes(site,node,variable,minutes)
 
     # deal with max_count
     if 'error' not in r and max_count is not None:
