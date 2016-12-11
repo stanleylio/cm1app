@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# todo: reserve Flask for rendering and routing only. everything else in RPC.
 import traceback,sys,logging
 from os.path import expanduser
 sys.path.append(expanduser('~'))
@@ -15,13 +16,16 @@ from dashboard import *
 from nodepage import *
 from s3 import *
 import v4
+import xmlrpclib,socket
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
+proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
 
-# read: decimation (DSP)
+
+'''# read: decimation (DSP)
 # dumb downsample for now. need an anti-aliasing filter and all that.
 # refactor this into an independent service. RPC sth.
 # TODO
@@ -31,7 +35,7 @@ subsample at a 2:1 ratio"""
     assert type(max_count) in [float,int]
     if len(d) > max_count:
         return condense(d[0::2],max_count)
-    return d
+    return d'''
 
 
 @app.route('/')
@@ -92,10 +96,9 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
             assert 2 == len(r.keys())   # a time column and a variable column
             time_col = list(set(r.keys()) - set([variable]))[0]
             tmp = zip(r[time_col],r[variable])
-            tmp = condense(zip(r[time_col],r[variable]),max_count)
+            tmp = proxy.condense(zip(r[time_col],r[variable]),max_count)
             tmp = zip(*tmp)
             r = {time_col:tmp[0],variable:tmp[1]}
-            #logger.debug(len(condense(tmp,max_count)))
     
     d['samples'] = r
     return dumps(d,separators=(',',':'))

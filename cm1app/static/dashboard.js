@@ -19,8 +19,8 @@
 		//var bad_count = 0;	# default good vs. default bad... think about the implications.
 		//var bad_count = vars.length;
 		var now = new Date()/1000;
-		// given js' messy syntax I'm not sure this is any clearer than for(;;).
 		var bad_count = vars.map(function(v,i,a) {
+			//console.log(v);
 			try {
 				// range check
 				var valid = true;
@@ -32,15 +32,15 @@
 						//console.log(v,val,range);
 						valid = false;
 					}
-					if ((!(range[1] === null)) && (val > range[1])) {
-						console.log(v,val,range);
+					else if ((!(range[1] === null)) && (val > range[1])) {
+						//console.log(v,val,range);
 						valid = false;
 					}
 				}
 				
 				// a reading is good if it is recent and within range
 				//if (((now - d[v][0]) <= 30*60 && valid)) {
-				if (((now - d[v][0]) <= 40*60 && valid)) {
+				if (((now - d[v][0]) <= 60*60 && valid)) {
 					return 0;
 				}
 			} catch(e) {
@@ -52,36 +52,12 @@
 			return pv + cv;
 		});
 		
-		/*var bad_count = vars.length;
-		for (var i = 0; i < vars.length; i++) {	// js doesn't like dictionary...
-			var v = vars[i];
-			var valid = true;
-			var val = d[v][1];
-			var range = d[v][3];
-			if (typeof range != 'undefined') {
-				//console.log(val,range);
-				if ((!(range[0] === null)) && (val < range[0])) {
-					console.log(v,val,range);
-					valid = false;
-				}
-				if ((!(range[1] === null)) && (val > range[1])) {
-					console.log(v,val,range);
-					valid = false;
-				}
-			}
-			// a reading is good if it is recent and within range
-			if (((now - d[v][0]) <= 30*60 && valid)) {
-				bad_count--;
-			}
-		}*/
 		if (0 === bad_count) {
 			return 'online';
 		} else if (bad_count < vars.length) {
 			return 'bad_sensor';
-		} else if (bad_count >= vars.length) {
-			return 'offline';
 		} else {
-			console.log('huh?');
+			return 'offline';
 		}
 	}
 
@@ -142,9 +118,9 @@
 	var l = '/poh/data/dashboard.json';
 	$.getJSON(l,build_table);
 
-	// build a table of nodes for Coconut Island
-	//var l = '/coconut/data/dashboard.json';
-	//$.getJSON(l,build_table);
+	// build a table of nodes for Makai Pier
+	var l = '/makaipier/data/dashboard.json';
+	$.getJSON(l,build_table);
 
 	// auto refresh color of nodes in the background
 	window.setInterval(function() {
@@ -152,9 +128,9 @@
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_poh');
 		});
-		/*var l = '/coconut/data/dashboard.json';
+		var l = '/makaipier/data/dashboard.json';
 		$.getJSON(l,function(data) {
-			color_status(data.nodes,'dashboard_coconut');
-		});*/
+			color_status(data.nodes,'dashboard_makaipier');
+		});
 	},5*60*1000);
 })();

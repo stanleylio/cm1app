@@ -69,7 +69,7 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 		$(v).parent().attr('title',$.timeago(new Date($(v).data('ts')*1000)));
 		
 		// mark the stale readings
-		if (Date.now()/1000 - $(v).data('ts') > 30*60) {
+		if (Date.now()/1000 - $(v).data('ts') > 60*60) {
 			$(v).parent().addClass('stale');
 		} else {
 			if (!$(v).data('valid')) {
