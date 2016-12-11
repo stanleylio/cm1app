@@ -12,9 +12,9 @@
 	}
 
 	function node_status(d) {
-		// no sample stale -> 'online'
-		// some samples stale -> 'bad_sensor'
-		// all samples stale -> 'offline'
+		// all sample fresh and within range (if defined) -> 'online'
+		// some samples stale / out of range (if defined) -> 'bad_sensor'
+		// all samples stale / out of range (if defined) -> 'offline'
 		var vars = keys(d);
 		//var bad_count = 0;	# default good vs. default bad... think about the implications.
 		//var bad_count = vars.length;
@@ -23,25 +23,32 @@
 			//console.log(v);
 			try {
 				// range check
-				var valid = true;
+				//var valid = true;
 				var val = d[v][1];
 				var range = d[v][3];
 				if (typeof range != 'undefined') {
 					//console.log(val,range);
 					if ((!(range[0] === null)) && (val < range[0])) {
-						//console.log(v,val,range);
-						valid = false;
+//console.log(v,val,range);
+						//valid = false;
+						return 1;
 					}
 					else if ((!(range[1] === null)) && (val > range[1])) {
-						//console.log(v,val,range);
-						valid = false;
+//console.log(v,val,range);
+						//valid = false;
+						return 1;
 					}
 				}
 				
 				// a reading is good if it is recent and within range
 				//if (((now - d[v][0]) <= 30*60 && valid)) {
-				if (((now - d[v][0]) <= 60*60 && valid)) {
+				//if (((now - d[v][0]) <= 60*60 && valid)) {
+				if (((now - d[v][0]) <= 60*60)) {
 					return 0;
+				}
+				else
+				{
+//console.log(v,now - d[v][0]);
 				}
 			} catch(e) {
 				console.log(e.message);
@@ -66,6 +73,7 @@
 		//$('#dashboard_poh ul').children().each(function(idx) {
 		$(label).children().each(function(idx) {
 			var node_id = $(this).data('node_id');
+//console.log(node_id);
 			var tmp = node_status(d[node_id]['latest_non_null']);
 			if ('online' === tmp) {
 				$(this).addClass('list-group-item-success');
