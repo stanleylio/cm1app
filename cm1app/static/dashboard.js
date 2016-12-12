@@ -118,7 +118,7 @@
 		}
 		$('#dashboard_' + data.site).html(title.add(ul));
 		
-		// color the table of nodes
+		// color the table
 		color_status(data.nodes,'dashboard_' + data.site);
 	}
 	

@@ -4,8 +4,7 @@ sys.path.append('/home/nuc')
 from flask import Flask,render_template,Markup,request
 from cm1app import app
 from json import dumps
-from node.helper import dt2ts
-#from node.storage.storage import storage_read_only
+#from node.helper import dt2ts
 from node.storage.storage2 import storage_read_only as store2
 from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
      get_name,get_unit,get_dbfile,\
@@ -14,16 +13,12 @@ from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
 
 time_col = 'ReceptionTime'
 
-
+# ?
 site_base_map = {'poh':'base-003',\
                  'makaipier':'base-002',\
                  'sf':'base-005'}
 
-# TODO
-# pretty sure I can merge this with nodepage.py::data_site_node()
-# the difference: read_latest_non_null() vs. read_latest_group_average()
-# the former find the latest non-null reading;
-# the latter just get the last group mean, which could be None/NaN
+
 @app.route('/<site>/data/dashboard.json')
 def data_dashboard(site):
     if site in site_base_map.keys():

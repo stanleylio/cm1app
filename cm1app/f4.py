@@ -8,7 +8,7 @@ from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
 from node.helper import dt2ts
-from node.storage.storage import storage_read_only
+#from node.storage.storage import storage_read_only
 from node.config.config_support import get_unit,get_description
 from query_data import get_last_N_minutes,query_time_range
 from panels import *
@@ -23,19 +23,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-
-
-'''# read: decimation (DSP)
-# dumb downsample for now. need an anti-aliasing filter and all that.
-# refactor this into an independent service. RPC sth.
-# TODO
-def condense(d,max_count):
-    """recursively subsample d until len(d) <= max_count
-subsample at a 2:1 ratio"""
-    assert type(max_count) in [float,int]
-    if len(d) > max_count:
-        return condense(d[0::2],max_count)
-    return d'''
 
 
 @app.route('/')
@@ -119,7 +106,7 @@ def dev():
 def project_info():
     return render_template('project_info.html')
 
-@app.route('/debug/')
+'''@app.route('/debug/')
 def debug():
     #dbfile = '/home/nuc/data/base-003/storage/sensor_data.db'
     dbfile = '/home/nuc/node/www/poh/storage/sensor_data.db'
@@ -134,4 +121,4 @@ def debug():
             s = s + '{}<br>{}<br>'.format(table,'<ul>{}</ul>'.format(''.join(['<li>{}, {}</li>'.format(c,r[c][0]) for c in sorted(r.keys(),key=lambda x: x.lower())])))
         else:
             s = s + '{}<br>{}<br>'.format(table,'<ul>{}</ul>'.format(''.join(['<li>{}</li>'.format(c) for c in store.get_list_of_columns(table)])))
-    return s
+    return s'''

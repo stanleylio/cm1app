@@ -6,12 +6,12 @@ from flask import Flask,render_template
 from cm1app import app
 from json import dumps
 from node.helper import *
-from node.storage.storage import storage_read_only
+#from node.storage.storage import storage_read_only
 from query_data import read_latest_group_average,read_baro_avg,read_water_depth
 
 
-#dbfile = '/home/nuc/node/www/poh/storage/sensor_data.db'    # TODO: centralize
 time_col = 'ReceptionTime'
+
 
 @app.route('/<site>/widgets/panels/')
 def route_debug_panels(site):
