@@ -18,6 +18,11 @@ site_base_map = {'poh':'base-003',\
                  'sf':'base-005'}
 
 
+#@app.route('/<site>/data/<node>/latest_non_null.json')
+#... dashboard.json, but without the meta data.
+# or can I completely separate latest_non_null from meta data
+
+
 @app.route('/<site>/data/dashboard.json')
 def data_dashboard(site):
     if site not in site_base_map.keys():

@@ -130,6 +130,10 @@
 	var l = '/makaipier/data/dashboard.json';
 	$.getJSON(l,build_table);
 
+	// build a table of nodes for SF
+	var l = '/sf/data/dashboard.json';
+	$.getJSON(l,build_table);
+
 	// auto refresh color of nodes in the background
 	window.setInterval(function() {
 		var l = '/poh/data/dashboard.json';
@@ -139,6 +143,10 @@
 		var l = '/makaipier/data/dashboard.json';
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_makaipier');
+		});
+		var l = '/sf/data/dashboard.json';
+		$.getJSON(l,function(data) {
+			color_status(data.nodes,'dashboard_sf');
 		});
 	},5*60*1000);
 })();
