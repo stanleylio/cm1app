@@ -88,7 +88,7 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 		//console.log(readings[i][0]);
 		var variable = readings[i]['var'];
 		var caption = $('<div/>',{id:variable + '_caption',class:'caption','data-tag':variable});
-		var imglink = '/static/' + site + '/' + node + '/' + variable + '.png';
+		var imglink = '/static/img/' + site + '/' + node + '/' + variable + '.png';
 		//var a = $('<a/>',{href:imglink,class:'thumbnail','data-lightbox':"plots",'data-title':variable + ' of ' + node});
 
 		var a = $('<div/>',{class:'thumbnail'});
