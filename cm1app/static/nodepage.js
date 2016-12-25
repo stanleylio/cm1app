@@ -111,7 +111,7 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 	$('div.caption').each(function(i,v) {
 		var variable = $(v).data('tag');
 		//$.getJSON('/static/' + site + '/' + node + '/' + readings[i]['var'] + '.json',function(d) {
-		$.getJSON('/static/' + site + '/' + node + '/' + variable + '.json',function(d) {
+		$.getJSON('/static/img/' + site + '/' + node + '/' + variable + '.json',function(d) {
 			var span = d['time_end'] - d['time_begin'];
 			var nday = Math.floor(span/24/60/60);
 			var remain = span % (24*60*60);

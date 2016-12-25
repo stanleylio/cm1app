@@ -1,6 +1,6 @@
 $(function () {
 	var time_col = 'ReceptionTime';
-	var minutes = 32*24*60;
+	var minutes = 36*24*60;
 	var jsondata = null;
 	var chart;
 	
