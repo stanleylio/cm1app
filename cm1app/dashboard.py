@@ -6,8 +6,7 @@ from cm1app import app
 from json import dumps
 from node.storage.storage2 import storage_read_only as store2
 from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
-     get_name,get_unit,get_dbfile,\
-     get_location,get_note,get_google_earth_link,get_range
+     get_attr,get_unit,get_range
 
 
 time_col = 'ReceptionTime'
@@ -34,12 +33,12 @@ def data_dashboard(site):
     S = {}
     for node in nodes:
         S[node] = {}
-        S[node]['name'] = get_name(site,node)
-        S[node]['location'] = get_location(site,node)
+        S[node]['name'] = get_attr(node,'name')
+        S[node]['location'] = get_attr(node,'location')
         S[node]['latest_non_null'] = {}
         #print node,S[node]['name']
 
-        for var in get_list_of_disp_vars(site,node):
+        for var in get_list_of_disp_vars(node):
             # [timestamp,reading,unit,[lower bound,upper bound]]
             
             tmp = store.read_latest_non_null(node,time_col,var)
@@ -67,8 +66,8 @@ def data_dashboard(site):
     base = site_base_map[site]
     r = {'site':site,
          'data_src':base,
-         'data_src_name':get_note(site,base),
-         'location':get_location(site,base),
-         'gmap_link':get_google_earth_link(site,base),
+         'data_src_name':get_attr(base,'note'),
+         'location':get_attr(base,'location'),
+         'gmap_link':get_attr(base,'google_earth_link'),
          'nodes':S}
     return dumps(r,separators=(',',':'))

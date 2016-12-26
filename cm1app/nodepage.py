@@ -5,10 +5,8 @@ sys.path.append(expanduser('~'))
 from flask import Flask,render_template,Markup,send_from_directory
 from cm1app import app
 from json import dumps
-#from node.helper import *
-from node.config.config_support import get_list_of_disp_vars,get_name,\
-     get_unit,get_location,get_note,get_range,get_description,\
-     get_list_of_nodes,config_as_dict
+from node.config.config_support import get_list_of_disp_vars,get_attr,\
+     get_unit,get_range,get_description,get_list_of_nodes,config_as_dict
 from query_data import read_latest_group_average
 
 
@@ -55,19 +53,14 @@ def data_site_node(site,node):
     if site not in sites:
         return 'Error: Unknown site: {}'.format(site)
     
-    S = {'name':get_name(site,node),
-         'location':get_location(site,node),
-         'note':get_note(site,node),
+    S = {'name':get_attr(node,'name'),
+         'location':get_attr(node,'location'),
+         'note':get_attr(node,'note'),
          }
     
     R = {}
-    variables = sorted(get_list_of_disp_vars(site,node),key=lambda x: x.lower())
+    variables = sorted(get_list_of_disp_vars(node),key=lambda x: x.lower())
     for k,var in enumerate(variables):
-        r = {'var':var,
-             'ts':None,
-             'val':None,
-             'unit':None,
-             'desc':None}
         d = read_latest_group_average(site,time_col,node,var)
         if d is not None:
             r = {'var':var,
@@ -75,6 +68,12 @@ def data_site_node(site,node):
                  'val':round(d[1],3),
                  'unit':get_unit(site,node,var),
                  'desc':get_description(site,node,var)}
+        else:
+            r = {'var':var,
+                 'ts':None,
+                 'val':None,
+                 'unit':None,
+                 'desc':None}
         b = get_range(site,node,var)
         if b is not None:
             r['range'] = [None if tmp == float('inf') else tmp for tmp in b.to_tuple()]
