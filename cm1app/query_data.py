@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 
+# can probably get rid of site here too.
 def validate(site,node,variable):
     """Check if site exists, if node belongs to site, and if variable is in node.
 Pick a time column if all check out."""
@@ -52,8 +53,8 @@ Pick a time column if all check out."""
 
 def query_time_range(site,node,variable,begin,end):
     """Fetch samples collected in the given time period (if any)."""
-    assert type(begin) is float     # caller should ensure this
-    assert type(end) is float
+    assert type(begin) in [float,int]
+    assert type(end) in [float,int]
     
     tmp = validate(site,node,variable)
     if tmp is None:
@@ -64,7 +65,10 @@ def query_time_range(site,node,variable,begin,end):
     if r is None:
         logger.debug('No record for {}'.format((site,node,variable)))
         return None
-    return {time_col:[dt2ts(t) for t in r[time_col]],variable:r[variable]}
+
+    if type(r[time_col][0]) is datetime:
+        r[time_col] = [dt2ts(tmp) for tmp in r[time_col]]
+    return r
 
 def get_last_N_minutes(site,node,variable,minutes):
     """Get the latest "minutes" worth of samples where the variable is not None/NaN.

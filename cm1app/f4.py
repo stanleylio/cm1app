@@ -49,8 +49,8 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     max_count = request.args.get('max_count')
 
     variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
-    unit = get_unit(site,node,variable)
-    desc = get_description(site,node,variable)
+    unit = get_unit(node,variable)
+    desc = get_description(node,variable)
 
     d = {'unit':unit,
          'description':desc,

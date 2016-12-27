@@ -66,8 +66,8 @@ def data_site_node(site,node):
             r = {'var':var,
                  'ts':round(d[0],1),
                  'val':round(d[1],3),
-                 'unit':get_unit(site,node,var),
-                 'desc':get_description(site,node,var)}
+                 'unit':get_unit(node,var),
+                 'desc':get_description(node,var)}
         else:
             r = {'var':var,
                  'ts':None,

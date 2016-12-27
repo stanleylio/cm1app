@@ -48,7 +48,7 @@ def data_dashboard(site):
                 r = [None,None]
 
             # add unit
-            r.append(get_unit(site,node,var))
+            r.append(get_unit(node,var))
 
             # put in the boundaries/limits/range of the variable
             # use [None,None] if the limits of a variable are not defined.
