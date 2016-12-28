@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# todo: reserve Flask for rendering and routing only. everything else in RPC.
+# todo: reserve Flask for rendering and routing only. everything else via RPC ("microservice").
 import traceback,sys,logging
 from os.path import expanduser
 sys.path.append(expanduser('~'))
@@ -9,8 +9,8 @@ from json import dumps
 from datetime import datetime,timedelta
 from node.helper import dt2ts
 #from node.storage.storage import storage_read_only
-from node.config.config_support import get_unit,get_description
-from query_data import get_last_N_minutes,query_time_range
+from node.config.config_support import get_unit,get_description,config_as_dict
+#from query_data import get_last_N_minutes,query_time_range
 from panels import *
 from dashboard import *
 from nodepage import *
@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+
+sites = config_as_dict().keys()
 
 
 @app.route('/')
@@ -39,7 +41,8 @@ def site_node_variable(site,node,variable):
 http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
 
     logger.debug((site,node,variable))
-    if site not in ['poh','coconut','makaipier','sf']:
+    #if site not in ['poh','coconut','makaipier','sf']:
+    if site not in sites:
         logger.error('no such site: {}'.format(site))
         return 'No such site: {}'.format(site)
     
@@ -62,22 +65,25 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
             end = dt2ts()     # assumption: database time too is in UTC
         else:
             end = float(end)
-        if begin < end:
-            logger.debug('from {} to {}'.format(begin,end))
-            r = query_time_range(site,node,variable,begin,end)
-        else:
-            errmsg = 'begin must be < end: {},{}'.format(begin,end)
+        if begin >= end:
+            errmsg = 'require: begin < end'
             logger.error(errmsg)
             return dumps({'error':errmsg},separators=(',',':'))
+        else:
+            logger.debug('from {} to {}'.format(begin,end))
+            #r = query_time_range(site,node,variable,begin,end)
+            r = proxy.query_time_range(node,variable,begin,end)
     else:
         if minutes is None:
             minutes = 24*60
         minutes = float(minutes)
         logger.debug('minutes={}'.format(minutes))
-        r = get_last_N_minutes(site,node,variable,minutes)
+        #r = get_last_N_minutes(site,node,variable,minutes)
+        r = proxy.get_last_N_minutes(node,variable,minutes)
 
     # deal with max_count
-    if 'error' not in r and max_count is not None:
+    #if 'error' not in r and max_count is not None:
+    if max_count is not None:
         max_count = int(max_count)
         if max_count > 0:
             assert 2 == len(r.keys())   # a time column and a variable column

@@ -11,10 +11,13 @@ from numpy import mean
 from scipy.signal import medfilt
 from datetime import datetime,timedelta
 from os.path import exists
+import xmlrpclib
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
+
+proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
 
 
 # can probably get rid of site here too.
@@ -51,7 +54,7 @@ Pick a time column if all check out."""
     #begin = end - timedelta(minutes=minutes)
     #return query_time_range(site,node,variable,begin,end)
 
-def query_time_range(site,node,variable,begin,end):
+def OBSOLETE_query_time_range(site,node,variable,begin,end):
     """Fetch samples collected in the given time period (if any)."""
     assert type(begin) in [float,int]
     assert type(end) in [float,int]
@@ -70,7 +73,7 @@ def query_time_range(site,node,variable,begin,end):
         r[time_col] = [dt2ts(tmp) for tmp in r[time_col]]
     return r
 
-def get_last_N_minutes(site,node,variable,minutes):
+def OBSOLETE_get_last_N_minutes(site,node,variable,minutes):
     """Get the latest "minutes" worth of samples where the variable is not None/NaN.
 Note: the latest samples in the database may not be recent (sensor could be dead)."""
     tmp = validate(site,node,variable)
@@ -86,7 +89,8 @@ Note: the latest samples in the database may not be recent (sensor could be dead
     return None
 
 def read_latest_group_average(site,time_col,node,variable):
-    d = get_last_N_minutes(site,node,variable,1)
+    #d = get_last_N_minutes(site,node,variable,1)
+    d = proxy.get_last_N_minutes(node,variable,1)
     if d is None:
         logger.debug('No data for {} using {}'.format((site,node,variable),time_col))
         return None
