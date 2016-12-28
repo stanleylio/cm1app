@@ -19,8 +19,7 @@ def strip_none(r,time_col,var):
     # convert None into float('nan')
     #r[var] = [float('nan') if tmp is None else tmp for tmp in r[var]]
     # ... or just strip them. I can't plot them anyway.
-    # XMLRPC doesn't do None (without sacrificing compatibility)
-    # JSON doesn't do NaN
+    # XMLRPC doesn't do None (without sacrificing compatibility); JSON doesn't do NaN...
     # so... just strip them.
     if len(r[time_col]) <= 0:
         return r
@@ -61,11 +60,10 @@ def get_last_N_minutes(node,var,minutes):
     return r
 
 
-
 if '__main__' == __name__:
     from SimpleXMLRPCServer import SimpleXMLRPCServer
     #server = SimpleXMLRPCServer(('localhost',8000),allow_none=True)
-    server = SimpleXMLRPCServer(('localhost',8000))
+    server = SimpleXMLRPCServer(('localhost',8000)) # who knows, these may be rewritten by Haskell/Golang later.
     server.register_function(condense,'condense')
     server.register_function(query_time_range,'query_time_range')
     server.register_function(get_last_N_minutes,'get_last_N_minutes')

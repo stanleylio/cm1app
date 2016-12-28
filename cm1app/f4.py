@@ -22,8 +22,6 @@ import xmlrpclib,socket
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
-proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-
 sites = config_as_dict().keys()
 
 
@@ -58,6 +56,8 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     d = {'unit':unit,
          'description':desc,
          'samples':None}
+
+    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
     
     if begin is not None:
         begin = float(begin)
