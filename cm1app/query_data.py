@@ -1,93 +1,15 @@
 # -*- coding: utf-8 -*-
-# TODO: deprecate this file.
-# lesson: don't refactor by source text block. refactor by function/purpose.
-# don't write single-purpose code. a feature is "nice to have"? put it in a sandbox for easy removal.
 import sys,logging,time
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-#from json import dumps
 from node.config.config_support import get_list_of_nodes,get_list_of_variables
-#from node.helper import dt2ts
-#from node.storage.storage2 import storage_read_only as store2
-#from node.storage.storage2 import auto_time_col,id2table
 from numpy import mean
 from scipy.signal import medfilt
-#from os.path import exists
 import xmlrpclib
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
-
-
-'''# can probably get rid of site here too.
-def validate(site,node,variable):
-    """Check if site exists, if node belongs to site, and if variable is in node.
-Pick a time column if all check out."""
-    C = config_as_dict()
-
-    # is there such site?
-    if site not in C.keys():
-        logger.debug('Unknown site: {}'.format(site))
-        return None
-
-    # does node belong to site?
-    if node not in C[site]:
-        logger.debug('{} not in {}'.format(node,site))
-        return None
-    
-    # is the variable defined in the db?
-    store = store2()    # storage2 uses MySQL. No more "path to db" problem.
-    table = id2table(node)
-    columns = store.get_list_of_columns(table)
-    if variable not in columns:
-        logger.debug('{} not in {}'.format(variable,node))
-        return None
-    time_col = auto_time_col(columns)
-    return (store,table,time_col)
-
-# can't do this, they are not equivalent:
-# get_last_N_minutes() gets the latest data (even though they may be stale) (used by the "latest readings" table on nodepage)
-# query_time_range() gets the data within the given period of time (if any) (used by interactive plots and paepae app)
-#def get_last_N_minutes(site,node,variable,minutes):
-    #end = datetime.utcnow()
-    #begin = end - timedelta(minutes=minutes)
-    #return query_time_range(site,node,variable,begin,end)
-
-def OBSOLETE_query_time_range(site,node,variable,begin,end):
-    """Fetch samples collected in the given time period (if any)."""
-    assert type(begin) in [float,int]
-    assert type(end) in [float,int]
-    
-    tmp = validate(site,node,variable)
-    if tmp is None:
-        logger.debug('Data source not found for the {} combo'.format((site,node,variable)))
-        return None
-    store,table,time_col = tmp
-    r = store.read_time_range(node,time_col,[time_col,variable],begin,end)
-    if r is None:
-        logger.debug('No record for {}'.format((site,node,variable)))
-        return None
-
-    if type(r[time_col][0]) is datetime:
-        r[time_col] = [dt2ts(tmp) for tmp in r[time_col]]
-    return r
-
-def OBSOLETE_get_last_N_minutes(site,node,variable,minutes):
-    """Get the latest "minutes" worth of samples where the variable is not None/NaN.
-Note: the latest samples in the database may not be recent (sensor could be dead)."""
-    tmp = validate(site,node,variable)
-    if tmp is not None:
-        store,table,time_col = tmp
-        r = store.read_last_N_minutes(node,time_col,minutes,nonnull=variable)
-        if r is not None and len(r[time_col]) > 0:
-            if type(r[time_col][0]) is datetime:
-                r[time_col] = [dt2ts(t) for t in r[time_col]]
-            return {time_col:r[time_col],
-                    variable:r[variable]}
-    logger.debug('No record for {}'.format((site,node,variable)))
-    return None
-'''
 
 
 def unnamed(t,x):
@@ -97,20 +19,14 @@ def unnamed(t,x):
     else:
         return (mean(t),mean(x))
 
-
-# TODO: get rid of this
 def read_latest_group_average(site,time_col,node,variable):
-    #d = get_last_N_minutes(site,node,variable,1)
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.get_last_N_minutes(node,variable,1)
     assert d is not None
     if len(d[time_col]) <= 0:
         logger.debug('No data for {} using {}'.format((site,node,variable),time_col))
         return None
-    if len(d[variable]) > 3:
-        return (mean(d[time_col]),mean(medfilt(d[variable],3)))
-    else:
-        return (mean(d[time_col]),mean(d[variable]))
+    return unnamed(d[time_col],d[variable])
 
 def read_baro_avg(site,time_col):
     t = []
