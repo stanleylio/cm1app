@@ -93,7 +93,7 @@ $.getJSON('/poh/data/meteorological.json',function(d) {
 });*/
 
 //var d = JSON.parse(makaha1_data);
-$.getJSON('/poh/data/makaha/makaha1.json',function(d) {
+$.getJSON('/poh/data/location/makaha1.json',function(d) {
 	//console.log(d);
 	try {
 		var tmp = $(panel_template);
@@ -134,7 +134,7 @@ $.getJSON('/poh/data/makaha/makaha1.json',function(d) {
 });
 
 //var d = JSON.parse(makaha2_data);
-$.getJSON('/poh/data/makaha/makaha2.json',function(d) {
+$.getJSON('/poh/data/location/makaha2.json',function(d) {
 	//console.log(d);
 	try {
 		var tmp = $(panel_template);
@@ -189,7 +189,7 @@ $.getJSON('/poh/data/makaha/makaha2.json',function(d) {
 });
 
 //var d = JSON.parse(makaha3_data);
-$.getJSON('/poh/data/makaha/triplemakahab.json',function(d) {
+$.getJSON('/poh/data/location/triplemakahab.json',function(d) {
 	//console.log(d);
 	try {
 		var tmp = $(panel_template);

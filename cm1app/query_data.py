@@ -61,6 +61,35 @@ def read_water_depth(site,time_col,node,baro_avg=None):
         logger.error('No P_5803 data to calculate water depth')
     return None
 
+# query water depth in meter by makaha (not by node)
+# written specifically for the poh app
+def read_water_depth_by_location(makaha,minutes):
+    mnmap = {'makaha1':'node-009','makaha2':'node-008'}
+    time_col = 'ReceptionTime'
+    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    d = proxy.get_last_N_minutes(mnmap[makaha],'d2w',minutes)
+    def makaha1_d2w2d(d2wmm):
+        return (50.7 + 1100 - d2wmm)/1000.
+    def makaha2_d2w2d(d2wmm):
+        return (50.7 + 2180 - d2wmm)/1000.
+
+    # convert distance to water (d2w in mm) to water depth (in meter)
+    if 'node-008' == mnmap[makaha]:
+        d['d2w'] = [makaha2_d2w2d(tmp) for tmp in d['d2w']]
+    if 'node-009' == mnmap[makaha]:
+        d['d2w'] = [makaha1_d2w2d(tmp) for tmp in d['d2w']]
+
+    # strip all out-of-range readings
+    d['d2w'] = [tmp if tmp >= 0 else float('nan') for tmp in d['d2w']]
+
+    # remove spike
+    d['d2w'] = medfilt(d['d2w'],21)
+
+    # don't need(claim) that many digits...
+    d['d2w'] = [round(tmp,3) for tmp in d['d2w']]
+    
+    return d
+
 
 if '__main__' == __name__:
     from datetime import datetime,timedelta

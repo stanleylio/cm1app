@@ -3,11 +3,12 @@
 import sys,traceback,logging
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-from flask import Flask,render_template
+from flask import Flask,render_template,request
 from cm1app import app
 from json import dumps
 from node.helper import *
-from query_data import read_latest_group_average,read_baro_avg,read_water_depth
+from query_data import read_latest_group_average,read_baro_avg,read_water_depth_by_location
+import xmlrpclib
 
 
 time_col = 'ReceptionTime'  # TODO: get rid of this
@@ -30,15 +31,51 @@ def route_debug_panels(site):
                            triplemakahab_data=Markup(tmb))'''
     return render_template('panels.html')
 
+
+@app.route('/<site>/data/location/<location>/<var>.json')
+def route_makaha_processed_data(site,location,var):
+    if site not in ['poh']:
+        return 'Unknown site: {}'.format(site)
+    if location not in ['makaha1','makaha2']:
+        return 'Unknown location: {}'.format(location)
+    if 'depth' != var:
+        return 'Unknown variable: {}'.format(var)
+
+    var = 'd2w'
+    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+
+    minutes = request.args.get('minutes')
+    if minutes is None:
+        minutes = 1
+    minutes = float(minutes)
+    max_count = request.args.get('max_count')
+
+    r = read_water_depth_by_location(location,minutes)
+
+    if max_count is not None:
+        max_count = int(max_count)
+        if max_count > 0:
+            assert 2 == len(r.keys())   # a time column and a variable column
+            time_col = list(set(r.keys()) - set([var]))[0]
+            tmp = zip(r[time_col],r[var])
+            tmp = proxy.condense(zip(r[time_col],r[var]),max_count)
+            tmp = zip(*tmp)
+            r = {time_col:tmp[0],var:tmp[1]}
+
+    r['depth_meter'] = r[var]
+    del r[var]
+
+    return dumps(r,separators=(',',':'))
+
+
 # there is no simple and generic way to write this...
 # how would the code know node-002 oxygen is bad but temperature is still good?
-@app.route('/<site>/data/makaha/<name>.json')
+@app.route('/<site>/data/location/<name>.json')
 def route_makahaN(site,name):
     if 'poh' != site:
         return 'No such site: {}'.format(site)
-    
     if name not in ['makaha1','makaha2','triplemakahab']:
-        return '{}? nice try.'.format(name)
+        return 'Unknown location: {}'.format(name)
 
     #m = {'makaha1':'node-004','makaha2':'node-003','triplemakahab':'node-001'} # map from makaha number to node ID
     m = {'makaha1':'node-004','triplemakahab':'node-001'} # map from makaha number to node ID
