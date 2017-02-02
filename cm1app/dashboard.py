@@ -31,7 +31,9 @@ def data_dashboard(site):
     store = storage_read_only()
     
     S = {}
-    for node in nodes:
+    # "only for nodes defined in the site config AND have entries in db"
+    # this way I can add/test config file without a db entry while web is running
+    for node in set(nodes).intersection(set([tmp.replace('_','-') for tmp in store.get_list_of_tables()])):
         S[node] = {}
         S[node]['name'] = get_attr(node,'name')
         S[node]['location'] = get_attr(node,'location')
@@ -40,7 +42,7 @@ def data_dashboard(site):
 
         for var in get_list_of_disp_vars(node):
             # [timestamp,reading,unit,[lower bound,upper bound]]
-            
+
             tmp = store.read_latest_non_null(node,time_col,var)
             if tmp is not None:
                 r = [tmp[time_col],tmp[var]]

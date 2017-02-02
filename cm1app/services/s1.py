@@ -41,9 +41,9 @@ def fix_ts_format(r,time_col,var):
 store = storage_read_only()
 
 def query_time_range(node,var,begin,end):
-    assert type(begin) in [float,int]
-    assert type(end) in [float,int]
-    assert begin < end
+    assert type(begin) in [float,int],"begin is not float/int"
+    assert type(end) in [float,int],"end is not float/int"
+    assert begin < end,"begin >= end"
     time_col = 'ReceptionTime'
     r = store.read_time_range(node,time_col,[time_col,var],begin,end)
     r = strip_none(r,time_col,var)

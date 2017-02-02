@@ -7,8 +7,9 @@ from flask import Flask,render_template,request
 from cm1app import app
 from json import dumps
 from node.helper import *
-from query_data import read_latest_group_average,read_baro_avg,read_water_depth_by_location
+from query_data import read_latest_group_average,read_baro_avg,read_water_depth_by_location,read_oxygen_by_location
 import xmlrpclib
+from datetime import datetime,timedelta
 
 
 time_col = 'ReceptionTime'  # TODO: get rid of this
@@ -32,45 +33,79 @@ def route_debug_panels(site):
     return render_template('panels.html')
 
 
+def get_time_boundary(begin,end,minutes):
+    if begin is not None:
+        begin = float(begin)
+        if end is None:
+            end = dt2ts()
+        else:
+            end = float(end)
+        if begin >= end:
+            errmsg = 'require: begin < end'
+            logging.error(errmsg)
+            return dumps({'error':errmsg},separators=(',',':'))
+        else:
+            logging.debug('from {} to {}'.format(begin,end))
+    elif minutes is not None:
+        minutes = float(minutes)
+        end = dt2ts()
+        begin = end - 60*minutes
+    else:
+        end = dt2ts()
+        begin = dt2ts() - 60
+
+    assert begin is not None
+    assert end is not None
+    assert begin <= end
+    assert type(begin) == type(end)
+    assert type(begin) is float
+
+    return begin,end
+
+
 @app.route('/<site>/data/location/<location>/<var>.json')
-def route_makaha_processed_data(site,location,var):
-    if site not in ['poh']:
+def route_processed_data(site,location,var):
+    if site not in ['poh','makaipier']:
         return 'Unknown site: {}'.format(site)
-    if location not in ['makaha1','makaha2']:
-        return 'Unknown location: {}'.format(location)
-    if 'depth' != var:
-        return 'Unknown variable: {}'.format(var)
 
-    var = 'd2w'
-    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    if 'poh' == site:
+        if location not in ['makaha1','makaha2']:
+            return 'Unknown location: {}'.format(location)
+        if var not in ['depth','oxygen']:
+            return 'Unknown variable: {}'.format(var)
+    elif 'makaipier' == site:
+        if location not in ['dock1']:
+            return 'Unknown location: {}'.format(location)
+        if 'depth' != var:
+            return 'Unknown variable: {}'.format(var)
 
-    minutes = request.args.get('minutes')
-    if minutes is None:
-        minutes = 1
-    minutes = float(minutes)
+    begin,end = get_time_boundary(request.args.get('begin'),
+                                  request.args.get('end'),
+                                  request.args.get('minutes'))
+
+    if 'depth' == var:
+        t,d = read_water_depth_by_location(site,location,begin,end)
+    elif 'oxygen' == var:
+        t,d = read_oxygen_by_location(site,location,begin,end)
+
     max_count = request.args.get('max_count')
-
-    r = read_water_depth_by_location(location,minutes)
-
     if max_count is not None:
         max_count = int(max_count)
         if max_count > 0:
-            assert 2 == len(r.keys())   # a time column and a variable column
-            time_col = list(set(r.keys()) - set([var]))[0]
-            tmp = zip(r[time_col],r[var])
-            tmp = proxy.condense(zip(r[time_col],r[var]),max_count)
-            tmp = zip(*tmp)
-            r = {time_col:tmp[0],var:tmp[1]}
+            proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+            if len(t) <= 0:
+                return dumps({time_col:[],var:[]},separators=(',',':'))
+            tmp = proxy.condense(zip(t,d),max_count)
+            t,d = zip(*tmp)
 
-    r['depth_meter'] = r[var]
-    del r[var]
-
+    r = {time_col:t,var:d}
     return dumps(r,separators=(',',':'))
 
 
+# TODO: make this obsolete.
 # there is no simple and generic way to write this...
 # how would the code know node-002 oxygen is bad but temperature is still good?
-@app.route('/<site>/data/location/<name>.json')
+'''@app.route('/<site>/data/location/<name>.json')
 def route_makahaN(site,name):
     if 'poh' != site:
         return 'No such site: {}'.format(site)
@@ -106,7 +141,7 @@ def route_makahaN(site,name):
         d['Turbidity_FLNTU'] = read_latest_group_average(site,time_col,'node-003','Turbidity_FLNTU')
         d['Chlorophyll_FLNTU'] = read_latest_group_average(site,time_col,'node-003','Chlorophyll_FLNTU')
 
-    return dumps(d,separators=(',',':'))
+    return dumps(d,separators=(',',':'))'''
 
 @app.route('/<site>/data/meteorological.json')
 def data_meteorological(site):

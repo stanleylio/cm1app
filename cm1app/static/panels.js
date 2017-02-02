@@ -1,16 +1,4 @@
 (function() {
-/* note:
-	I can either have the server embed the data as JSON in a js variable inside the html file, or
-	I can have the client do AJAX.
-	
-	I'd also like to have the panels grey out the stale readings, if not asking for server for new readings.
-	
-	To have both the styling has to be independent from formatting of the readings. But if writing to
-	the fields and styling them are separate, the call to styling will have to be called upon (each and every)
-	successful AJAX calls.
-	
-	One of those time when lumping everything together actually saves dev work and performs better.
-*/
 
 var panel_template = '<div class="panel panel-primary"><div class="panel-heading"><h1 class="panel-title"></h1></div><div class="panel-body"></div></div>';
 
@@ -36,25 +24,29 @@ function formatwd(d) {
 	}
 }
 
+
+// initialize the panels
+var tmp = $(panel_template);
+tmp.find('.panel-heading .panel-title').append('Meteorological');
+$('#met_panel').html(tmp);
+
+tmp = $(panel_template);
+tmp.find('.panel-heading .panel-title').append('Mākāhā 1');
+$('#makaha1_panel').html(tmp);
+
+tmp = $(panel_template);
+tmp.find('.panel-heading .panel-title').append('Mākāhā 2');
+$('#makaha2_panel').html(tmp);
+
+tmp = $(panel_template);
+tmp.find('.panel-heading .panel-title').append('Triple Mākāhā b');
+$('#triplemakahab_panel').html(tmp);
+
+
 //var d = JSON.parse(met_data);
 $.getJSON('/poh/data/meteorological.json',function(d) {
-	//console.log(d);
-	// there is not much common to all of them...
-	//<stuff class="tsr" data-value="" data-time="" data-unit="" data-precision="" data-style="<h1>"></stuff>
-	var tmp = $(panel_template);
-	tmp.find('.panel-heading .panel-title').append('Meteorological');
+	var tmp = $('#met_panel');
 	tmp.find('.panel-body')
-	/* being able to toggle the display unit would be nice, but then it would have 
-	to be persistent over page reload... which means some form of persistent local
-	storage (cookie). Maybe later.
-	.append($('<div/>',{
-		text:'air temperature',
-		'class':'panel-field',
-		title:$.timeago(new Date(d.air_t[0]*1000)),
-		'data-val':JSON.stringify([d.air_t[1].toFixed(1),c2f(d.air_t[1]).toFixed(1)]),
-		'data-unit':JSON.stringify(['℃','℉']),
-		'data-disp-idx':1,
-		}))*/
 	.append($('<h1/>',{
 		text: d.air_t[1].toFixed(1) + '℃ ' + c2f(d.air_t[1]).toFixed(1) + '℉',
 		class:'panel-field',
@@ -77,22 +69,67 @@ $.getJSON('/poh/data/meteorological.json',function(d) {
 			class:'panel-field',
 			'data-ts':d.rh[0],
 		})));
-	
-	$('#met_panel').html(tmp);
 	color_status();
 });
 
-/*$('#met_panel div.panel-field').each(function(i,v) {
-	console.log(v);
-	var field = $(v);
-	var idx = field.data('disp-idx');
-	
-	field.html($('<h1/>').text(field.data('val')[idx] + field.data('unit')[idx]));
-}).click(function() {
-	// toggle...
-});*/
 
-//var d = JSON.parse(makaha1_data);
+$.getJSON("/poh/data/location/makaha1/depth.json?minutes=15&max_count=60",function(d) {
+	//console.log(d);
+	try {
+		//var latest_entry = _.maxBy(_.zip(d.ReceptionTime,d.depth),function(x) { return x[0] });
+		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.depth)];
+		
+		$('#makaha1_panel').find('.panel-body')
+		.append($('<h1/>',{
+			text: formatwd(latest_avg[1]),
+			class:'panel-field',
+			'data-ts':latest_avg[0],
+			}));
+		color_status();
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+$.getJSON("/poh/data/location/makaha1/oxygen.json?minutes=15&max_count=60",function(d) {
+	//console.log(d);
+	try {
+		//var latest_entry = _.maxBy(_.zip(d.ReceptionTime,d.oxygen),function(x) { return x[0] });
+		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.oxygen)];
+		console.log(latest_avg);
+		
+		$('#makaha1_panel').find('.panel-body')
+		.append($('<h1/>',{
+			text: latest_avg[1].toFixed(0) + 'μM ' + uM2mgL(latest_avg[1]).toFixed(1) + 'mg/L',
+			class:'panel-field',
+			'data-ts':latest_avg[0],
+			}));
+		color_status();
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+$.getJSON("/poh/data/location/makaha2/depth.json?minutes=15&max_count=60",function(d) {
+	//console.log(d);
+	try {
+		//var latest_entry = _.maxBy(_.zip(d.ReceptionTime,d.depth),function(x) { return x[0] });
+		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.depth)];
+		
+		$('#makaha2_panel').find('.panel-body')
+		.append($('<h1/>',{
+			text: formatwd(latest_avg[1]),
+			class:'panel-field',
+			'data-ts':latest_avg[0],
+			}));
+		color_status();
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+
+/*//var d = JSON.parse(makaha1_data);
 $.getJSON('/poh/data/location/makaha1.json',function(d) {
 	//console.log(d);
 	try {
@@ -227,7 +264,7 @@ $.getJSON('/poh/data/location/triplemakahab.json',function(d) {
 	} catch (e) {
 		console.log(e);
 	}
-});
+});*/
 
 function color_status() {
 	$('.panel-field').each(function(i,v) {

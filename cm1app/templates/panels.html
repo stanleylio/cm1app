@@ -1,91 +1,35 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!--meta http-equiv="refresh" content="300"-->
-		<link href="{{ url_for('static',filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
-		<link href="{{ url_for('static',filename='lightbox2/css/lightbox.min.css') }}" rel="stylesheet" type="text/css">
-		<link href="{{ url_for('static',filename='index.css') }}" rel="stylesheet" type="text/css">
-		<script src="{{ url_for('static',filename='jquery/jquery.min.js') }}" type="text/javascript"></script>
-		<title>PoH | UH Coastal Monitoring</title>
-	</head>
-	<body>
-		<style>
-			.stale { color:#E0E0E0; }
-		</style>
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<meta http-equiv="refresh" content="600">
+<div class="container-fluid">
+	<style>
+		.stale { color:#E0E0E0; }
+	</style>
 		
-		<!--script>
-			//It should be more efficient to have the server insert the data in one go instead of having the client doing individual AJAX calls, but any error in the server script will then halt the whole display. Tradeoffs, tradeoffs...
-			var met_data = '{{ met_data }}';
-			var makaha1_data = '{{ makaha1_data }}';
-			var makaha2_data = '{{ makaha2_data }}';
-			var triplemakahab_data = '{{ triplemakahab_data }}';
-		</script-->
-
-		<div class="container-fluid" style="margin-top: 20px">
-			<!--div class="page-header row">
-				<div class="col-xs-12">
-					<h2>Fishpond at a glance</h2>
+	<div class="row">
+		<!--div class="col-xs-12 col-md-3">
+			<div id="met_panel" class="panel panel-info">
+				<div class="panel-heading">
+					<h1 class="panel-title">Meteorological</h1>
 				</div>
+				<div class="panel-body"></div>
 			</div>
-			<br-->
-
-			<div class="row">
-				<!--div class="col-xs-12 col-md-3">
-					<div id="met_panel" class="panel panel-info">
-						<div class="panel-heading">
-							<h1 class="panel-title">Meteorological</h1>
-						</div>
-						<div class="panel-body"></div>
-					</div>
-				</div-->
-				<div class="col-xs-12 col-sm-6 col-lg-3">
-					<div id="met_panel"><div id="dashboard"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
-				</div>
-				<div class="col-xs-12 col-sm-6 col-lg-3">
-					<div id="makaha1_panel"><div id="dashboard"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
-				</div>
-				<!--div class="col-xs-12 col-sm-6 col-lg-3">
-					<div id="makaha2_panel"><div id="dashboard"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
-				</div-->
-				<div class="col-xs-12 col-sm-6 col-lg-3">
-					<div id="triplemakahab_panel"><div id="dashboard"><img src="{{ url_for('static',filename='circleball.gif') }}"></div></div>
-				</div>
-			</div>
-			
-			<!--hr>
-			
-			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-sm-offset-1">
-					<img src="{{ url_for('static',filename='loc1b.jpg') }}" class="img-responsive">
-					<br><br>
-				</div>
-				<div class="col-xs-12 col-sm-4">
-					<h3>Node locations</h3>
-					<ul class="list-group">
-						<li class="list-group-item">
-							<h4 class="list-group-item-heading">Mākāhā 1</h4>
-							<p class="list-group-item-text">node-002, node-004, node-007, node-009</p>
-						</li>
-						<li class="list-group-item">
-							<h4 class="list-group-item-heading">Kahoʻokele (Mākāhā 2)</h4>
-							<p class="list-group-item-text">node-003, node-008</p>
-						</li>
-						<li class="list-group-item">
-							<h4 class="list-group-item-heading">Triple Mākāhā b</h4>
-							<p class="list-group-item-text">node-001</p>
-						</li>
-					</ul>
-				</div>
-			</div-->
+		</div-->
+		<div class="col-xs-12 col-sm-6 col-lg-3">
+			<div id="met_panel"><img src="{{ url_for('static',filename='circleball.gif') }}"></div>
 		</div>
-		
-		<script src="{{ url_for('static',filename='jquery.timeago.js') }}" type="text/javascript"></script>
-		<script src="{{ url_for('static',filename='lightbox2/js/lightbox.min.js') }}"></script>
-		<script src="{{ url_for('static',filename='panels.js') }}" type="text/javascript"></script>
-		<!--script>
-			$('time.timeago').timeago();
-		</script-->
-	</body>
-</html>
+		<div class="col-xs-12 col-sm-6 col-lg-3">
+			<div id="makaha1_panel"><img src="{{ url_for('static',filename='circleball.gif') }}"></div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-lg-3">
+			<div id="makaha2_panel"><img src="{{ url_for('static',filename='circleball.gif') }}"></div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-lg-3">
+			<div id="triplemakahab_panel"><img src="{{ url_for('static',filename='circleball.gif') }}"></div>
+		</div>
+	</div>
+</div>
+<script src="{{ url_for('static',filename='jquery.timeago.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static',filename='panels.js') }}" type="text/javascript"></script>
+{% endblock %}
