@@ -110,10 +110,13 @@ def read_water_depth_by_location(site,location,begin,end):
     return [t,d]
 
 
-def read_oxygen_by_location(site,location,begin,end):
+def read_optode_by_location(site,location,begin,end,var):
     if 'poh' == site:
         mnmap = {'makaha1':'node-004',}
-        vnmap = {'makaha1':'O2Concentration',}
+        vvnmap = {'oxygen':{'makaha1':'O2Concentration',},
+                  'air':{'makaha1':'AirSaturation',},
+                  'temperature':{'makaha1':'Temperature',}}
+        vnmap = vvnmap[var]
         fnmap = {'makaha1':lambda x: x,}
     else:
         assert False

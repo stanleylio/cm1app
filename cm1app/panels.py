@@ -7,7 +7,7 @@ from flask import Flask,render_template,request
 from cm1app import app
 from json import dumps
 from node.helper import *
-from query_data import read_latest_group_average,read_baro_avg,read_water_depth_by_location,read_oxygen_by_location
+from query_data import read_latest_group_average,read_baro_avg,read_water_depth_by_location,read_optode_by_location
 import xmlrpclib
 from datetime import datetime,timedelta
 
@@ -71,7 +71,7 @@ def route_processed_data(site,location,var):
     if 'poh' == site:
         if location not in ['makaha1','makaha2']:
             return 'Unknown location: {}'.format(location)
-        if var not in ['depth','oxygen']:
+        if var not in ['depth','oxygen','air','temperature']:
             return 'Unknown variable: {}'.format(var)
     elif 'makaipier' == site:
         if location not in ['dock1']:
@@ -85,8 +85,8 @@ def route_processed_data(site,location,var):
 
     if 'depth' == var:
         t,d = read_water_depth_by_location(site,location,begin,end)
-    elif 'oxygen' == var:
-        t,d = read_oxygen_by_location(site,location,begin,end)
+    elif var in ['oxygen','air','temperature']:
+        t,d = read_optode_by_location(site,location,begin,end,var)
 
     max_count = request.args.get('max_count')
     if max_count is not None:

@@ -47,22 +47,28 @@ $('#triplemakahab_panel').html(tmp);
 $.getJSON('/poh/data/meteorological.json',function(d) {
 	var tmp = $('#met_panel');
 	tmp.find('.panel-body')
-	.append($('<h1/>',{
-		text: d.air_t[1].toFixed(1) + '℃ ' + c2f(d.air_t[1]).toFixed(1) + '℉',
-		class:'panel-field',
-		'data-ts':d.air_t[0],
-		}))
-	.append($('<h1/>',{
-		text: ms2kn(d.wind_avg[1]).toFixed(1) + 'kn.',
-		class:'panel-field',
-		'data-ts':d.wind_avg[0],
-		}))
-	.append($('<h3/>',{
-		text: (d.baro_p[1]*10).toFixed(0) + 'hPa',
-		class:'panel-field',
-		'data-ts':d.baro_p[0],
-		}))
-	.append($('<h3/>')
+	.append($('<h1/>')
+		.append($('<span class="label label-default">Air Temp.</span>'))
+		.append($('<span/>',{
+			text: ' ' + d.air_t[1].toFixed(1) + '℃ ' + c2f(d.air_t[1]).toFixed(1) + '℉',
+			class:'panel-field',
+			'data-ts':d.air_t[0],
+		})))
+	.append($('<h1/>')
+		.append($('<span class="label label-default">Wind Speed</span>'))
+		.append($('<span/>',{
+			text: ' ' + ms2kn(d.wind_avg[1]).toFixed(1) + 'kn.',
+			class:'panel-field',
+			'data-ts':d.wind_avg[0],
+		})))
+	.append($('<h1/>')
+		.append($('<span class="label label-default">Air Pressure</span>'))
+		.append($('<span/>',{
+			text: ' ' + (d.baro_p[1]*10).toFixed(0) + 'hPa',
+			class:'panel-field',
+			'data-ts':d.baro_p[0],
+		})))
+	.append($('<h1/>')
 		.append($('<span class="label label-default">Humidity</span>'))
 		.append($('<span/>',{
 			text: ' ' + d.rh[1].toFixed(0) + '%',
@@ -80,11 +86,13 @@ $.getJSON("/poh/data/location/makaha1/depth.json?minutes=15&max_count=60",functi
 		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.depth)];
 		
 		$('#makaha1_panel').find('.panel-body')
-		.append($('<h1/>',{
-			text: formatwd(latest_avg[1]),
+		.append($('<h1/>')
+			.append($('<span class="label label-primary">Depth</span>'))
+			.append($('<span/>',{
+			text: ' ' + formatwd(latest_avg[1]),
 			class:'panel-field',
 			'data-ts':latest_avg[0],
-			}));
+			})));
 		color_status();
 	} catch (e) {
 		console.log(e);
@@ -96,14 +104,56 @@ $.getJSON("/poh/data/location/makaha1/oxygen.json?minutes=15&max_count=60",funct
 	try {
 		//var latest_entry = _.maxBy(_.zip(d.ReceptionTime,d.oxygen),function(x) { return x[0] });
 		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.oxygen)];
-		console.log(latest_avg);
+		//console.log(latest_avg);
 		
 		$('#makaha1_panel').find('.panel-body')
-		.append($('<h1/>',{
-			text: latest_avg[1].toFixed(0) + 'μM ' + uM2mgL(latest_avg[1]).toFixed(1) + 'mg/L',
+		.append($('<h1/>')
+			.append($('<span class="label label-info">O<sub>2</sub></span>'))
+			.append($('<span/>',{
+			text: ' ' + latest_avg[1].toFixed(0) + 'μM ' + uM2mgL(latest_avg[1]).toFixed(1) + 'mg/L',
 			class:'panel-field',
 			'data-ts':latest_avg[0],
-			}));
+			})));
+		color_status();
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+$.getJSON("/poh/data/location/makaha1/air.json?minutes=15&max_count=60",function(d) {
+	//console.log(d);
+	try {
+		//var latest_entry = _.maxBy(_.zip(d.ReceptionTime,d.air),function(x) { return x[0] });
+		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.air)];
+		//console.log(latest_avg);
+		
+		$('#makaha1_panel').find('.panel-body')
+		.append($('<h1/>')
+			.append($('<span class="label label-info">Air Sat.</span>'))
+			.append($('<span/>',{
+			text: ' ' + d.air[1].toFixed(0) + '%',
+			class:'panel-field',
+			'data-ts':latest_avg[0],
+			})));
+		color_status();
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+$.getJSON("/poh/data/location/makaha1/temperature.json?minutes=15&max_count=60",function(d) {
+	//console.log(d);
+	try {
+		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.temperature)];
+		
+		$('#makaha1_panel').find('.panel-body')
+		.append($('<h1/>')
+			.append($('<span class="label label-info">Water Temp.</span>'))
+			.append($('<span/>',{
+			text: ' ' + d.temperature[1].toFixed(1) + '℃ ' + c2f(d.temperature[1]).toFixed(1) + '℉',
+			class:'panel-field',
+			'data-ts':latest_avg[0],
+			})));
 		color_status();
 	} catch (e) {
 		console.log(e);
@@ -117,11 +167,13 @@ $.getJSON("/poh/data/location/makaha2/depth.json?minutes=15&max_count=60",functi
 		var latest_avg = [_.mean(d.ReceptionTime),_.mean(d.depth)];
 		
 		$('#makaha2_panel').find('.panel-body')
-		.append($('<h1/>',{
-			text: formatwd(latest_avg[1]),
+		.append($('<h1/>')
+			.append($('<span class="label label-primary">Depth</span>'))
+			.append($('<span/>',{
+			text: ' ' + formatwd(latest_avg[1]),
 			class:'panel-field',
 			'data-ts':latest_avg[0],
-			}));
+			})));
 		color_status();
 	} catch (e) {
 		console.log(e);
