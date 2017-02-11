@@ -1,8 +1,32 @@
 $(function () {
 	var time_col = 'ReceptionTime';
-	var minutes = 36*24*60;
+	var minutes = 60*24*60;
 	var jsondata = null;
 	var chart;
+
+	function update_stats() {
+		var extremes = chart.xAxis[0].getExtremes();
+		var data = [
+			['Time of latest sample',moment(extremes.dataMax).format('MMM Do YYYY, hh:mm:ss') + ' (' + moment(extremes.dataMax).fromNow() + ')'],
+			['Time span',((extremes.dataMax - extremes.dataMin)/3600/1e3/24).toFixed(1) + ' days(s)'],
+			//['Number of samples',chart.series[0].data.length],
+			// hack
+			['Number of samples',jsondata['samples'][time_col].length],
+			['Time of oldest sample',moment(extremes.dataMin).format('MMM Do YYYY, hh:mm:ss')],
+		];
+		
+		var table = $('<table class="table table-striped table-hover table-condensed table-sm table-bordered"/>');
+		var thead = $("<thead><tr><th>Stats</th><th>Value</th></tr></thead>");
+		var tbody = $('<tbody/>');
+		for (let row of data) {
+			$('<tr/>')
+				.append($('<td/>').append($('<strong/>',{text:row[0]})))
+				.append($('<td/>',{text:row[1]}))
+			.appendTo(tbody);
+		}
+		table.append(thead).append(tbody);
+		$('#stats_table').html(table);
+	}
 	
 	$.getJSON('/' + site + '/data/' + node + '/' + variable + '.json?minutes=' + minutes,function(data) {
 		//console.log(data);
@@ -17,6 +41,10 @@ $(function () {
 			chart: {
 				renderTo: 'container',
 				zoomType: 'x',
+				events: {
+					//load:...,
+					//redraw: , buggy. doesn't work.
+				},
 			},
             title: {
                 text: jsondata.description + ' (' + site + ' > ' + node + ' > ' + variable + ')',
@@ -94,6 +122,8 @@ $(function () {
         });
 		
 		$('#download_button').show();
+
+		update_stats();
 	});
 	
 	$('#download_button').hide();

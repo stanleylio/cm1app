@@ -21,6 +21,9 @@ eps = [
     '/poh/data/location/makaha1/depth.json?begin=1485980000&end=1485986255',
     '/poh/data/location/makaha1/depth.json?minutes=60',
     '/poh/data/location/makaha1/depth.json?begin=1478030000&end=1478037569&max_count=1000',
+    '/poh/data/location/makaha1/oxygen.json?begin=1485980000&end=1485986255',
+    '/poh/data/location/makaha1/air.json?begin=1485980000&end=1485986255',
+    '/poh/data/location/makaha1/temperature.json?begin=1485980000&end=1485986255',
 
     '/poh/data/location/makaha2/depth.json',
     '/poh/data/location/makaha2/depth.json?begin=1485980000&end=1485986255',
