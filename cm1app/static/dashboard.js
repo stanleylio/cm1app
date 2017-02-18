@@ -18,9 +18,9 @@
 		var vars = keys(d);
 		//var bad_count = 0;	# default good vs. default bad... think about the implications.
 		//var bad_count = vars.length;
-		var now = new Date()/1000;
+		var now = new Date()/1e3;
 		var bad_count = vars.map(function(v,i,a) {
-			//console.log(v);
+//console.log(v);
 			try {
 				// range check
 				//var valid = true;
@@ -39,16 +39,16 @@
 						return 1;
 					}
 				}
-				
+
 				// a reading is good if it is recent and within range
 				//if (((now - d[v][0]) <= 30*60 && valid)) {
-				//if (((now - d[v][0]) <= 60*60 && valid)) {
-				if (((now - d[v][0]) <= 30*60)) {
-					return 0;
+				var age = now - d[v][0];
+				if (age < 0) {
+					console.log('Warning: check system clock');
+					console.log('browser time: ', new Date(), now, 'age=',age);
 				}
-				else
-				{
-//console.log(v,now - d[v][0]);
+				if ((age <= 30*60)) {
+					return 0;
 				}
 			} catch(e) {
 				console.log(e.message);
