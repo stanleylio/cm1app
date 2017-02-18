@@ -37,6 +37,7 @@ def s4submit():
         #request.args.get('client',None)
 
         # form data
+        # this corresponds to send2server.py::prepare_message()
         ts = request.form['ts']
         src = request.form['src']
         msg = request.form['msg']
@@ -46,7 +47,8 @@ def s4submit():
         if not validate_message(msg,sig,kmap[src]):
             return 'bad signature'
         #ReceptionTime,TransmissionTime,Source,Message
-        with open('/home/nuc/data/api/4/tsraw.txt','a',0) as f:
+        #with open('/home/nuc/data/api/4/tsraw.txt','a',0) as f:
+        with open('/var/uhcm/incoming/api/4/tsraw.txt','a',0) as f:
             f.write('{},{},{},{}\n'.format(datetime.utcnow().isoformat(),ts,src,msg))
             return '{},ok'.format(datetime.utcnow().isoformat())
     except:

@@ -4,7 +4,7 @@ sys.path.append('/home/nuc')
 from flask import Flask,render_template,Markup,request
 from cm1app import app
 from json import dumps
-from node.storage.storage2 import storage_read_only
+from node.storage.storage2 import storage
 from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
      get_attr,get_unit,get_range
 
@@ -28,7 +28,7 @@ def data_dashboard(site):
         return 'Error: Unknown site: {}'.format(site)
     
     nodes = get_list_of_nodes(site)
-    store = storage_read_only()
+    store = storage()
     
     S = {}
     # "only for nodes defined in the site config AND have entries in db"

@@ -8,13 +8,11 @@ from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
 from node.helper import dt2ts
-#from node.storage.storage import storage_read_only
 from node.config.config_support import get_unit,get_description,config_as_dict
-#from query_data import get_last_N_minutes,query_time_range
 from panels import *
 from dashboard import *
 from nodepage import *
-from s3 import *
+#from s3 import *
 import v4
 import xmlrpclib,socket
 

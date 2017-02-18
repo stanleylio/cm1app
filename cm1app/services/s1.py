@@ -2,7 +2,7 @@ import sys,logging
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from datetime import datetime
-from node.storage.storage2 import storage_read_only
+from node.storage.storage2 import storage
 from node.helper import dt2ts
 
 
@@ -38,13 +38,12 @@ def fix_ts_format(r,time_col,var):
         r[time_col] = [dt2ts(tmp) for tmp in r[time_col]]
     return r
 
-store = storage_read_only()
-
 def query_time_range(node,var,begin,end):
     assert type(begin) in [float,int],"begin is not float/int"
     assert type(end) in [float,int],"end is not float/int"
     assert begin < end,"begin >= end"
     time_col = 'ReceptionTime'
+    store = storage()
     r = store.read_time_range(node,time_col,[time_col,var],begin,end)
     r = strip_none(r,time_col,var)
     r = fix_ts_format(r,time_col,var)
@@ -54,6 +53,7 @@ def query_time_range(node,var,begin,end):
 def get_last_N_minutes(node,var,minutes):
     assert minutes > 0
     time_col = 'ReceptionTime'
+    store = storage()
     r = store.read_last_N_minutes(node,time_col,minutes,nonnull=var)
     r = strip_none(r,time_col,var)
     r = fix_ts_format(r,time_col,var)

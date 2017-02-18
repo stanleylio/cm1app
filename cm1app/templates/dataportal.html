@@ -8,12 +8,14 @@
 </script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<!--script src="/static/uhcm/static/highstock/code/js/highstock.js"></script>
+<script src="/static/uhcm/static/highstock/code/js/modules/exporting.js"></script-->
 <script src="/static/uhcm/static/reconnecting-websocket.min.js"></script>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-10 col-xs-offset-1">
 			<div id="container" style="width: 100%; height: 500px; margin-top: 2em; margin-bottom: 2em;">
-				<img src="{{ url_for('static',filename='circleball.gif') }}">
+				<img src="/static/uhcm/static/circleball.gif">
 			</div>
 		</div>
 	</div>
@@ -27,7 +29,7 @@
 			<div style="width: 100%; color: #909090">
 				<!--p>gaps in data are not showing... something to do with highstock.js.</p-->
 				<p>Not all points in the data set are shown. Zoom in or download the data set to access all data. Gaps (long period of missing data) are not shown.</p>
-				<a type="button" class="btn btn-primary" id="download_button" download="" type="text/csv">Download as CSV (Chrome/Firefox)</a>
+				<a type="button" class="btn btn-primary" id="download_button" download="" type="text/csv"><span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> Download as CSV (Chrome/Firefox only)</a>
 			</div>
 		</div>
 	</div>

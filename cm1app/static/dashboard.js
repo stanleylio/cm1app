@@ -43,7 +43,7 @@
 				// a reading is good if it is recent and within range
 				//if (((now - d[v][0]) <= 30*60 && valid)) {
 				//if (((now - d[v][0]) <= 60*60 && valid)) {
-				if (((now - d[v][0]) <= 60*60)) {
+				if (((now - d[v][0]) <= 30*60)) {
 					return 0;
 				}
 				else
