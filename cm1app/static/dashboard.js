@@ -47,7 +47,7 @@
 					console.log('Warning: check system clock');
 					console.log('browser time: ', new Date(), now, 'age=',age);
 				}
-				if ((age <= 30*60)) {
+				if ((age <= 60*60)) {
 					return 0;
 				}
 			} catch(e) {

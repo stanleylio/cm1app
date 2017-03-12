@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Technology{% endblock %}
 {% block content %}
+<link href="/static/uhcm/static/lightbox2/css/lightbox.min.css" rel="stylesheet" type="text/css">
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12">
@@ -19,9 +20,9 @@
 		</div>
 		<div class="col-sm-8 col-sm-pull-4">
 			<h2>System Overview</h2>
-			<p>The data collection system has been expanded to collect data from several locations (called "sites"). At each site, sensor readings are transmitted to an internet-connected device (called "base station") via low-power radio transceivers. The base station then relays the data to the UH server for storage and visualization.</p>
+			<p>The He'eia fishpond is the primary test site for the real-time monitoring system, but it is also taking data from small number of sensors at other locations (called "sites"). At each site, sensor readings are transmitted to an internet-connected computer (a "base station") via low-power radio transceivers. The base station then relays the data to the UH server for storage and visualization.</p>
 			
-			<p>At the He'eia fishpond, data loggers are installed at each makaha, as shown in the satellite photo. Data collected at the base station are also logged localling. The base station uploads received data to the central server at the University of Hawaii using both UDP (real-time) and rsync (~hourly). Data and stats like system health are then made publicly available on the <a href="/">project website</a>.</p>
+			<p>At the He'eia fishpond, data loggers are installed at each makaha, as shown in the satellite photo. Data collected at the base station are also logged locally. The base station uploads received data to the central server at the University of Hawaii using both UDP (real-time) and rsync (~hourly). Data are then made publicly available on the <a href="/">project website</a>.</p>
 
 			<h2>Implementation</h2>
 			<h3>Hardware</h3>
@@ -83,4 +84,12 @@
 		</div>
 	</div-->
 </div>
+<script src="/static/uhcm/static/lightbox2/js/lightbox.min.js" type="text/javascript"></script>
+<script>
+	lightbox.option({
+		'resizeDuration':100,
+		'fadeDuration':100,
+		'wrapAround':false,
+	})
+</script>
 {% endblock %}

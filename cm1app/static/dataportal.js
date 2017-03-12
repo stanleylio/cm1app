@@ -8,7 +8,7 @@ $(function () {
 		var extremes = chart.xAxis[0].getExtremes();
 		var data = [
 			['Time of latest sample',moment(extremes.dataMax).format('MMM Do YYYY, hh:mm:ss') + ' (' + moment(extremes.dataMax).fromNow() + ')'],
-			['Time span',((extremes.dataMax - extremes.dataMin)/3600/1e3/24).toFixed(1) + ' days(s)'],
+			['Time span',((extremes.dataMax - extremes.dataMin)/3600/1e3/24).toFixed(1) + ' day(s)'],
 			//['Number of samples',chart.series[0].data.length],
 			// hack
 			['Number of samples',jsondata['samples'][time_col].length],
