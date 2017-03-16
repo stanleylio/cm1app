@@ -134,9 +134,9 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 	$("#pagegeneratedts").html('<em><p>Page generated ' + $.timeago(Date.now()) + '</p></em>');
 	
 })
-.fail(function(d, textStatus, error) {
-        console.error("getJSON failed, status: " + textStatus + ", error: "+error)
-   });
+.fail(function(d,textStatus,error) {
+	console.error("getJSON failed, status: " + textStatus + ", error: " + error)
+});
 
 lightbox.option({
 	'resizeDuration':100,
