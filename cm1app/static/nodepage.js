@@ -13,6 +13,8 @@ function keys(d) {
 	return keys.sort();
 }
 
+//console.log('/' + site + '/nodepage/' + node + '.json');
+
 $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 	//console.log(d);
 	
@@ -41,7 +43,7 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 		if (null === unit) {
 			unit = '-';
 		}
-		
+
 		var valid = true;
 		if (typeof range != 'undefined') {
 			if ((!(range[0] === null)) && (val < range[0])) {
@@ -63,7 +65,7 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 	}
 	table.append(thead).append(tbody);
 	$('#table').html(table);
-	
+
 	$('td[data-ts]').each(function(i,v) {
 		// show "time ago" on hover
 		$(v).parent().attr('title',$.timeago(new Date($(v).data('ts')*1e3)));
@@ -131,11 +133,16 @@ $.getJSON('/' + site + '/nodepage/' + node + '.json',function(d) {
 
 	$("#pagegeneratedts").html('<em><p>Page generated ' + $.timeago(Date.now()) + '</p></em>');
 	
-	lightbox.option({
-		'resizeDuration':100,
-		'fadeDuration':100,
-		'wrapAround':false,
-		'albumLabel':node
-	})
-});
+})
+.fail(function(d, textStatus, error) {
+        console.error("getJSON failed, status: " + textStatus + ", error: "+error)
+   });
+
+lightbox.option({
+	'resizeDuration':100,
+	'fadeDuration':100,
+	'wrapAround':false,
+	'albumLabel':node
+})
+
 })();

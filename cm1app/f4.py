@@ -14,6 +14,7 @@ from dashboard import *
 from nodepage import *
 #from s3 import *
 import v4
+import v5
 import xmlrpclib,socket
 
 

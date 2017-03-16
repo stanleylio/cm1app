@@ -76,7 +76,7 @@ def data_site_node(site,node):
                  'desc':None}
         b = get_range(site,node,var)
         if b is not None:
-            r['range'] = [None if tmp == float('inf') else tmp for tmp in b.to_tuple()]
+            r['range'] = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
 
         R[k] = r
     S['readings'] = R

@@ -4,7 +4,9 @@ host = 'http://grogdata.soest.hawaii.edu'
 
 eps = [
     '/poh/nodepage/node-004.json',
+    '/poh/nodepage/node-021.json',
     '/poh/data/node-004/O2Concentration.json?minutes=46080',
+    '/poh/data/node-021/PH_EXT.json?begin=1480800106&end=1480808106&max_count=5',
     '/makaipier/data/node-010/d2w.json?begin=1480800106&end=1480808106',
     '/poh/data/node-022/PH_EXT.json?begin=1480800106&end=1480808106&max_count=5',
     '/static/img/poh/node-004/AirSaturation.json',

@@ -4,17 +4,16 @@ sys.path.append('/home/nuc')
 from flask import Flask,render_template,Markup,request
 from cm1app import app
 from json import dumps
-from node.storage.storage2 import storage
+from node.storage.storage2 import storage,auto_time_col
 from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
      get_attr,get_unit,get_range
 
 
-time_col = 'ReceptionTime'
-
 # ?
 site_base_map = {'poh':'base-003',\
                  'makaipier':'base-002',\
-                 'sf':'base-005'}
+                 'sf':'base-005',\
+                 'uhm':'base-000'}
 
 
 #@app.route('/<site>/data/<node>/latest_non_null.json')
@@ -43,6 +42,7 @@ def data_dashboard(site):
         for var in get_list_of_disp_vars(node):
             # [timestamp,reading,unit,[lower bound,upper bound]]
 
+            time_col = auto_time_col(store.get_list_of_columns(node))
             tmp = store.read_latest_non_null(node,time_col,var)
             if tmp is not None:
                 r = [tmp[time_col],tmp[var]]
@@ -55,13 +55,9 @@ def data_dashboard(site):
             # put in the boundaries/limits/range of the variable
             # use [None,None] if the limits of a variable are not defined.
             b = get_range(site,node,var)
-            if b is None:
-                r.append([None,None])
-            else:
-                b = b.to_tuple()
-                b = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
-                r.append(b)
-            
+            b = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
+            r.append(b)
+
             S[node]['latest_non_null'][var] = r
 
     # site info (data source, location etc.)

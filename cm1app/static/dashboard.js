@@ -127,11 +127,15 @@
 	$.getJSON(l,build_table);
 
 	// build a table of nodes for Makai Pier
-	var l = '/makaipier/data/dashboard.json';
+	l = '/makaipier/data/dashboard.json';
 	$.getJSON(l,build_table);
 
 	// build a table of nodes for SF
-	var l = '/sf/data/dashboard.json';
+	l = '/sf/data/dashboard.json';
+	$.getJSON(l,build_table);
+
+	// build a table of nodes for UHM
+	l = '/uhm/data/dashboard.json';
 	$.getJSON(l,build_table);
 
 	// auto refresh color of nodes in the background
@@ -140,13 +144,17 @@
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_poh');
 		});
-		var l = '/makaipier/data/dashboard.json';
+		l = '/makaipier/data/dashboard.json';
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_makaipier');
 		});
-		var l = '/sf/data/dashboard.json';
+		l = '/sf/data/dashboard.json';
 		$.getJSON(l,function(data) {
 			color_status(data.nodes,'dashboard_sf');
 		});
-	},5*60*1000);
+		l = '/uhm/data/dashboard.json';
+		$.getJSON(l,function(data) {
+			color_status(data.nodes,'dashboard_uhm');
+		});
+	},5*60*1e3);
 })();
