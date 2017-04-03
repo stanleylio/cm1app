@@ -13,7 +13,7 @@ sys.path.append('/home/nuc')
 from node.helper import dt2ts
 from particle import fish_handler
 from node.storage.storage2 import storage
-from uhcmrt_cred import cred
+from cred import cred
 
 
 logging.basicConfig(level=logging.DEBUG)
