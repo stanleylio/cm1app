@@ -74,7 +74,7 @@ def data_site_node(site,node):
                  'val':None,
                  'unit':None,
                  'desc':None}
-        b = get_range(site,node,var)
+        b = get_range(node,var)
         if b is not None:
             r['range'] = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
 

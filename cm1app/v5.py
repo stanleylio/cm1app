@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-# experimental, sandbox-class stuff
+# experimenting with HTTP Basic Auth instead of public key signing
 #
 # Stanley H.I. Lio
 # hlio@hawaii.edu
-# All Rights Reserved. 2016
+# All Rights Reserved. 2017
 from cm1app import app
 from functools import wraps
 from flask import request,Response
 from datetime import datetime
 import logging,traceback,sys
-sys.path.append('/home/nuc')
+from os.path import expanduser
+sys.path.append(expanduser('~'))
 from node.helper import dt2ts
 from particle import fish_handler
 from node.storage.storage2 import storage
@@ -19,7 +20,7 @@ from cred import cred
 logging.basicConfig(level=logging.DEBUG)
 
 
-# also need to add "WSGIPassAuthorization On" to apache site .conf file
+# need to add "WSGIPassAuthorization On" to apache site .conf file
 
 def check_auth(username,password):
     return username in cred and cred[username] == password

@@ -150,7 +150,7 @@ def data_meteorological(site):
     
     air_t = read_latest_group_average(site,time_col,'node-007','T_280')
     baro = read_baro_avg(site,time_col)
-    wind_avg = read_latest_group_average(site,time_col,'node-007','Wind_average')
+    wind_avg = read_latest_group_average(site,time_col,'node-007','Wind_avg')
     rh = read_latest_group_average(site,time_col,'node-007','RH_280')
 
     d = {'air_t':(round(air_t[0],1),round(air_t[1],1)),

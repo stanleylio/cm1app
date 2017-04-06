@@ -54,7 +54,7 @@ def data_dashboard(site):
 
             # put in the boundaries/limits/range of the variable
             # use [None,None] if the limits of a variable are not defined.
-            b = get_range(site,node,var)
+            b = get_range(node,var)
             b = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
             r.append(b)
 

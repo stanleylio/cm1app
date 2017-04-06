@@ -37,7 +37,7 @@ def read_baro_avg(site,time_col):
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
     now = time.time()
     for node in get_list_of_nodes(site):
-        variables = get_list_of_variables(site,node)
+        variables = get_list_of_variables(node)
         var = 'P_180'   # different units (kPa vs Pa)... WHY...
         if var in variables:
             r = proxy.query_time_range(node,var,now-60*60,now)

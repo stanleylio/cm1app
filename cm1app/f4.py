@@ -51,9 +51,12 @@ http://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
     unit = get_unit(node,variable)
     desc = get_description(node,variable)
+    bounds = get_range(node,variable)
+    bounds = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in bounds]
 
     d = {'unit':unit,
          'description':desc,
+         'bounds':bounds,
          'samples':None}
 
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
