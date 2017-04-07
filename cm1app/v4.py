@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-# experimental, sandbox-class stuff
+# Store POSTed messages to text file. Messages must
+# includes 'ts','src', and 'msg' and with signature 'sig'.
 #
 # Stanley H.I. Lio
 # hlio@hawaii.edu
-# All Rights Reserved. 2016
+# All Rights Reserved. 2017
 from cm1app import app
 from flask import request
 from datetime import datetime
-import logging,traceback,sys
+import logging,traceback,sys,time
 sys.path.append('/home/nuc')
 from node.authstuff import validate_message
 
@@ -24,6 +25,7 @@ kmap = {'kmet-bbb':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDN3PGFM+Ti+v/3CecZd5ls
         'kmet-bbb3':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCh3IJRLtb1GqdLDRVP1z9GGocb5YsugkquPqa1Rf9J/0btLxoWNZjv++Q6Fjl2U3zKfknKeutuJWDabgDCy1445iHIf5qml6MLc9G1iG/PRhJ8ubx5x6RUBdZY/ULELD7a1opseyjcZ7C4pmHWv8cJNpyEe3GhV2x5jBTzB1EbYHN00qur6o4JLgZCcB43ves9TwsLh45is+6lNgoAhbf8M0bt2LNRakdDXfOUQMNGveSkf6GgfoLvSKqILtUhsJCnJfAC6Nr8k3tf+hT34kBvGR6sWwD2OYsYL/oNjFDAvxpRaAJfoylyWn8l+2PrQsIv6UYvh5YioQ9Kyt/u4O2d root@beaglebone',
         'otg-met':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwWKFeLxMoujxt9ZaqMOS/4BBxI3X6Xwayt66p7ak3wvOhgULLuYKF6MSYQ3O2dwnCZyOm9xc2MdD/yAu7FcxrxLmJc1ysNH9fkW+SLtVV8T/j8k4sV8h0AhRhk26vP2aujPQCpn2OyzjZlgrIKTg0MC+nFAXNy/p5l65j6SGBMBDR52ro0Xm5orEyGgZT3hA497ErwyXbVZ/EqnmnoYFzll0OIz1GROQ+tAb2274EDByenSKk6tRKE5o/FxE3XVCNtjUpdtbsrVzFI/PbH0USjMtL3FdkK87zbx58HzbdMpNQVc1z1DFwNf87s/FWJ1uu9+3E8mw8utuwgDFVeS85 otg@otg-met',
         'kmet-rpi1':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDT+oyHraN+uigppjBTb+9C0PMxzA1YPUyeBQ0Xf348pKINvgS4qrVKiee8zftoNx7TX6g1RjK/vObtY+xuFUJ1XfVOe4BmywDwcUNVwhBHyyyqpqs+BL3ggAy2XzDa6JrsGt2iPqmf/kXS3nJWRisfhZEXYPfWQfilDdm21tYcVRyslgbFSvSYMWhUpSXMmnyhj+RpPxbsgNTUFV9A7fVhmhBXnM1GmzftwE9v7nyonQJuXDprFb059yYLhZ0vbeHlQ2pCsEDcdMBdanZGvwByWjLmXI8a1vLZUXVsEMicjoy8KQ5l/SwVdjp/Z57w64BEUsvE8rX+X+YJTsVuWeP5 pi@kmet-rpi1',
+        'kmet-rpi2':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQPv3wsL3jUuL9QCKVJtksyvd3U467+Nf85q6d/4dpio1R4GcoYskBJ56s8Iy7DtbLVcJ0hrYll8w2MTvNNbB4mX2vu1YjnCoSeWiPrNkvPPRKgZMUCH5FHO5mX/jbqCm3ZqOFQbyxBx4Mb6nfMrj+P07f6ye/fMr9KOxFc8AEybZJvxF2TPuIdcwewtXOARgU+ka+ltLwRAWToMvZR9z62OK7JumQM666NNhCDbMM7r1UISuG9DJp3GNzrHl1xFXYw60nKqIp6WmN2hmUCGGLMDgklFTN4QVrtvGlHHRowLDxSqqTNk+kZaK2GRYOpvIoEMS1afgCiitSuzWBM3XR pi@kmet-rpi2',
         'glazerlab-i7nuc':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Ic8W2GlUaaCwvt9k6NExrxqc89lZCYx4gQxEat0P1BO4qYp9JqtHKo8MQuYqkDK75nd/vuj3kygAwWv8AvQm935MrOh0LZ53TGhMEci4PoyY4X0XAUywUKM0Dur54lTe1g0EE9+jpcVPV6y3EmnvET78AkrURgDPbv8uCyVkQdKwBu3rpbRPjhC5srp7006heqFWfCLcs+tSt1SaMny4AafkWaPNhNkDb+sH/vgJIlpmM2Kt5Z074H0gABoWuX7gnW2CdhMXkjy0JYC7QnK3oSFhjms/zMHYp0uihk2ybTZv8HTuzCoHqxurjP6jVxFQNRl9xTCNeyyB2JiNRqon nuc@glazerlab-i7nuc',
         'glazerlab-e5':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ/A6zBPrmxo7XKob6pgd5+DCxHHBAot4DopsWUS7dRbnzvQho3OO9A2gpSjTinVo4KNbqTeSVLFIwd3pcqx52IDjopreXnGklpvzefqrtPWzL1bjkbghqw+DSOsSnnjxKK6x0yLDB8DuOYsg3Cotgzh2toC2SEWqsCGZ+G5QD1118TRwk/xIdjYUpUy23O/hYULAMcp+q40lC2U8gh0O6DFRrMPmrtNAXQia0zx5CJt2GZUFqJJgZouUZRRdAGoddHQzX7bKDMTMpMb8+Pf+77l+OdJpQJjMy24EHjSyBuKz61OqC0M1z2iVaVNqsHdR+TPv/SXsLS0NxmLRA4PXH nuc@glazerlab-e5',
         'base-001':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDxQo/IVvzvYQJNif7XDD2UOwrQjbY6azURNA4K6QU7xMvDGJ7cohkib5sneCnLiL836VlT3AJ3Nj1cM/0UftJv1h8H836jfSvtTTdDhDwDg150c32VRq1AN8yoUyQMKsfKduuAAcdpRtTnVO3brNHn9o+pn/p36uepKF+kZUVKf75Bh9VqCldAzCbYx+jhWyRItpEKYqOftlcyyoM1GCIx+1R1143qR+onN1wSa2+N8KO6XFN0lFmaVAUC4guRffESMg6GS12GuJLT8iOYhDMFeMrjS9/Fn14zW7oRIungxHGYPYXsju1UmxaArtWfqj2wK/mioqZFktKUg9IT7Ex root@base-001',
@@ -51,10 +53,9 @@ def s4submit():
         if not validate_message(msg,sig,kmap[src]):
             return 'bad signature'
         #ReceptionTime,TransmissionTime,Source,Message
-        #with open('/home/nuc/data/api/4/tsraw.txt','a',0) as f:
         with open('/var/uhcm/incoming/api/4/tsraw.txt','a',0) as f:
-            f.write('{},{},{},{}\n'.format(datetime.utcnow().isoformat(),ts,src,msg))
+            f.write('{},{},{},{}\n'.format(time.time(),ts,src,msg))
             return '{},ok'.format(datetime.utcnow().isoformat())
     except:
         logging.debug(traceback.format_exc())
-        return ''
+        return 'protocol error'

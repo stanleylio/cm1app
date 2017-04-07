@@ -47,10 +47,11 @@ def requires_auth(f):
 def s5rawsubmit():
     try:
         msg = request.form['m']
+        src = request.form['src']
         with open('/var/uhcm/incoming/api/5/tsraw.txt','a',0) as f:
             dt = datetime.utcnow()
             ts = dt2ts(dt)
-            f.write('{},{},{}\n'.format(dt.isoformat(),ts,msg))
+            f.write('{},{},{},{}\n'.format(dt.isoformat(),ts,src,msg))
             return '{},ok'.format(dt.isoformat())
     except:
         logging.exception(traceback.format_exc())
@@ -61,10 +62,11 @@ def s5rawsubmit():
 def s5uhcmsubmit():
     try:
         msg = request.form['m']
+        src = request.form['src']
         with open('/var/uhcm/incoming/api/5/uhcm_tmp.txt','a',0) as f:
             dt = datetime.utcnow()
             ts = dt2ts(dt)
-            f.write('{},{},{}\n'.format(dt.isoformat(),ts,msg))
+            f.write('{},{},{},{}\n'.format(dt.isoformat(),ts,src,msg))
             return '{},ok'.format(dt.isoformat())
     except:
         logging.exception(traceback.format_exc())
