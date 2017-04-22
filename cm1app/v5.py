@@ -12,8 +12,9 @@ import logging,traceback,sys
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from node.helper import dt2ts
-from particle import fish_handler
 from node.storage.storage2 import storage
+#from node.parse_support import parse_message
+from particle import fish_handler
 from cred import cred
 
 
@@ -63,6 +64,11 @@ def s5uhcmsubmit():
     try:
         msg = request.form['m']
         src = request.form['src']
+        #store = storage()
+        #d = parse_message(msg)
+        #assert 'ReceptionTime' not in d
+        #d['ReceptionTime'] = time.time()
+        #store.insert(table,d)
         with open('/var/uhcm/incoming/api/5/uhcm_tmp.txt','a',0) as f:
             dt = datetime.utcnow()
             ts = dt2ts(dt)
