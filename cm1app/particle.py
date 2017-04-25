@@ -13,7 +13,7 @@ def parse_electron_msg(ts,s,sample_interval=60):
     return zip(t,s)
 
 def fish_handler(request):
-    fish_map = {u'1f0024001751353338363036':'node-016'}
+    fish_map = {u'1f0024001751353338363036':'node-028'}
     #if request.form['coreid'] not in [u'1f0024001751353338363036']:
     #    return
 
