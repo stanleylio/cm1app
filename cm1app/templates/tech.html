@@ -8,72 +8,120 @@
 			<h1 class="page-header">Technology</h1>
 		</div>
 	</div>
+	
+	<style>
+		.textwrap {
+			float: right;
+			margin: 1em;
+			max-width: 20%
+		}
+	</style>
 
 	<div class="row">
-		<div class="col-sm-4 col-sm-push-8">
-			<a href="{{ url_for('static',filename='loc1b.jpg') }}" data-lightbox="sat1" data-title="He'eia Fishpond Satellite View">
-			<figure class="figure">
-				<img src="{{ url_for('static',filename='loc1b.jpg') }}" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
-			</figure>
+		<div class="col-sm-12">
+			<h3>System Overview</h3>
+
+			<p>The He'eia fishpond is the primary test site for the real-time monitoring system, but there are several other sites where there are a small number of sensors deployed. At each site, sensor readings are transmitted to a custom internet gateway (a <em>base station</em>) via low-power radio transceivers. The base station then relays the data to a UH server for storage and visualization.</p>
+			<p>There is at least one base station per site. Base stations relay data from sensors to the UH server (see the graph below). The server then serves the data publicly through various portals (HTTP, WebSocket, MySQL).</p>
+			
+			<a href="/static/uhcm/img/hosts.png" data-lightbox="df1" data-title="Data Flow">
+				<figure class="figure">
+					<img src="/static/uhcm/img/hosts.png" class="figure-img img-fluid img-rounded img_responsive" alt="Data Flow" style="width:100%">
+				</figure>
 			</a>
-			<br>
-		</div>
-		<div class="col-sm-8 col-sm-pull-4">
-			<h2>System Overview</h2>
-			<p>The He'eia fishpond is the primary test site for the real-time monitoring system, but it is also taking data from small number of sensors at other locations (called "sites"). At each site, sensor readings are transmitted to an internet-connected computer (a "base station") via low-power radio transceivers. The base station then relays the data to the UH server for storage and visualization.</p>
-			
-			<p>At the He'eia fishpond, data loggers are installed at each makaha, as shown in the satellite photo. Data collected at the base station are also logged locally. The base station uploads received data to the central server at the University of Hawaii using both UDP (real-time) and rsync (~hourly). Data are then made publicly available on the <a href="/">project website</a>.</p>
-
-			<h2>Implementation</h2>
-			<h3>Hardware</h3>
-			<p>Research-grade O2 optode / pH sensor / CTD, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. Beaglebone Black single-board computers (SBCs) aided by Arduinos control and query the sensors for readings according to a set schedule. Sensor readings are transmitted via XBee Pro 900HP wireless transceivers.</p>
-			
-			<h3>Software</h3>
-			<p>The primary tasks for the Python programs on the SBCs are:
-				<ul>
-					<li>Regularly read the sensors, store, and broadcast the collected data</li>
-					<li>Gracefully handle malfunctioning / decommissioned sensor</li>
-					<li>Respond to base station query for unscheduled sampling</li>
-				</ul>
-			</p>
-			
-			<br>
-			<h4>Device Locations:</h4>
-			<p>
-				<figure class="figure">
-					<a href="/static/uhcm/img/df1.png"><img src="/static/uhcm/img/df1.png" class="figure-img img-fluid img-rounded img_responsive" alt="Dataflow Diagram" style="width:100%"></a>
-				</figure>
-			</p>
-			
-			<p>Collected data are stored locally on each node as well as transmitted to nearby base station. Base stations store and relay collected data to a UH server for processing and presentation.</p>
-			<p>Software tools:
-				<ul>
-					<li>I/O and communication: Python, C, ZeroMQ</li>
-					<li>Data storage: MySQL (primary), SQLite (backup)</li>
-					<li>Analysis and visualization: matplotlib, Highcharts, MATLAB</li>
-					<li>Web: Flask (Python), Websocket...</li>
-				</ul>
-			</p>
-			
-			<br>
-			<h4>Data Flow (between processes):</h4>
-			<p>
-				<figure class="figure">
-					<a href="/static/uhcm/img/proc.png"><img src="/static/uhcm/img/proc.png" class="figure-img img-fluid img-rounded img_responsive" alt="Dataflow Diagram" style="width:100%"></a>
-				</figure>
-			</p>
-
-			
-			<h3>Power</h3>
-			<p>Most nodes are powered by solar panels with battery backup. Depending on power consumption, batteries from portable USB battery pack to sealed lead acid car battery are used. Some low-power nodes are powered by primary cells.</p>
-			
-			<!--h4>Custom Low-cost Sensors</h4>
-			<p><a href="puck.JPG" data-lightbox="hack1"><img src="puck.JPG" alt="copper epoxy" class="img_responsive" style="width:20%"></a></p>
-			<p>anti-biofouling + waterproofing</p-->
 		</div>
 	</div>
 
 	<hr>
+	
+	<div class="row">
+		<div class="col-sm-12">
+			<h3>Sensor Locations at He`eia Fishpond</h3>
+
+			<div class="textwrap">
+				<a href="/static/uhcm/img/loc1b.jpg" data-lightbox="sat1" data-title="He'eia Fishpond Location of Interest">
+					<figure class="figure">
+						<img src="/static/uhcm/img/loc1b.jpg" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
+					</figure>
+				</a>
+			</div>
+
+			<div class="textwrap">
+				<a href="/static/uhcm/img/df1.png" data-lightbox="dev1" data-title="Fishpond Sensors Network">
+					<figure class="figure">
+						<img src="/static/uhcm/img/df1.png" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
+					</figure>
+				</a>
+			</div>
+			
+			<p>The graph on the right shows the communication links between sensors at the He`eia fishpond.</p>
+			<p>At the He`eia fishpond, sensors are deployed at the makahas, as shown in the satellite photo. The custom internet gateways also stores the sensor data locally for redundancy. The base station uploads received data to the central server at the University of Hawaii using RabbitMQ (real-time) and rsync (backup). Data are then made publicly available on the <a href="/">project website</a>.</p>
+			<p></p>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<h3>Implementation</h3>
+			
+			<p><a href="http://www.aanderaa.com/productsdetail.php?Oxygen-Optodes-2">Research-grade O2 optodes</r>, <a href="http://www.seabird.com/seaphox">pH sensors</a>, <a href="http://www.seabird.com/sbe19plusv2-seacat-ctd">CTD</a>, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. Beaglebone Black single-board computers (SBCs) and Arduinos are used to query the sensors periodically. Some nodes store data locally in SQL database in addition to beaming them to the internet gateway.</p>
+			
+			<br>
+			
+			<h4>Architecture</h4>
+			
+			<p>The primary tasks for the SBCs are
+				<ul>
+					<li>Regularly read the sensors, store, and broadcast the collected data</li>
+					<li>Respond to base station query for unscheduled sampling</li>
+				</ul>
+			</p>
+			<p>Each Beaglebone Black SBC is equpped with power regulator, real-time clock and watchdog timer, all integrated on a custom cape.</p>
+
+			<div class="textwrap">
+				<a href="/static/uhcm/img/capev2.png" data-lightbox="pcb1" data-title="Custom Beaglebone Cape">
+					<figure class="figure">
+						<img src="/static/uhcm/img/capev2.png" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
+					</figure>
+				</a>
+			</div>
+			
+			<p>The software tool used are all open source. Specific technology used for each task are
+				<ul>
+					<li>I/O: Python Twisted, C (8-bit AVR)</li>
+					<li>Communication: ZeroMQ (node internal), RabbitMQ/AMQP, UDP and SSH (WAN between gateways)</li>
+					<li>Data storage: MySQL, SQLite, plain-text CSV</li>
+					<li>Analysis and visualization: Python pandas; matplotlib for static plots, Highcharts.js for interactive/live plots</li>
+					<li>Data endpoints and website: Flask (Python), Websocket</li>
+				</ul>
+			</p>
+			
+			<br>
+			
+			<h4>Communication Links Between Processes</h4>
+			<p>The graph below shows the data flows between the base stations and server.</p>
+			<a href="/static/uhcm/img/proc.png" data-lightbox="df2" data-title="Data Flow">
+				<figure class="figure">
+					<img src="/static/uhcm/img/proc.png" class="figure-img img-fluid img-rounded img_responsive" alt="Data Flow" style="width:100%">
+				</figure>
+			</a>
+
+			<h4>Power</h4>
+			<p>Most of the nodes are powered by solar panels with battery backup. Depending on power consumption, batteries from portable USB battery pack to sealed lead acid car battery are used. Some low-power nodes are powered by primary cells.</p>
+		</div>
+	</div>
+
+	<!--hr>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<h3>Custom Data Loggers</h3>
+			<p><a href="puck.JPG" data-lightbox="hack1"><img src="puck.JPG" alt="copper epoxy" class="img_responsive" style="width:20%"></a></p>
+			<p>anti-biofouling + waterproofing</p>
+		</div>
+	</div-->
 	
 	<!--div class="row">
 		<div class="col-xs-12">
