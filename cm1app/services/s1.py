@@ -64,7 +64,7 @@ def get_last_N_minutes(node,var,minutes):
 if '__main__' == __name__:
     from SimpleXMLRPCServer import SimpleXMLRPCServer
     #server = SimpleXMLRPCServer(('localhost',8000),allow_none=True)
-    server = SimpleXMLRPCServer(('localhost',8000)) # who knows, these may be rewritten by Haskell/Golang later.
+    server = SimpleXMLRPCServer(('localhost',8000)) # who knows, these may be rewritten in Haskell/Golang later.
     server.register_function(condense,'condense')
     server.register_function(query_time_range,'query_time_range')
     server.register_function(get_last_N_minutes,'get_last_N_minutes')

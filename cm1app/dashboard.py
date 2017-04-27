@@ -37,7 +37,7 @@ def data_dashboard(site):
         S[node]['name'] = get_attr(node,'name')
         S[node]['location'] = get_attr(node,'location')
         S[node]['latest_non_null'] = {}
-        #print node,S[node]['name']
+        #print(node,S[node]['name'])
 
         for var in get_list_of_disp_vars(node):
             # [timestamp,reading,unit,[lower bound,upper bound]]
