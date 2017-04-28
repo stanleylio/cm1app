@@ -66,7 +66,7 @@
 		<div class="col-sm-12">
 			<h3>Implementation</h3>
 			
-			<p><a href="http://www.aanderaa.com/productsdetail.php?Oxygen-Optodes-2">Research-grade O2 optodes</r>, <a href="http://www.seabird.com/seaphox">pH sensors</a>, <a href="http://www.seabird.com/sbe19plusv2-seacat-ctd">CTD</a>, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. Beaglebone Black single-board computers (SBCs) and Arduinos are used to query the sensors periodically. Some nodes store data locally in SQL database in addition to beaming them to the internet gateway.</p>
+			<p><a href="http://www.aanderaa.com/productsdetail.php?Oxygen-Optodes-2">Research-grade O2 optodes</r>, <a href="http://www.seabird.com/seaphox">pH sensors</a>, <a href="http://www.seabird.com/sbe19plusv2-seacat-ctd">CTD</a>, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. As the controller, Beaglebone Black single-board computers (SBCs) and Arduinos query the sensors periodically. Some nodes store data locally in SQL database in addition to beaming them to the internet gateway.</p>
 			
 			<br>
 			
@@ -78,7 +78,7 @@
 					<li>Respond to base station query for unscheduled sampling</li>
 				</ul>
 			</p>
-			<p>Each Beaglebone Black SBC is equpped with power regulator, real-time clock and watchdog timer, all integrated on a custom cape.</p>
+			<p>Each Beaglebone Black SBC is equipped with real-time clock and watchdog timer, all integrated on a custom cape.</p>
 
 			<div class="textwrap">
 				<a href="/static/uhcm/img/capev2.png" data-lightbox="pcb1" data-title="Custom Beaglebone Cape">
@@ -94,7 +94,7 @@
 					<li>Communication: ZeroMQ (node internal), RabbitMQ/AMQP, UDP and SSH (WAN between gateways)</li>
 					<li>Data storage: MySQL, SQLite, plain-text CSV</li>
 					<li>Analysis and visualization: Python pandas; matplotlib for static plots, Highcharts.js for interactive/live plots</li>
-					<li>Data endpoints and website: Flask (Python), Websocket</li>
+					<li>Data endpoints and website: Python Flask (web framework), Python Autobahn (WebSocket)</li>
 				</ul>
 			</p>
 			
