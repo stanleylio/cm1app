@@ -1,6 +1,6 @@
 ﻿{% block navbar %}
 <style>
-body { padding-top: 30px; }
+body { padding-top: 0.5em; }
 </style>
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -13,7 +13,7 @@ body { padding-top: 30px; }
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">UH Coastal Monitoring</a>
+      <a class="navbar-brand" href="/">Coastal Monitoring</a>
     </div>
 
 <!-- TODO: auto-generate this -->
@@ -31,18 +31,19 @@ body { padding-top: 30px; }
           </ul>
 		</li>
 		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Paepae <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">He`eia <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <!--li><a href="#">Dashboard</a></li>
             <li role="separator" class="divider"></li-->
-            <li><a href="/poh/nodepage/node-004/">node-004 (O2 puck)</a></li>
-			<li><a href="/poh/nodepage/node-006/">node-006 (met)</a></li>
-			<li><a href="/poh/nodepage/node-007/">node-007 (met)</a></li>
-			<li><a href="/poh/nodepage/node-008/">node-008 (big)</a></li>
-			<li><a href="/poh/nodepage/node-009/">node-009 (first)</a></li>
-			<li><a href="/poh/nodepage/node-014/">node-014 (river)</a></li>
-			<li><a href="/poh/nodepage/node-015/">node-015 (storm)</a></li>
-			<li><a href="/poh/nodepage/node-025/">node-025 (CTD)</a></li>
+			<li><a href="/poh/nodepage/node-003/">CTD+O2+Turbidity (node-003)</a></li>
+            <li><a href="/poh/nodepage/node-004/">O2+Depth (node-004)</a></li>
+			<li><a href="/poh/nodepage/node-006/">Met. (node-006)</a></li>
+			<li><a href="/poh/nodepage/node-007/">Met. (node-007)</a></li>
+			<li><a href="/poh/nodepage/node-008/">Tide Gauge (node-008, "storm")</a></li>
+			<li><a href="/poh/nodepage/node-009/">Tide Gauge (node-009, "first")</a></li>
+			<li><a href="/poh/nodepage/node-014/">Tide Gauge (node-014, "river")</a></li>
+			<li><a href="/poh/nodepage/node-015/">Tide Gauge (node-015, "storm")</a></li>
+			<li><a href="/poh/nodepage/node-025/">Seabird CTD (node-025)</a></li>
 			<li role="separator" class="divider"></li>
             <li><a href="/poh/widgets/panels/">By mākāhā</a></li>
 			<li role="separator" class="divider"></li>
@@ -76,10 +77,10 @@ body { padding-top: 30px; }
           </ul>
 		</li-->
 		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Misc. <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<li><a href="/static/uhcm/static/windpolar.html">MSB Real-time Wind</a></li>
-			<li role="separator" class="divider"></li>
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Misc. <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+			<li><a href="/static/uhcm/static/pohrtwind.html">He`eia Real-time Wind</a></li>
+			<li><a href="/static/uhcm/static/msbrtwind.html">MSB Real-time Wind</a></li>
 			<li><a href="https://www.windyty.com/?20.972,-154.600,6" target=_blank>Windyty @ Hawaii</a></li>
 			<li role="separator" class="divider"></li>
 			<li><a href="/dev">Under the hood</a></li>

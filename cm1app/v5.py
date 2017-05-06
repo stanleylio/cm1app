@@ -82,10 +82,10 @@ def s5uhcmsubmit():
 @requires_auth
 def s5electronussubmit():
     try:
-        tmp = fish_handler(request)
-        if tmp is None:
-            return ''
-        table,d = tmp
+        table,d = fish_handler(request)
+        if table is None:
+            return d
+        
         store = storage()
         for s in d:
             store.insert(table,{'ReceptionTime':s[0],'d2w':s[1]})

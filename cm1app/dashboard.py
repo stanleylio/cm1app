@@ -9,16 +9,13 @@ from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
      get_attr,get_unit,get_range
 
 
-# ?
-site_base_map = {'poh':'base-003',\
-                 'makaipier':'base-002',\
-                 'sf':'base-005',\
-                 'uhm':'base-000'}
-
-
-#@app.route('/<site>/data/<node>/latest_non_null.json')
-#... dashboard.json, but without the meta data.
-# or can I completely separate latest_non_null from meta data
+# ... just get rid of this already. so is that blob of public keys.
+site_base_map = {'poh':'base-003',
+                 'makaipier':'base-002',
+                 'sf':'base-005',
+                 'coconut':'base-000',
+                 'uhm':'base-000',
+                 }
 
 
 @app.route('/<site>/data/dashboard.json')
@@ -61,11 +58,12 @@ def data_dashboard(site):
             S[node]['latest_non_null'][var] = r
 
     # site info (data source, location etc.)
-    base = site_base_map[site]
+    #base = site_base_map[site]
     r = {'site':site,
-         'data_src':base,
-         'data_src_name':get_attr(base,'note'),
-         'location':get_attr(base,'location'),
-         'gmap_link':get_attr(base,'google_earth_link'),
+         #'data_src':base,
+         #'data_src_name':get_attr(base,'note'),
+         #'location':get_attr(base,'location'),
+         #'gmap_link':get_attr(base,'google_earth_link'),
          'nodes':S}
+    
     return dumps(r,separators=(',',':'))

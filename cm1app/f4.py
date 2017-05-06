@@ -28,10 +28,6 @@ sites = config_as_dict().keys()
 def route_default():
     return render_template('index.html')
 
-@app.route('/dev/systemstatus/')
-def route_systemstatus():
-    return render_template('systemstatus.html')
-
 @app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site,node,variable):
     """Examples: http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
@@ -109,6 +105,10 @@ def tech():
 @app.route('/dev/')
 def dev():
     return render_template('dev.html')
+
+@app.route('/haha/')
+def haha():
+    return render_template('haha.html')
 
 @app.route('/project_info/')
 def project_info():

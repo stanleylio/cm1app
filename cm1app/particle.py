@@ -13,22 +13,20 @@ def parse_electron_msg(ts,s,sample_interval=60):
     return zip(t,s)
 
 def fish_handler(request):
-    fish_map = {u'1f0024001751353338363036':'node-028'}
+    fish_map = {u'1f0024001751353338363036':'node-028',
+                u'450057000a51343334363138':'node-029'}
     #if request.form['coreid'] not in [u'1f0024001751353338363036']:
     #    return
 
     if request.form['coreid'] not in fish_map:
-        #print('unknown coreid')
-        return
+        return None,'unknown coreid'
 
-    if request.form['event'] != u'd2w':
-        #print('not d2w')
-        return
-
-    if request.form['data'] == u'test-event':
-        #print('this is a test')
-        return
+    if request.form['event'] == u'test-event':
+        return None,'this is a test'
     
+    if request.form['event'] != u'd2w':
+        return None,'not d2w'
+
     nodeid = fish_map[request.form['coreid']]
     published_at = request.form['published_at']
     published_at = datetime.strptime(published_at,'%Y-%m-%dT%H:%M:%S.%fZ')

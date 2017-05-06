@@ -43,7 +43,7 @@ def route_dataportal(site,node,variable):
     if site not in sites:
         return 'Error: Unknown site: {}'.format(site)
     
-    return render_template('dataportal.html',
+    return render_template('varpage.html',
                            site=site,
                            node=node,
                            variable=variable)
