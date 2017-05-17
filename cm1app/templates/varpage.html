@@ -2,14 +2,16 @@
 {% block title %}{{ variable }}{% endblock %}
 {% block content %}
 <script>
-	var site = '{{ site }}';
-	var node = '{{ node }}';
-	var variable = '{{ variable }}';
+	site = '{{ site }}';
+	node = '{{ node }}';
+	variable = '{{ variable }}';
+	begin = '{{ begin }}';
+	end = '{{ end }}';
 </script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<!--script src="/static/uhcm/static/highstock/code/js/highstock.js"></script>
-<script src="/static/uhcm/static/highstock/code/js/modules/exporting.js"></script-->
+<!--script src="https://code.highcharts.com/stock/modules/exporting.js"></script-->
+<!--script src="/static/uhcm/static/highstock/code/highstock.js"></script>
+<script src="/static/uhcm/static/highstock/code/modules/exporting.js"></script-->
 <script src="/static/uhcm/static/reconnecting-websocket.min.js"></script>
 <div class="container-fluid">
 	<div class="row">
@@ -34,5 +36,5 @@
 		</div>
 	</div>
 </div>
-<script src="/static/uhcm/static/dataportal.js" type="text/javascript"></script>
+<script src="/static/uhcm/static/varpage.js"></script>
 {% endblock %}

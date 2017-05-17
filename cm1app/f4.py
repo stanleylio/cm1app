@@ -13,8 +13,7 @@ from panels import *
 from dashboard import *
 from nodepage import *
 #from s3 import *
-import v4
-import v5
+import v4,v5
 import xmlrpclib,socket
 
 

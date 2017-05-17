@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys,traceback
+import sys,traceback,time
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from flask import Flask,render_template,Markup,send_from_directory
@@ -27,26 +27,18 @@ def route_site_node(site,node):
                                site=site,
                                node=node)
 
-'''@app.route('/<site>/nodepage/<node>/<variable>/')
-def route_poh_node_var(site,node,variable):
-    """plotly page for a single variable"""
-    if site in ['poh','coconut']:
-        return render_template('varplotly.html',
-                               site=site,
-                               node=node,
-                               variable=variable)
-    return 'thought provoking'
-'''
-
 @app.route('/<site>/dataportal/<node>/<variable>/')
 def route_dataportal(site,node,variable):
     if site not in sites:
         return 'Error: Unknown site: {}'.format(site)
-    
+    end = time.time()
+    begin = end - 7*24*3600
     return render_template('varpage.html',
                            site=site,
                            node=node,
-                           variable=variable)
+                           variable=variable,
+                           begin=begin,
+                           end=end)
 
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site,node):

@@ -22,6 +22,9 @@ def unnamed(t,x):
     else:
         return (mean(t),mean(x))
 
+def last(t,x):
+    return (t[-1],x[-1])
+
 def read_latest_group_average(site,time_col,node,variable):
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.get_last_N_minutes(node,variable,1)
@@ -29,7 +32,8 @@ def read_latest_group_average(site,time_col,node,variable):
     if len(d[time_col]) <= 0:
         logger.debug('No data for {} using {}'.format((site,node,variable),time_col))
         return None
-    return unnamed(d[time_col],d[variable])
+    #return unnamed(d[time_col],d[variable])
+    return last(d[time_col],d[variable])
 
 def read_baro_avg(site,time_col):
     t = []

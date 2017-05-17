@@ -22,7 +22,7 @@
 			<h3>System Overview</h3>
 
 			<p>The He'eia fishpond is the primary test site for the real-time monitoring system, but there are several other sites where there are a small number of sensors deployed. At each site, sensor readings are transmitted to a custom internet gateway (a <em>base station</em>) via low-power radio transceivers. The base station then relays the data to a UH server for storage and visualization.</p>
-			<p>There is at least one base station per site. Base stations relay data from sensors to the UH server (see the graph below). The server then serves the data publicly through various portals (HTTP, WebSocket, MySQL).</p>
+			<p>There is at least one base station per site. Data are made publicly available through HTTP, STOMP over WebSocket, and MySQL database dump (SQL/CSV).</p>
 			
 			<a href="/static/uhcm/img/hosts.png" data-lightbox="df1" data-title="Data Flow">
 				<figure class="figure">
@@ -55,7 +55,7 @@
 			</div>
 			
 			<p>The graph on the right shows the communication links between sensors at the He`eia fishpond.</p>
-			<p>At the He`eia fishpond, sensors are deployed at the makahas, as shown in the satellite photo. The custom internet gateways also stores the sensor data locally for redundancy. The base station uploads received data to the central server at the University of Hawaii using RabbitMQ (real-time) and rsync (backup). Data are then made publicly available on the <a href="/">project website</a>.</p>
+			<p>At the fishpond, sensors are installed at the makahas, as shown in the satellite photo. The custom internet gateways also stores the sensor data locally for redundancy. The base station uploads received data to the central server at the University of Hawaii using RabbitMQ (real-time) and rsync (backup). Data are then made publicly available on the <a href="/">project website</a>.</p>
 			<p></p>
 		</div>
 	</div>
@@ -66,7 +66,7 @@
 		<div class="col-sm-12">
 			<h3>Implementation</h3>
 			
-			<p><a href="http://www.aanderaa.com/productsdetail.php?Oxygen-Optodes-2">Research-grade O2 optodes</r>, <a href="http://www.seabird.com/seaphox">pH sensors</a>, <a href="http://www.seabird.com/sbe19plusv2-seacat-ctd">CTD</a>, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. As the controller, Beaglebone Black single-board computers (SBCs) and Arduinos query the sensors periodically. Some nodes store data locally in SQL database in addition to beaming them to the internet gateway.</p>
+			<p><a href="http://www.aanderaa.com/productsdetail.php?Oxygen-Optodes-2">Research-grade O2 optodes</r>, <a href="http://www.seabird.com/seaphox">pH sensors</a>, <a href="http://www.seabird.com/sbe19plusv2-seacat-ctd">CTD</a>, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. As the controller, Beaglebone Black single-board computers (SBCs) and Arduinos query the sensors periodically. Some nodes store data locally in SQL database in addition to beaming them to the internet gateway. Communications between sensor nodes and base stations are handled by XBee (ISM band low-power transceivers).</p>
 			
 			<br>
 			
