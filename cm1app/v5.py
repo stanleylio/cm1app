@@ -8,7 +8,7 @@ from cm1app import app
 from functools import wraps
 from flask import request,Response
 from datetime import datetime
-import logging,traceback,sys
+import logging,traceback,sys,time
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from node.helper import dt2ts
@@ -78,10 +78,19 @@ def s5uhcmsubmit():
         logging.exception(traceback.format_exc())
         return ''
 
+# might make more sense to rediect everything HTTP to RabbitMQ and let log2mysql etc. take over
+
 @app.route('/api/5/electron_us',methods=['POST'])
 @requires_auth
 def s5electronussubmit():
     try:
+        with open('/home/nuc/electron.txt','a') as f:
+            f.write('{},{},{},{},{}\n'.format(datetime.utcnow(),
+                                           time.time(),
+                                           request.form['coreid'],
+                                           request.form['event'],
+                                           request.form['data']))
+
         table,d = fish_handler(request)
         if table is None:
             return d

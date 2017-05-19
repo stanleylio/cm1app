@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Data Access{% endblock %}
+{% block content %}
+<style>
+	blockquote {
+		font-family: Courier New, monospace;
+	}
+</style>
+<link href="/static/uhcm/static/lightbox2/css/lightbox.min.css" rel="stylesheet" type="text/css">
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="page-header">Data Access</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>HTTP API</h3>
+			<p>the chocolate ration has been increased to twenty grams this week!</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>Database Download</h3>
+			<p><a href="/static/uhcm/data/mysql.sql.gz">link to database</a>... <a href="https://www.mysql.com/products/workbench/" target=_blank>MySQL Workbench</a>... <a href="https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-management.html" target=_blank>instructions on import/export</a>...</p>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>Makaha Water Depth Data</h3>
+			<h4>Note on the "Distance to Water Surface" Variable, <em>d2w</em></h4>
+			<p>The ultrasonic tide gauges are <a href="https://www.flickr.com/photos/146393683@N07/34601629761/in/dateposted-public/" target=_blank>mounted above water on fixed structure</a>, pointing downward. They measure the distance from the sensor to the water surface. The unit of the variable d2w is millimeter.</p>
+			<p>For the <a href="/poh/nodepage/node-009/"><b>first</b> Makaha</a>, the conversion from d2w (in <b>millimeter</b>) to water depth (in <b>meter</b>) is:</p>
+			<blockquote>(50.7 + 1100 - d2w) / 1e3</blockquote>
+			<p>For the <a href="/poh/nodepage/node-008/"><b>second</b> Makaha</a>:</p>
+			<blockquote>(50.7 + 2180 - d2w) / 1e3</blockquote>
+			<p>For <a href="/poh/nodepage/node-010/">Makai Pier</a>:</p>
+			<blockquote>(6197.6 - d2w) / 1e3</blockquote>
+			
+			<h4>The Experimental HTTP API</h4>
+			<p>You can also fetch data programmatically using the (experimental) HTTP API. Here's an example to fetch the data from Feb 18 to April 9, 2017: <a href="/poh/data/location/makaha1/depth.json?begin=1487412000&end=1491818400&max_count=10000" target=_blank>Makaha1</a>; <a href="/poh/data/location/makaha2/depth.json?begin=1487412000&end=1491818400&max_count=10000" target=_blank>Makaha2</a>.</p>
+			<p>In Python with the requests library:</p>
+			<blockquote>url = 'https://grogdata.soest.hawaii.edu/poh/data/location/makaha1/depth.json?begin=1487412000&end=1491818400&max_count=10000'
+			<br>r = requests.get(url)
+			<br>r = r.json()
+</blockquote>
+		</div>
+	</div>
+</div>
+<script src="/static/uhcm/static/lightbox2/js/lightbox.min.js" type="text/javascript"></script>
+<script>
+	lightbox.option({
+		'resizeDuration':100,
+		'fadeDuration':100,
+		'wrapAround':false,
+	})
+</script>
+{% endblock %}

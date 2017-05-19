@@ -113,6 +113,10 @@ def haha():
 def project_info():
     return render_template('project_info.html')
 
+@app.route('/data_access/')
+def data_access():
+    return render_template('data_access.html')
+
 '''@app.route('/debug/')
 def debug():
     #dbfile = '/home/nuc/data/base-003/storage/sensor_data.db'

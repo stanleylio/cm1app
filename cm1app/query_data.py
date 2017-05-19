@@ -82,12 +82,12 @@ def read_water_depth_by_location(site,location,begin,end):
                  'makaha2':'node-008',}
         vnmap = {'makaha1':'d2w',
                  'makaha2':'d2w',}
-        fnmap = {'makaha1':lambda x: (50.7 + 1100 - x)/1000.,
-                 'makaha2':lambda x: (50.7 + 2180 - x)/1000.,}
+        fnmap = {'makaha1':lambda x: (50.7 + 1100 - x)/1e3,
+                 'makaha2':lambda x: (50.7 + 2180 - x)/1e3,}
     elif 'makaipier' == site:
         mnmap = {'dock1':'node-010',}
         vnmap = {'dock1':'d2w',}
-        fnmap = {'dock1':lambda x: (6197.6 - x)/1000.,}
+        fnmap = {'dock1':lambda x: (6197.6 - x)/1e3,}
     else:
         assert False
 
