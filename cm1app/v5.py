@@ -84,7 +84,7 @@ def s5uhcmsubmit():
 @requires_auth
 def s5electronussubmit():
     try:
-        with open('/home/nuc/electron.txt','a') as f:
+        with open('/var/www/uhcm/electron.txt','a') as f:
             f.write('{},{},{},{},{}\n'.format(datetime.utcnow(),
                                            time.time(),
                                            request.form['coreid'],
@@ -97,7 +97,8 @@ def s5electronussubmit():
         
         store = storage()
         for s in d:
-            store.insert(table,{'ReceptionTime':s[0],'d2w':s[1]})
+            store.insert(table,{'ReceptionTime':s[0],'d2w':s[1]})   # hum... no. Those are Timestamp, NOT ReceptionTime.
+            # but this will mess up plotting until auto_time_col is ready (plot against ReceptionTime only if Timestamp is not available).
         #return str(d)
         return '{},ok'.format(datetime.utcnow().isoformat())
     except:

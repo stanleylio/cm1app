@@ -2,7 +2,7 @@
 import sys,traceback,time
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-from flask import Flask,render_template,Markup,send_from_directory
+from flask import Flask,render_template,Markup,send_from_directory,request,escape
 from cm1app import app
 from json import dumps
 from node.config.config_support import get_list_of_disp_vars,get_attr,\
@@ -20,19 +20,23 @@ sites = config_as_dict().keys()
 def route_site_node(site,node):
     """Page for individual node"""
     if site not in sites:
-        return 'Error: Unknown site: {}'.format(site)
+        return 'Error: Unknown site: {}'.format(escape(site))
+
+    if node not in get_list_of_nodes(site):
+        return 'Error: Unknown node: {}'.format(escape(node))
     
-    if node in get_list_of_nodes(site):
-        return render_template('nodepage.html',
-                               site=site,
-                               node=node)
+    return render_template('nodepage.html',
+                           site=site,
+                           node=node)
 
 @app.route('/<site>/dataportal/<node>/<variable>/')
 def route_dataportal(site,node,variable):
     if site not in sites:
-        return 'Error: Unknown site: {}'.format(site)
-    end = time.time()
-    begin = end - 7*24*3600
+        return 'Error: Unknown site: {}'.format(escape(site))
+    
+    end = request.args.get('end',default=time.time(),type=float)
+    begin = request.args.get('begin',default=end - 7*24*3600,type=float)
+        
     return render_template('varpage.html',
                            site=site,
                            node=node,
@@ -43,7 +47,7 @@ def route_dataportal(site,node,variable):
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site,node):
     if site not in sites:
-        return 'Error: Unknown site: {}'.format(site)
+        return 'Error: Unknown site: {}'.format(escape(site))
     
     S = {'name':get_attr(node,'name'),
          'location':get_attr(node,'location'),

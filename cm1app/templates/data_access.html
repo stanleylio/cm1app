@@ -16,19 +16,19 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h3>HTTP API</h3>
-			<p>the chocolate ration has been increased to twenty grams this week!</p>
+			<blockquote>https://grogdata.soest.hawaii.edu/<b>&lt;site&gt;</b>/data/<b>&lt;nodeid&gt;</b>/<b>&lt;variable&gt;</b>.json?begin=<b>&lt;start time in POSIX&gt;</b>&end=<b>&lt;end time in POSIX&gt;</b></blockquote>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
 			<h3>Database Download</h3>
-			<p><a href="/static/uhcm/data/mysql.sql.gz">link to database</a>... <a href="https://www.mysql.com/products/workbench/" target=_blank>MySQL Workbench</a>... <a href="https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-management.html" target=_blank>instructions on import/export</a>...</p>
+			<p>Access to the entire dataset is available as <a href="/static/uhcm/data/mysql.sql.gz">a compressed MySQL file.</a> The database file can be imported into any <a href="https://dev.mysql.com/downloads/mysql/" target=_blank>MySQL server</a> using the free <a href="https://www.mysql.com/products/workbench/" target=_blank>MySQL Workbench</a>. Once imported, analysis and data export can be done directly against the database. For instruction on how to import the MySQL file, see <a href="https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-management.html" target=_blank>this</a>.</p>
 		</div>
 	</div>
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">
-			<h3>Makaha Water Depth Data</h3>
+			<h3>Water Level Data</h3>
 			<h4>Note on the "Distance to Water Surface" Variable, <em>d2w</em></h4>
 			<p>The ultrasonic tide gauges are <a href="https://www.flickr.com/photos/146393683@N07/34601629761/in/dateposted-public/" target=_blank>mounted above water on fixed structure</a>, pointing downward. They measure the distance from the sensor to the water surface. The unit of the variable d2w is millimeter.</p>
 			<p>For the <a href="/poh/nodepage/node-009/"><b>first</b> Makaha</a>, the conversion from d2w (in <b>millimeter</b>) to water depth (in <b>meter</b>) is:</p>
@@ -42,9 +42,9 @@
 			<p>You can also fetch data programmatically using the (experimental) HTTP API. Here's an example to fetch the data from Feb 18 to April 9, 2017: <a href="/poh/data/location/makaha1/depth.json?begin=1487412000&end=1491818400&max_count=10000" target=_blank>Makaha1</a>; <a href="/poh/data/location/makaha2/depth.json?begin=1487412000&end=1491818400&max_count=10000" target=_blank>Makaha2</a>.</p>
 			<p>In Python with the requests library:</p>
 			<blockquote>url = 'https://grogdata.soest.hawaii.edu/poh/data/location/makaha1/depth.json?begin=1487412000&end=1491818400&max_count=10000'
-			<br>r = requests.get(url)
-			<br>r = r.json()
-</blockquote>
+				<br>r = requests.get(url)
+				<br>r = r.json()
+			</blockquote>
 		</div>
 	</div>
 </div>

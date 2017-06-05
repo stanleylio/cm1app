@@ -69,7 +69,7 @@ def route_processed_data(site,location,var):
         return 'Unknown site: {}'.format(site)
 
     if 'poh' == site:
-        if location not in ['makaha1','makaha2']:
+        if location not in ['makaha1','makaha2','makaha3']:
             return 'Unknown location: {}'.format(location)
         if var not in ['depth','oxygen','air','temperature']:
             return 'Unknown variable: {}'.format(var)

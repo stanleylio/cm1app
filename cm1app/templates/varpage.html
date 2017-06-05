@@ -13,6 +13,10 @@
 <!--script src="/static/uhcm/static/highstock/code/highstock.js"></script>
 <script src="/static/uhcm/static/highstock/code/modules/exporting.js"></script-->
 <script src="/static/uhcm/static/reconnecting-websocket.min.js"></script>
+<script
+			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+			  crossorigin="anonymous"></script>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-10 col-xs-offset-1">
@@ -27,10 +31,21 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-3">
+			<h4>Start date:</h4>
+			<div id="beginpicker"></div>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<h4>End date:</h4>
+			<div id="endpicker"></div>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-xs-10 col-xs-offset-1">
+			<hr>
 			<div style="width: 100%; color: #909090">
 				<!--p>gaps in data are not showing... something to do with highstock.js.</p-->
-				<p>Not all points in the data set are shown. Zoom in or download the data set to see all data points.</p>
+				<p>Not all points in the data set are shown. Use the <a href="/data_access/">API</a> for full access.</p>
 				<a type="button" class="btn btn-primary" id="download_button" download="" type="text/csv"><span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> Download as CSV (Chrome/Firefox only)</a>
 			</div>
 		</div>

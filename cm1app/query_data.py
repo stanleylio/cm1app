@@ -79,11 +79,14 @@ def read_baro_avg(site,time_col):
 def read_water_depth_by_location(site,location,begin,end):
     if 'poh' == site:
         mnmap = {'makaha1':'node-009',
-                 'makaha2':'node-008',}
+                 'makaha2':'node-008',
+                 'makaha3':'node-015'}
         vnmap = {'makaha1':'d2w',
-                 'makaha2':'d2w',}
+                 'makaha2':'d2w',
+                 'makaha3':'d2w',}
         fnmap = {'makaha1':lambda x: (50.7 + 1100 - x)/1e3,
-                 'makaha2':lambda x: (50.7 + 2180 - x)/1e3,}
+                 'makaha2':lambda x: (50.7 + 2180 - x)/1e3,
+                 'makaha3':lambda x: (1701.8 - x)/1e3,}   # 5'7"
     elif 'makaipier' == site:
         mnmap = {'dock1':'node-010',}
         vnmap = {'dock1':'d2w',}
@@ -101,6 +104,7 @@ def read_water_depth_by_location(site,location,begin,end):
 
     # convert distance to water (d2w in mm) to water depth (in meter)
     d = [fnmap[location](tmp) for tmp in d]
+    # TODO: node-008 has been moved
 
     # strip all out-of-range readings
     d = [tmp if tmp >= 0 else float('nan') for tmp in d]

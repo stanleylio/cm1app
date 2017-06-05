@@ -25,28 +25,66 @@
 					<p>We have partnered with long-time collaborator, <a href="http://paepaeoheeia.org/" target=_blank>Paepae o He`eia</a>, to implement this wireless coastal sensor network in the He`eia ahupua`a (watershed) to assist with environmental restoration and management efforts and engage K-12 and undergrad audiences in STEM training.</p>
 					<p>The spaces, links, and datasets provided here are rapidly evolving and largely preliminary. Please contact <a href="mailto:glazer@hawaii.edu">Brian Glazer</a> with any project related questions, or <a href="mailto:hlio@hawaii.edu">Stanley Lio</a> for questions regarding data access, system design and implementation.
 					</p>
+					
+					<p>Current deployment sites are shown in the map:</p>
+					<div id="map" style="height: 32em; width: 32em;"></div>
+					<script>
+					var coords = [
+						['He`eia Fishpond',21.436212,-157.807639,true],
+						['Mākāhā 1',21.433912,-157.805338,false],
+						['Kahoʻokele (Mākāhā 2)',21.435435,-157.805250,false],
+						['Storm (Mākāhā 3)',21.437214,-157.805827,false],
+						['Triple',21.438390,-157.806729,false],
+						['Coconut Island',21.433901,-157.788155,true],
+						['Makai Pier',21.319512,-157.668308,true]
+						];
+					
+					function initMap() {
+						var map = new google.maps.Map(document.getElementById('map'), {
+							zoom: 10,
+							center: {lat:coords[0][1],lng:coords[0][2]},
+							mapTypeId: google.maps.MapTypeId.HYBRID
+						});
+						
+						for (var i = 0; i < coords.length; i++) {
+							var m = new google.maps.Marker({
+								position: {lat:coords[i][1],lng:coords[i][2]},
+								map: map
+							});
+							var w = new google.maps.InfoWindow();
+							var ding = function(marker,window,content) {
+								window.setContent(content);
+								window.open(map,marker);
+							};
+							google.maps.event.addListener(m,'click',ding.bind(null,m,w,coords[i][0]));
+							if (coords[i][3]) {
+								ding(m,w,coords[i][0]);
+							}
+						}
+					}
+					</script>
+					<script async defer
+					src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoUjyiVdNFE5c6L5IPd_87m23OhGr5dq4&callback=initMap">
+					</script>
 				</div>
 			</div>
 
 			<hr>
 			
 			<h3>Wireless sensor mininodes in He`eia Fishpond</h3>
-			<p>Several low-cost wireless sensor nodes are deployed at He'eia Fishpond, Kaneohe Bay, Oahu. The <a href="/tech/">sensor packages</a> are collecting continuous environmental data to better understand physical conditions and biogeochemical cycles in real-time.</p>
+			<p>Several low-cost wireless sensor nodes are deployed at He'eia Fishpond, Kāneʻohe Bay, Oahu. The <a href="/tech/">sensor packages</a> are collecting continuous environmental data to better understand physical conditions and biogeochemical cycles in real-time.</p>
 			<p>The nodes measure a combination of meteorological conditions, such as water depth, conductivity, temperature, dissolved oxygen, turbidity, and chlorophyll. They are deployed at the following locations:
 			<ul>
-				<li>node-001 at Triple Makaha</li>
-				<li>node-004 at Makaha 1</li>
-				<!--li>node-002 is deployed at Makaha 1</li-->
-				<!--li>node-003 is deployed in Kaho`okele</li-->
-				<li>node-007 (a meteorological station) at the <a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/images/Heeia_Node_002.jpg" target="_blank">Hale</a> at Ocean Makaha 2</li>
-				<li>node-008 and node-009 (both ultrasonic tide gauge) at <a href="https://www.instagram.com/p/BAbJtj_lLS8/" target="_blank">Kaho`okele</a> and Makaha 1</li>
-				<li>node-014 (ultrasonic tide gauge) at River Makaha</li>
-				<li>node-015 (ultrasonic tide gauge) at Storm Makaha</li>
-				<li>node-021 and node-022 in Kaneohe Bay (SeaFET, about a mile offshore)</li>
-				<li>node-025 (Seabird CTD) in the middle of the fishpond</li>
+				<li>node-004 and node-009 at Makaha 1</li>
+				<li>node-007 (a meteorological station) at the <a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/images/Heeia_Node_002.jpg" target="_blank">Hale</a> at Makaha 2</li>
+				<li>node-008 at <a href="https://www.instagram.com/p/BAbJtj_lLS8/" target="_blank">Kaho`okele</a></li>
+				<li>node-014 at River Makaha</li>
+				<li>node-015 at Storm Makaha</li>
+				<!--li>node-021 and node-022 in Kāneʻohe Bay (SeaFET, about a mile offshore)</li>
+				<li>node-025 (Seabird CTD) in the middle of the fishpond</li-->
 			</ul>
 			</p>
-			<p>node-008 and node-009 are topside ultrasonic sensors measuring water level to corroborate submerged pressure sensors.</p>
+			<p>node-008, node-009, node-010, node-014, and node-015 are topside ultrasonic sensors measuring water level to corroborate submerged pressure sensors.</p>
 			<p>All data are presented in near-real-time, and thus are provisional and subject to revision during quality assurance and quality control data processing. More sophisticated data analyses are currently under development. More information on He'eia Fishpond can be found <a href="http://nakilohonuaoheeia.squarespace.com/" target="_blank">here</a> and <a href="paepaeoheeia.org" target="_blank">here</a>. Full datasets for all sensors at each node are available through links at the left or by exploring the <a href="/">interactive dashboard</a>.</p>
 		</div>
 		

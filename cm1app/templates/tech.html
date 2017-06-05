@@ -72,14 +72,6 @@
 			
 			<h4>Architecture</h4>
 			
-			<p>The primary tasks for the SBCs are
-				<ul>
-					<li>Regularly read the sensors, store, and broadcast the collected data</li>
-					<li>Respond to base station query for unscheduled sampling</li>
-				</ul>
-			</p>
-			<p>Each Beaglebone Black SBC is equipped with real-time clock and watchdog timer, all integrated on a custom cape.</p>
-
 			<div class="textwrap">
 				<a href="/static/uhcm/img/capev2.png" data-lightbox="pcb1" data-title="Custom Beaglebone Cape">
 					<figure class="figure">
@@ -88,7 +80,15 @@
 				</a>
 			</div>
 			
-			<p>The software tool used are all open source. Specific technology used for each task are
+			<p>The primary tasks for the SBCs are
+				<ul>
+					<li>Regularly read the sensors, store, and broadcast the collected data</li>
+					<li>Respond to base station query for unscheduled sampling</li>
+				</ul>
+			</p>
+			<p>Each Beaglebone Black SBC is equipped with real-time clock and watchdog timer, all integrated on a custom cape.</p>
+
+			<p>The software used are all open source. Specific technology used for each task are
 				<ul>
 					<li>I/O: Python Twisted, C (8-bit AVR)</li>
 					<li>Communication: ZeroMQ (node internal), RabbitMQ/AMQP, UDP and SSH (WAN between gateways)</li>
@@ -97,6 +97,9 @@
 					<li>Data endpoints and website: Python Flask (web framework), Python Autobahn (WebSocket)</li>
 				</ul>
 			</p>
+			
+			<h4>Source Code</h4>
+			<p>Source code for the project is <a href="https://github.com/stanleylio/fishie" target=_blank>on github</a>.</p>
 			
 			<br>
 			
