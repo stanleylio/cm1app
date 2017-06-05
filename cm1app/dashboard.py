@@ -36,10 +36,11 @@ def data_dashboard(site):
         S[node]['latest_non_null'] = {}
         #print(node,S[node]['name'])
 
-        for var in get_list_of_disp_vars(node):
+        dbcols = store.get_list_of_columns(node)
+        time_col = auto_time_col(dbcols)
+        for var in set(dbcols).intersection(set(get_list_of_disp_vars(node))):
             # [timestamp,reading,unit,[lower bound,upper bound]]
 
-            time_col = auto_time_col(store.get_list_of_columns(node))
             tmp = store.read_latest_non_null(node,time_col,var)
             if tmp is not None:
                 r = [tmp[time_col],tmp[var]]
