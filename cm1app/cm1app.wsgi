@@ -3,7 +3,7 @@ import socket,sys,logging
 sys.path.append('/home/nuc/cm1app')
 sys.path.append('/var/www/cm1app')
 
-if 'glazerlab-i7' == socket.gethostname():
+if 'glazerlab-i7nuc' == socket.gethostname():
 	activate_this = '/home/nuc/cm1app/env/bin/activate_this.py'
 if 'glazerlab-e5' == socket.gethostname():
 	activate_this = '/var/www/cm1app/env/bin/activate_this.py'
