@@ -107,7 +107,8 @@ def read_water_depth_by_location(site,location,begin,end):
     # TODO: node-008 has been moved
 
     # strip all out-of-range readings
-    d = [tmp if tmp >= 0 else float('nan') for tmp in d]
+    #d = [tmp if tmp >= 0 else float('nan') for tmp in d]
+    d = [tmp for tmp in d if tmp >= 0]
 
     # remove spike
     #d = medfilt(d,21)

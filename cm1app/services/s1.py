@@ -1,4 +1,4 @@
-import sys,logging
+import sys,logging,math
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from datetime import datetime
@@ -15,7 +15,7 @@ subsample at a 2:1 ratio"""
     return d
 
 
-def strip_none(r,time_col,var):
+def strip_none_nan(r,time_col,var):
     # convert None into float('nan')
     #r[var] = [float('nan') if tmp is None else tmp for tmp in r[var]]
     # ... or just strip them. I can't plot them anyway.
@@ -25,6 +25,7 @@ def strip_none(r,time_col,var):
         return r
     r = zip(r[time_col],r[var])
     r = filter(lambda x: x[1] is not None,r)
+    r = filter(lambda x: not math.isnan(x[1]),r)
     r = zip(*r)
     return {time_col:r[0],var:r[1]}
 
@@ -46,7 +47,7 @@ def query_time_range(node,var,begin,end):
     store = storage()
     time_col = auto_time_col(store.get_list_of_columns(node))
     r = store.read_time_range(node,time_col,[time_col,var],begin,end)
-    r = strip_none(r,time_col,var)
+    r = strip_none_nan(r,time_col,var)
     r = fix_ts_format(r,time_col,var)
     return r
 
@@ -57,7 +58,7 @@ def get_last_N_minutes(node,var,minutes):
     store = storage()
     time_col = auto_time_col(store.get_list_of_columns(node))
     r = store.read_last_N_minutes(node,time_col,minutes,nonnull=var)
-    r = strip_none(r,time_col,var)
+    r = strip_none_nan(r,time_col,var)
     r = fix_ts_format(r,time_col,var)
     return r
 
