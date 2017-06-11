@@ -78,8 +78,7 @@ def s5uhcmsubmit():
         logging.exception(traceback.format_exc())
         return ''
 
-# might make more sense to rediect everything HTTP to RabbitMQ and let log2mysql etc. take over
-
+# TODO: parse it here into the {} format and pass it into RabbitMQ exchange uhcm
 @app.route('/api/5/electron_us',methods=['POST'])
 @requires_auth
 def s5electronussubmit():
