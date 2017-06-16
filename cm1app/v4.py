@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-# Store POSTed messages to text file. Messages must
-# includes 'ts','src', and 'msg' and with signature 'sig'.
+# Store POSTed messages to text file.
+# Messages must includes 'ts','src', and 'msg' and with signature 'sig'.
+#
+# TODO: use libsodium or some other standard lib (and perhaps format)
+# ... or get TLS working (client cert?)
+# Remove kmap. Dig the public keys from config files instead.
 #
 # Stanley H.I. Lio
 # hlio@hawaii.edu
@@ -9,7 +13,8 @@ from cm1app import app
 from flask import request
 from datetime import datetime
 import logging,traceback,sys,time
-sys.path.append('/home/nuc')
+from os.path import expanduser
+sys.path.append(expanduser('~'))
 from node.authstuff import validate_message
 
 
@@ -19,7 +24,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 # public keys of authorized nodes
 kmap = {'kmet-bbb':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDN3PGFM+Ti+v/3CecZd5ls6G8OgVw4yFTtaFjVIDHmL51bC5ibKzelL7ZM+WU5WrRyeJmUNuK8IftFuQpQfJnGEhF7vpBpKhHQUK5SEMmcxPczKi0RWEelefE/IN1GlrnkDqQV7YMfasKSuhWq4OjgNsO0CxF18gatagPmOIiXZjXh7gMUF52d4faeU3oh5IxhO1+h+cx8jxRzovrNxicsbbYVOPc0pLw6WUIpDUsh7RDxxgiE3FCRdkxCYl8QJAhvtaXxbq/OnE8qRkTbi8aZ16D88qsaSjd31U2UmPqFJOuaYt8VDGYXw7rA9zmzufBxB2rfMRb2hSeb/qSv43c7 root@beaglebone',
-        #'kmet-bbb-wind':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvc6iktLLTAOFqOZCCUw2yJaL4U+rpg+Exy/LG6kEiv278WCIWpkv9Jo8cMyQrsUQtB38ZPhvCjThbCDuGom5gDjdN4cjZ2wtGztSWRnO83iQ5HKYcl+RLTxizP4KgGTkjbPRyf1pQLPw4jZxMNbGhqGSYP7hR/vqXaoz6KhsVuWORkCdClaUeP63jcDx+M4IOh8TjuwZZs7npoExmE4yEuj1YOTNdX59DYCtdGuidNbG1a8Vj/8Ai6Zt4BHY1gyvCwLocTv/6dxMP8w4fR68PvbmCidth2O7TYgPCFzTFHDcmDW6/LuaGfXrReExvpAjypcuPSIxBRMRNcDJdGeUF root@kmet-bbb-wind',
         'kmet-bbb1':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQdchxRE7jkBOEwPQrPXAy9amx8jiuWZcqfC+uB5APAKcVxf9ih3BkTRcyDKY6TY4njWptYMYhsfaNfId+IEJGZ+SWMgCb1hS3AY3MgXi97ti6cBCuJzT8QTGFj2JCmgJLTiK75gtliOs8YhDoK7Q8wHcUDRrI+Xfo64g/v6h5f86pUN6hLng7lm9HWANWgoAc5UPdUpMfJ7vH9BBv1saAZhhjo5RhDz5E2Ea8m9U2DzV1cDeaJQ5Vdykl/kZLt8p3I7izd8smLA5baNdrDbwfu/ARjzrVuhiZkt1KxcnmNTE0ueqHyc4u9xp1hUCwdWBW7VLHZ2xCZOJJ2bm3oKzb root@kmet-bbb1',
         'kmet-bbb2':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC40CPr/EP30b046acfH5hxGLpOFWHnGB9/W7EbnpjX+mbPKXt7wvHcDD2VEV6yjg33+T7skh/z1Aepw2kRtb1B8AO6GjSPNmRSKnWZzXDRuN2SqwefOcmDOfHV6betNrkBbnxcXZyLofhII55ffN0sz4/+pl2Pjq8ot1N0SiTZilgVkHKQxI4d/NjJKKLuDKzgydGYCvEaUDiQoRWkOH52gIsx04u+lD6gtVEJZt7WjJkoJITKAYF4WJG5hoKAIHcRrdrkIqa70Fae1kz/wdjdFI3ZnQmXx82m8G4YsLh0/+IIA8og78NWsj/eRl6G+ykElGW846kPsrbBmUiQ6d2H root@kmet-bbb2',
         'kmet-bbb3':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCh3IJRLtb1GqdLDRVP1z9GGocb5YsugkquPqa1Rf9J/0btLxoWNZjv++Q6Fjl2U3zKfknKeutuJWDabgDCy1445iHIf5qml6MLc9G1iG/PRhJ8ubx5x6RUBdZY/ULELD7a1opseyjcZ7C4pmHWv8cJNpyEe3GhV2x5jBTzB1EbYHN00qur6o4JLgZCcB43ves9TwsLh45is+6lNgoAhbf8M0bt2LNRakdDXfOUQMNGveSkf6GgfoLvSKqILtUhsJCnJfAC6Nr8k3tf+hT34kBvGR6sWwD2OYsYL/oNjFDAvxpRaAJfoylyWn8l+2PrQsIv6UYvh5YioQ9Kyt/u4O2d root@beaglebone',
@@ -34,7 +38,6 @@ kmap = {'kmet-bbb':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDN3PGFM+Ti+v/3CecZd5ls
         'base-003':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9pNGjCrQtHdhV87rJfud1uwZyhG4XzW4XMkn2f2KdH0pVRK6iEDuw4Z8tcgHTPiHckdu/FkE+4rV9zzbPR7w/9jTZOf2YI64gFu98qPcLoJOImT7vI5BEagAyvW7pyjTnlmo0+rQeti8B4tb48/ScJrLVQbMKK7eCXebwEYL89Ie9mGpM2hxs9LKrqYjrKIfs33oottKzi774yQ8jhO4CIcYKdkdEOPi1RgA1riYDp3Rz34rlotJ0MQpCxqQjwAXntVvplqfFpU1iG21kQu6U9ro0YFpVgpyyw3Jomqv5rbeMYG9C0fMWBQKXFgocxiQdinsuvMA81++iiKAXFHov nuc@base-003',
         'base-004':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuAIuai8QXOsi2KTzJrNVBFXvWMvqUQ5QKGYVzo7/Qr6gxj8xZZCcdukFFkTrCvHEsl7J0gHNsdwakTs+jVw8F7km4MPozGAMXoDEV/wWcXIxoaObUjRYsoUjArWrjsw3HlMbM+juKCYOPQsk8nYLpqv3BQ0Vc6p36OVDmIUfqNpwYxb6lpjgGo6j3npg+zgc8wfa5OyOBSEB5nkYN9k2WvJlKRVtDgvb4LA1lvTthPwb8z8jwFI2AV/Dr5SB1+miTQKbLmav/R6Uzpgxlc8mAMg9xz4NVQYm5t/uuCfigSG9S7oYg2FewNElO3zvykuTYHlVlFK6m55LaTE0gLSPr nuc@base-004',
         'base-005':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDkLNFZ/oJHnNrJ4nB0jke4NaeImloIGtQffGedarlDXZxGQ0F3id2v2MgKS3vLvlijTfbuP/V6v+ZQ3zDuwxIcg4okn6QKuHX+s1K9yd2rrVmler/aAAx3qz4rk0+ehSCxK41TQtQXPU+haHr4d+l9pmhqoZWJbgiPkXW64LRDEvWO5hwFVmKC1oJYfA5XzM4Z1e5SQcnwz3NvBcfsflfmuByJm2aPq6nDETs85hcJ4I+CwRVBkBfxDskw5jpQCqGUGAuvgSmTTtGPlkge+4Ov68fPtBu8pD/s0uJ7TXFhjuHtx0zTl6TeV6mQz3iMtcgqjCwLK4U8XxAViZNBbAiz nuc@base-005',
-        #'base-007':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClU029aEkY4HAp2E/ZCuwWA15yCGZm16sTzlp4TYdF5pQAf4yT80pnM3/CaU0sJV6W6ZQsOgUv3Xlsur1Hvf7lu2rP9ISTTXYXujQvr+SlnsHB1Z6MaGje8DpZAmIODY+sk2BIKpoF6kgMKnWepz+S6Of/b/5+qymFgfu+sYzMupGZZ5qJtFgJyWcIRqtOjVCi3sv6JePwjgZRbJ6VTfPqBDJDCyvWnECM9nTaHCKzxr/HGi7uKRWmU2RpZv9n7QfU0jgMNbsF8pwlBWmlxnp7CMkNOWiiWCucgKNV5UMdmu+iy8njP77AeQdNuP98ZRIK1RQOlyH7p6l3NXUrreeP root@base-007',
         'node-017':'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDnyUPMPudgTCziEVHsSxjcWmmRr21fcZJpRYCkwSaub8ptvWypv3gSVsRyxj6RdD425NVcbnlU4NIK0OPJMdlwzNpAh86qiFjOZnGf4EbFuglrauIgNyr5V5E260Jn21uXy38ztSde1f62m6K1agme3rgDAz6rvxoAshbcxT6bFIBdUcUlCRSM50j96epxmTO70ekkAVMIs6FDfsWgqP/bQwCh1BEKwuBNhJYhQWLvW4YGEyYO0jhfz0gyOE0lTLKeVAYGreNRZ4i14LxTJsUc6ReyaHrO9Z+WPhpUQXGu7a2XANW9gKicZO0OUx51Z+bvxYsJnFQHtktXPICwhwlX pi@soest-rpi-met',}
 
 

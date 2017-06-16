@@ -58,7 +58,7 @@ def s5rawsubmit():
         logging.exception(traceback.format_exc())
         return ''
 
-@app.route('/api/5/uhcm',methods=['POST'])
+'''@app.route('/api/5/uhcm',methods=['POST'])
 @requires_auth
 def s5uhcmsubmit():
     try:
@@ -77,8 +77,9 @@ def s5uhcmsubmit():
     except:
         logging.exception(traceback.format_exc())
         return ''
+'''
 
-# TODO: parse it here into the {} format and pass it into RabbitMQ exchange uhcm
+# TODO: options: pass it verbatium into uhcm; parse it here before passing to uhcm; pass both into uhcm?
 @app.route('/api/5/electron_us',methods=['POST'])
 @requires_auth
 def s5electronussubmit():

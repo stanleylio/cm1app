@@ -43,7 +43,6 @@ def query_time_range(node,var,begin,end):
     assert type(begin) in [float,int],"begin is not float/int"
     assert type(end) in [float,int],"end is not float/int"
     assert begin < end,"begin >= end"
-    #time_col = 'ReceptionTime'
     store = storage()
     time_col = auto_time_col(store.get_list_of_columns(node))
     r = store.read_time_range(node,time_col,[time_col,var],begin,end)
@@ -54,7 +53,6 @@ def query_time_range(node,var,begin,end):
 
 def get_last_N_minutes(node,var,minutes):
     assert type(minutes) in [float,int] and minutes > 0
-    #time_col = 'ReceptionTime'
     store = storage()
     time_col = auto_time_col(store.get_list_of_columns(node))
     r = store.read_last_N_minutes(node,time_col,minutes,nonnull=var)
