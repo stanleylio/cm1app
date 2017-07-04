@@ -15,22 +15,29 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
-			<h3>HTTP API</h3>
-			<blockquote>https://grogdata.soest.hawaii.edu/<b>&lt;site&gt;</b>/data/<b>&lt;nodeid&gt;</b>/<b>&lt;variable&gt;</b>.json?begin=<b>&lt;start time in POSIX&gt;</b>&end=<b>&lt;end time in POSIX&gt;</b></blockquote>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12">
-			<h3>Database Download</h3>
-			<p>Access to the entire dataset is available as <a href="/static/uhcm/data/mysql.sql.gz">a compressed MySQL file.</a> The database file can be imported into any <a href="https://dev.mysql.com/downloads/mysql/" target=_blank>MySQL server</a> using the free <a href="https://www.mysql.com/products/workbench/" target=_blank>MySQL Workbench</a>. Once imported, analysis and data export can be done directly against the database. For instruction on how to import the MySQL file, see <a href="https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-management.html" target=_blank>this</a>.</p>
+			<h2>HTTP API</h2>
+			<blockquote>https://grogdata.soest.hawaii.edu/<span style="color: orange"><b>&lt;site&gt;</b></span>/data/<span style="color: red"><b>&lt;nodeid&gt;</b></span>/<span style="color: fuchsia"><b>&lt;variable&gt;</b></span>.json?begin=<b>&lt;start time in UNIX time&gt;</b>&end=<b>&lt;end time in UNIX time&gt;</b></blockquote>
+			
+			<h3>Example</h3>
+			<p>This returns <span style="color:red">node-008</span> water level data (<span style="color: fuchsia">d2w</span>) from June 22, 2017 8:26:40 AM to June 22, 2017 10:14:07 AM</p>
+			<blockquote><a href="/poh/data/node-008/d2w.json?begin=1498120000&end=1498126447">https://grogdata.soest.hawaii.edu/<span style="color: orange">poh</span>/data/<span style="color: red">node-008</span>/<span style="color: fuchsia">d2w</span>.json?begin=1498120000&end=1498126447</a></blockquote>
 		</div>
 	</div>
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">
-			<h3>Water Level Data</h3>
+			<h2>Timestamp Format</h2>
+			<p>All measurements are tagged with a timestamp in <a href="https://en.wikipedia.org/wiki/Unix_time" target=_blank>UNIX time</a> format. The time when the data arrive at the database is named <em>ReceptionTime</em> (server's clock). The time when the data was measured at the sensors/loggers in the field is named <em>Timestamp</em> (sensor/logger's clock). Some field sensors do not have internal real-time clock (such as the tide gauges), so they do not have the corresponding Timestamp variable (most of them do have a monotonically increasing 1Hz ticker, however).</p>
+			<p>During normal operation, the difference between ReceptionTime and Timestamp is negligable. However, when the link between field base stations and the database server is temporarily lost (WiFi drop, internet issues...), data messages are queued up at the field base stations. When network is restored, all queued messages are sent to the database at once. ReceptionTime no longer correlates with actual sample time (Timestamp) in such case (<a href="/static/uhcm/img/bad_rt_n17_air_pressure.png">example</a>).</p>
+			<p>All plots on this site are plotted against ReceptionTime. For analysis, the use of Timestamp is encouraged. A handy UNIX time converter can be found <a href="https://www.epochconverter.com/" target=_blank>here</a>.</p>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<h2>Water Level Data</h2>
 			<h4>Note on the "Distance to Water Surface" Variable, <em>d2w</em></h4>
-			<p>The ultrasonic tide gauges are <a href="https://www.flickr.com/photos/146393683@N07/34601629761/in/dateposted-public/" target=_blank>mounted above water on fixed structure</a>, pointing downward. They measure the distance from the sensor to the water surface. The unit of the variable d2w is millimeter.</p>
+			<p>The ultrasonic tide gauges are <a href="https://www.flickr.com/photos/146393683@N07/34601629761/in/dateposted-public/" target=_blank>mounted above water on fixed structure</a>, pointing downward. Water level is measured indirectly by measuring the distance from the sensor to the water surface. The unit of the variable d2w is millimeter.</p>
 			<p>For the <a href="/poh/nodepage/node-009/"><b>first</b> Makaha</a>, the conversion from d2w (in <b>millimeter</b>) to water depth (in <b>meter</b>) is:</p>
 			<blockquote>(50.7 + 1100 - d2w) / 1e3</blockquote>
 			<p>For the <a href="/poh/nodepage/node-008/"><b>second</b> Makaha</a>:</p>
@@ -45,6 +52,13 @@
 				<br>r = requests.get(url)
 				<br>r = r.json()
 			</blockquote>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			<h2>Database Download</h2>
+			<p>Access to the entire dataset is available as <a href="/static/uhcm/data/mysql.sql.gz">a compressed MySQL file.</a> The database file can be imported into any <a href="https://dev.mysql.com/downloads/mysql/" target=_blank>MySQL server</a> using the free <a href="https://www.mysql.com/products/workbench/" target=_blank>MySQL Workbench</a>. Once imported, analysis and data export can be done directly against the database. For instruction on how to import the MySQL file, see <a href="https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-management.html" target=_blank>this</a>.</p>
 		</div>
 	</div>
 </div>

@@ -8,13 +8,13 @@ from cm1app import app
 from functools import wraps
 from flask import request,Response
 from datetime import datetime
-import logging,traceback,sys,time
+import logging,traceback,sys,time,json
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from node.helper import dt2ts
 from node.storage.storage2 import storage
-#from node.parse_support import parse_message
 from particle import fish_handler
+from publish import to_uhcm_xchg
 from cred import cred
 
 
@@ -58,32 +58,16 @@ def s5rawsubmit():
         logging.exception(traceback.format_exc())
         return ''
 
-'''@app.route('/api/5/uhcm',methods=['POST'])
-@requires_auth
-def s5uhcmsubmit():
-    try:
-        msg = request.form['m']
-        src = request.form['src']
-        #store = storage()
-        #d = parse_message(msg)
-        #assert 'ReceptionTime' not in d
-        #d['ReceptionTime'] = time.time()
-        #store.insert(table,d)
-        with open('/var/uhcm/incoming/api/5/uhcm_tmp.txt','a',0) as f:
-            dt = datetime.utcnow()
-            ts = dt2ts(dt)
-            f.write('{},{},{},{}\n'.format(dt.isoformat(),ts,src,msg))
-            return '{},ok'.format(dt.isoformat())
-    except:
-        logging.exception(traceback.format_exc())
-        return ''
-'''
 
-# TODO: options: pass it verbatium into uhcm; parse it here before passing to uhcm; pass both into uhcm?
+# TODO: options:
+#   pass it verbatium into uhcm;
+#   parse it here before passing to uhcm;
+#   pass both into uhcm?
 @app.route('/api/5/electron_us',methods=['POST'])
 @requires_auth
 def s5electronussubmit():
     try:
+        # debug log
         with open('/var/www/uhcm/electron.txt','a') as f:
             f.write('{},{},{},{},{}\n'.format(datetime.utcnow(),
                                            time.time(),
@@ -91,16 +75,26 @@ def s5electronussubmit():
                                            request.form['event'],
                                            request.form['data']))
 
-        table,d = fish_handler(request)
-        if table is None:
-            return d
-        
-        store = storage()
-        for s in d:
-            store.insert(table,{'ReceptionTime':s[0],'d2w':s[1]})   # hum... no. Those are Timestamp, NOT ReceptionTime.
-            # but this will mess up plotting until auto_time_col is ready (plot against ReceptionTime only if Timestamp is not available).
-        #return str(d)
-        return '{},ok'.format(datetime.utcnow().isoformat())
+        #print(json.dumps(dict(request.form),separators=(',',':')))
+        # as it is it's no better than parsing and storing here...
+        to_uhcm_xchg(json.dumps(dict(request.form),separators=(',',':')),request.form['coreid'] + '.samples')
+
+        # processing
+        if u'test-event' == request.form['event']:
+            return 'this is a test'
+
+        if request.form['event'] in [u'd2w',u'debug']:
+            table,d = fish_handler(request)
+            if table is None:
+                return d
+            
+            store = storage()
+            for s in d:
+                #store.insert(table,{'ReceptionTime':s[0],'d2w':s[1]})   # hum... no. Those are Timestamp, NOT ReceptionTime.
+                # but this will mess up plotting until auto_time_col is ready (plot against ReceptionTime only if Timestamp is not available).
+                store.insert(table,s)
+            #return str(d)
+            return '{},ok'.format(datetime.utcnow().isoformat())
     except:
         logging.exception(traceback.format_exc())
         logging.exception(request)

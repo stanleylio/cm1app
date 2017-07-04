@@ -1,4 +1,4 @@
-import sys
+import sys,json,time
 sys.path.append('/home/nuc')
 from datetime import datetime,timedelta
 from node.helper import dt2ts,ts2dt
@@ -16,21 +16,37 @@ def fish_handler(request):
     fish_map = {u'1f0024001751353338363036':'node-028', # Boston
                 u'450057000a51343334363138':'node-029', # Boston
                 u'280021001951353338363036':'node-045', # Haley
-                u'360064001951343334363036':'node-046',
+                u'360064001951343334363036':'node-046', # Haley
+                u'410055001951353338363036':'node-047', # ?
+                u'180033001951353338363036':'node-048', # v0.1
+                u'3e0042001951353338363036':'node-049', # ?
+                u'2d0039001851353338363036':'node-050', # ?
                 }
 
     if request.form['coreid'] not in fish_map:
         return None,'unknown coreid'
 
-    if request.form['event'] == u'test-event':
-        return None,'this is a test'
-    
-    if request.form['event'] != u'd2w':
-        return None,'not d2w'
-
     nodeid = fish_map[request.form['coreid']]
-    published_at = request.form['published_at']
-    published_at = datetime.strptime(published_at,'%Y-%m-%dT%H:%M:%S.%fZ')
-    published_at = dt2ts(published_at)
-
-    return nodeid,parse_electron_msg(published_at,request.form['data'])
+    if nodeid in ['node-028','node-029']:   # firmware version p2
+        published_at = request.form['published_at']
+        published_at = datetime.strptime(published_at,'%Y-%m-%dT%H:%M:%S.%fZ')
+        published_at = dt2ts(published_at)
+        d = []
+        for s in parse_electron_msg(published_at,request.form['data']):
+            d.append({'ReceptionTime':s[0],'d2w':s[1]})
+        return nodeid,d
+    else:   # firmware version p3
+        # ... but does that guarantee ReceptionTime's uniqueness?
+        if u'd2w' == request.form['event']:
+            rt = time.time()
+            d = []
+            for k,s in enumerate(json.loads(request.form['data'])):
+                d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]}) # is that cheating?
+            return nodeid,d
+        elif u'debug' == request.form['event']:
+            d = json.loads(request.form['data'])
+            if 'VbattV' in d:
+                d['ReceptionTime'] = time.time()
+                return nodeid,[d]
+            else:
+                return nodeid,None
