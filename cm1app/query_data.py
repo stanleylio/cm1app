@@ -44,13 +44,13 @@ def read_baro_avg(site,time_col):
         variables = get_list_of_variables(node)
         var = 'P_180'   # different units (kPa vs Pa)... WHY...
         if var in variables:
-            r = proxy.query_time_range(node,var,now-60*60,now)
+            r = proxy.query_time_range(node,var,now-60*60,now,'ReceptionTime')
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend([tmp/1e3 for tmp in r[var]])
         var = 'P_280'
         if var in variables:
-            r = proxy.query_time_range(node,var,now-60*60,now)
+            r = proxy.query_time_range(node,var,now-60*60,now,'ReceptionTime')
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend(r[var])
@@ -97,7 +97,7 @@ def read_water_depth_by_location(site,location,begin,end):
     if begin > end:
         return [[],[]]
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],vnmap[location],begin,end)
+    d = proxy.query_time_range(mnmap[location],vnmap[location],begin,end,'ReceptionTime')
 
     t = d['ReceptionTime']
     d = d[vnmap[location]]
@@ -133,7 +133,7 @@ def read_optode_by_location(site,location,begin,end,var):
     if begin > end:
         return [[],[]]
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],vnmap[location],begin,end)
+    d = proxy.query_time_range(mnmap[location],vnmap[location],begin,end,'ReceptionTime')
 
     t = d['ReceptionTime']
     d = d[vnmap[location]]

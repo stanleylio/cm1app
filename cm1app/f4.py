@@ -30,8 +30,12 @@ def route_default():
 
 @app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site,node,variable):
-    """Examples: https://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
-https://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
+    """Examples:
+http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
+
+"site" needs to be one of the defined sites, but it no longer checks if
+the node is in that particular site. Trying to phase out the concept of "site".
+"""
 
     logger.debug((site,node,variable))
 
@@ -57,7 +61,10 @@ https://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
         unit = get_unit(node,variable)
         desc = get_description(node,variable)
         bounds = get_range(node,variable)
-        bounds = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in bounds]
+        if bounds is None:
+            bounds = [float('-inf'),float('inf')]
+        else:
+            bounds = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in bounds]
 
         d = {'unit':unit,
              'description':desc,
@@ -73,13 +80,13 @@ https://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
             else:
                 end = float(end)
             if begin >= end:
+                # don't actually need this check - sql will just give you [] in this case.
                 errmsg = 'require: begin < end'
                 logger.error(errmsg)
                 return dumps({'error':errmsg},separators=(',',':'))
             else:
                 logger.debug('from {} to {}'.format(begin,end))
-                #r = query_time_range(site,node,variable,begin,end)
-                r = proxy.query_time_range(node,variable,begin,end)
+                r = proxy.query_time_range(node,variable,begin,end,'ReceptionTime')
         else:
             if minutes is None:
                 minutes = 24*60
@@ -105,6 +112,45 @@ https://192.168.0.20:5000/coconut/data/node-021/S_CTD.json"""
     except:
         traceback.print_exc()
         return "it's beyond my paygrade"
+
+@app.route('/data/2/<node>/<variables>.json')
+def get_xy(node,variables):
+    """Example:
+https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=1500000000&end=1500082230&time_col=Timestamp
+"""
+
+    logger.debug((node,variables))
+
+    variables = variables.split(',')
+    begin = request.args.get('begin')
+    end = request.args.get('end')
+    time_col = request.args.get('time_col')
+
+    if begin is None or end is None or time_col is None:
+        return 'begin, end, and time_col must be supplied'
+    begin = float(begin)
+    end = float(end)
+    
+    store = storage()
+    if node not in store.get_list_of_tables():
+        return 'No such node: {}'.format(escape(node))
+
+    for var in variables:
+        if var not in store.get_list_of_columns(node):
+            return 'No such variable: {}'.format(escape(var))
+
+    if time_col not in store.get_list_of_columns(node):
+        return 'No such time column: {}'.format(escape(time_col))
+
+    #return str((begin,end,time_col))
+
+    try:
+        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        r = proxy.query_time_range(node,variables,begin,end,time_col)
+        return dumps([r[k] for k in variables],separators=(',',':'))
+    except:
+        traceback.print_exc()
+        return "it's beyond my paygrade 2"
 
 @app.route('/about/')
 def about():
