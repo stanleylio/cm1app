@@ -121,7 +121,7 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
 
     logger.debug((node,variables))
 
-    variables = variables.split(',')
+    variables = variables.split(',')    # require: no comma in variable name
     begin = request.args.get('begin')
     end = request.args.get('end')
     time_col = request.args.get('time_col')
@@ -163,10 +163,6 @@ def tech():
 @app.route('/dev/')
 def dev():
     return render_template('dev.html')
-
-@app.route('/haha/')
-def haha():
-    return render_template('haha.html')
 
 @app.route('/project_info/')
 def project_info():
