@@ -164,6 +164,10 @@ def tech():
 def dev():
     return render_template('dev.html')
 
+@app.route('/dev/rtcomm')
+def rtcomm():
+    return render_template('rtcomm.html')
+
 @app.route('/project_info/')
 def project_info():
     return render_template('project_info.html')

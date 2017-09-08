@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Real-time Traffic{% endblock %}
+{% block content %}
+<script src="/static/uhcm/static/moment-with-locales.js"></script>
+<script src="/static/uhcm/static/stomp.min.js" type="text/javascript"></script>
+<script src="/static/uhcm/static/rtcomm.js"></script>
+<style>
+        body {
+          padding-top: 50px;
+        }
+        table {
+                border-collapse: collapse;
+        }
+
+        table, th, td {
+                border: 1px solid black;
+                padding: 0.3em;
+        }
+</style>
+<div style="width: 95%; margin: 0 auto; color: #0;">
+        <canvas id="canvas" width="150" height="150" style="background-color:#fff"></canvas>
+        <hr>
+        Ignore if contains (comma-separated): <input type="text" name="ignore" id="ignore" value="node-017,node-006" size="50"><br>
+        <br>
+        <!--SHOW ONLY: <input type="text" name="showonly" id="showonly" size="50"><br>-->
+        <button type="button" id="toggleupdatebutton">PAUSE</button>
+        <br>
+        <table id="tb" style="width: 100%; margin: 0 auto;"><tbody></tbody></table>
+</div>
+{% endblock %}
