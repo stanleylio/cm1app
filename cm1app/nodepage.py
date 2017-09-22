@@ -6,7 +6,7 @@ from flask import Flask,render_template,Markup,send_from_directory,request,escap
 from cm1app import app
 from json import dumps
 from node.config.config_support import get_list_of_disp_vars,get_attr,\
-     get_unit,get_range,get_description,get_list_of_nodes,config_as_dict
+     get_unit,get_range,get_description,get_list_of_nodes,config_as_dict,get_interval
 from query_data import read_latest_group_average
 
 
@@ -63,13 +63,17 @@ def data_site_node(site,node):
                  'ts':round(d[0],1),
                  'val':round(d[1],3),
                  'unit':get_unit(node,var),
-                 'desc':get_description(node,var)}
+                 'interval':get_interval(node,var),
+                 'desc':get_description(node,var),
+                 }
         else:
             r = {'var':var,
                  'ts':None,
                  'val':None,
                  'unit':None,
-                 'desc':None}
+                 'interval':None,
+                 'desc':None,
+                 }
         b = get_range(node,var)
         if b is not None:
             r['range'] = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]

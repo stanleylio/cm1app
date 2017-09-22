@@ -6,7 +6,7 @@ from cm1app import app
 from json import dumps
 from node.storage.storage2 import storage,auto_time_col
 from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
-     get_attr,get_unit,get_range
+     get_attr,get_unit,get_range,get_interval
 
 
 # ... just get rid of this already. so is that blob of public keys.
@@ -55,6 +55,8 @@ def data_dashboard(site):
             b = get_range(node,var)
             b = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
             r.append(b)
+
+            r.append(get_interval(node,var))
 
             S[node]['latest_non_null'][var] = r
 

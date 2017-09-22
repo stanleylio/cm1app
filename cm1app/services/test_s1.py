@@ -14,10 +14,12 @@ assert all([len(r[tmp]) == len(r['ReceptionTime']) for tmp in r])
 assert len(r['ReceptionTime']) > 0
 
 
-
-
 # via proxy, when accessed using xmlrpc
 proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+
+tmp = proxy.get_list_of_tables()
+assert all([t in tmp for t in ['node-003','node-004','node-009','node-009','node-020']])
+assert len(proxy.get_list_of_columns('node-020')) > 0
 
 #print proxy.query_time_range('node-021','PH_EXT',1482820675,1482825675)
 #print proxy.get_last_N_minutes('node-021','PH_EXT',10)
@@ -31,9 +33,6 @@ assert all([not math.isnan(tmp) for tmp in d['d2w']])
 assert all([tmp is not None for tmp in d['d2w']])
 
 
-exit()
-
-
 from random import randint
 for i in range(100):
     N = randint(1,1000)
@@ -41,3 +40,5 @@ for i in range(100):
     a = range(N)
     assert len(proxy.condense(a,lim)) <= lim
 
+
+print('look good')

@@ -44,13 +44,13 @@ def read_baro_avg(site,time_col):
         variables = get_list_of_variables(node)
         var = 'P_180'   # different units (kPa vs Pa)... WHY...
         if var in variables:
-            r = proxy.query_time_range(node,var,now-60*60,now,'ReceptionTime')
+            r = proxy.query_time_range(node,['ReceptionTime',var],now-60*60,now,'ReceptionTime')
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend([tmp/1e3 for tmp in r[var]])
         var = 'P_280'
         if var in variables:
-            r = proxy.query_time_range(node,var,now-60*60,now,'ReceptionTime')
+            r = proxy.query_time_range(node,['ReceptionTime',var],now-60*60,now,'ReceptionTime')
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend(r[var])
@@ -77,6 +77,8 @@ def read_baro_avg(site,time_col):
 # query water depth in meter by location (makaha/dock) (not by node)
 # written specifically for the poh app
 def read_water_depth_by_location(site,location,begin,end):
+    time_col = 'ReceptionTime'
+    
     if 'poh' == site:
         mnmap = {'makaha1':'node-009',
                  'makaha2':'node-008',
@@ -97,9 +99,9 @@ def read_water_depth_by_location(site,location,begin,end):
     if begin > end:
         return [[],[]]
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],vnmap[location],begin,end,'ReceptionTime')
+    d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
 
-    t = d['ReceptionTime']
+    t = d[time_col]
     d = d[vnmap[location]]
 
     # convert distance to water (d2w in mm) to water depth (in meter)
@@ -120,6 +122,8 @@ def read_water_depth_by_location(site,location,begin,end):
 
 
 def read_optode_by_location(site,location,begin,end,var):
+    time_col = 'ReceptionTime'
+    
     if 'poh' == site:
         mnmap = {'makaha1':'node-004',}
         vvnmap = {'oxygen':{'makaha1':'O2Concentration',},
@@ -133,9 +137,9 @@ def read_optode_by_location(site,location,begin,end,var):
     if begin > end:
         return [[],[]]
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],vnmap[location],begin,end,'ReceptionTime')
+    d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
 
-    t = d['ReceptionTime']
+    t = d[time_col]
     d = d[vnmap[location]]
 
     # convert distance to water (d2w in mm) to water depth (in meter)

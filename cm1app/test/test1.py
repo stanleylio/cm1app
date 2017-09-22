@@ -1,10 +1,12 @@
 import requests,random,math
 
-host = 'http://grogdata.soest.hawaii.edu'
+
+host = 'https://grogdata.soest.hawaii.edu'
+
 
 def test1(ep):
-    '''Check that the endpoint is available, and there's no None or NaN in the response.'''
-    print('testing {}'.format(ep))
+    """Check that the endpoint is available, and there's no None or NaN in the response."""
+    print('Testing {}'.format(ep))
     r = requests.get(ep)
     assert r.status_code == 200
     r = r.json()
@@ -16,7 +18,7 @@ def test1(ep):
 
 
 # tide gauges
-nodes = ['node-008','node-009','node-014','node-015','node-047','node-048']
+nodes = ['node-008','node-009','node-014','node-040','node-047','node-048','node-049','node-075']
 
 for node in nodes:
     end = random.randint(1497130276,1500154178)
@@ -69,7 +71,7 @@ eps = [
 
 for ep in eps:
     ep = host + ep
-    print('testing {}'.format(ep))
+    print('Testing {}'.format(ep))
     code = requests.get(ep).status_code
     if code != 200:
         print(code)

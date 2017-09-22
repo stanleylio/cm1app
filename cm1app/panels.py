@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # TODO: GET RID OF THIS FILE: normalize the data interface and push this to client side.
-import sys,traceback,logging
+import sys,traceback,logging,xmlrpclib
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from flask import Flask,render_template,request
@@ -8,7 +8,6 @@ from cm1app import app
 from json import dumps
 from node.helper import *
 from query_data import read_latest_group_average,read_baro_avg,read_water_depth_by_location,read_optode_by_location
-import xmlrpclib
 from datetime import datetime,timedelta
 
 

@@ -13,25 +13,25 @@ def parse_electron_msg(ts,s,sample_interval=60):
     return zip(t,s)
 
 def fish_handler(request):
-    fish_map = {u'1f0024001751353338363036':'node-028', # Boston
-                u'450057000a51343334363138':'node-029', # Boston
-                u'280021001951353338363036':'node-045',
-                u'360064001951343334363036':'node-046',
+    fish_map = {u'1f0024001751353338363036':'node-028', # Boston, Amy Mueller
+                u'450057000a51343334363138':'node-029', # Boston, Amy Mueller
+                u'280021001951353338363036':'node-045', # SF, Jim Trezzo
+                u'360064001951343334363036':'node-046', # NOAA, Coconut
                 u'410055001951353338363036':'node-047', # T/P/RH test bed
                 u'180033001951353338363036':'node-048', # v0.1 PCB
-                u'3e0042001951353338363036':'node-049', # ?
+                u'3e0042001951353338363036':'node-049', # First Makaha, PoH
                 u'2d0039001851353338363036':'node-050', # v0.1 PCB
-                u'230053001951353338363036':'node-051',
-                u'4e0029001751353338363036':'node-052',
+                u'230053001951353338363036':'node-051', # Storm Makaha, PoH
+                u'4e0029001751353338363036':'node-052', # Waikalua Loko
                 u'3a0038001751353338363036':'node-053',
                 u'4e0053001851353338363036':'node-054',
                 u'210048001851353338363036':'node-055',
                 u'2a002b001751353338363036':'node-056',
                 u'190049000251353337353037':'node-057',
-                u'40002e001951353338363036':'node-058',
+                u'40002e001951353338363036':'node-058', # Moonshot
                 u'290048001951353338363036':'node-059',
                 u'5d003e001951353338363036':'node-060',
-                u'4d0038001751353338363036':'node-061',
+                u'4d0038001751353338363036':'node-061', # Moonshot
                 u'2d0044001851353338363036':'node-062',
                 u'2f002f001951353338363036':'node-063',
                 u'420030001751353338363036':'node-064',
@@ -46,7 +46,7 @@ def fish_handler(request):
                 u'1d0053000251353337353037':'node-073',
                 u'1f0043000251353337353037':'node-074',
                 u'25002d001951353338363036':'node-075',
-                u'40004f001951353338363036':'node-076',
+                u'40004f001951353338363036':'node-076', # Moonshot
                 u'4d0058001851353338363036':'node-077',
                 }
 
@@ -64,13 +64,17 @@ def fish_handler(request):
             d.append({'ReceptionTime':s[0],'d2w':s[1]})
         return nodeid,d
     else:
-        # firmware version p3~p5b
-        # ... but does that guarantee ReceptionTime's uniqueness?
+        # firmware version p3~p5c
         if u'd2w' == request.form['event']:
             rt = time.time()
             d = []
             for k,s in enumerate(json.loads(request.form['data'])):
-                d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]}) # is that cheating?
+                # is that cheating?
+                # ReceptionTime has to be unique in db, but they do arrive almost at the same time
+                if 2 == len(s):
+                    d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]})
+                elif 3 == len(s):
+                    d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
             return nodeid,d
         elif u'debug' == request.form['event']:
             d = json.loads(request.form['data'])

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# todo: reserve Flask for rendering and routing only. everything else via RPC ("microservice").
-import traceback,sys,logging
+import traceback,sys,logging,xmlrpclib,socket
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from flask import Flask,render_template,request,escape
@@ -8,14 +7,8 @@ from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
 from node.helper import dt2ts
-from node.config.config_support import get_unit,get_description,config_as_dict
-from node.storage.storage2 import storage
-from panels import *
-from dashboard import *
-from nodepage import *
-#from s3 import *
-import v4,v5
-import xmlrpclib,socket
+from node.config.config_support import get_unit,get_range,get_description,config_as_dict
+import panels,dashboard,nodepage,v5
 
 
 logger = logging.getLogger(__name__)
@@ -44,14 +37,15 @@ the node is in that particular site. Trying to phase out the concept of "site".
         logger.error('no such site: {}'.format(escape(site)))
         return 'No such site: {}'.format(escape(site))
 
-    store = storage()
-    if node not in store.get_list_of_tables():
-        return 'No such node: {}'.format(escape(node))
-
-    if variable not in store.get_list_of_columns(node):
-        return 'No such variable: {}'.format(escape(variable))
-    
     try:
+        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+
+        if node not in proxy.get_list_of_tables():
+            return 'No such node: {}'.format(escape(node))
+
+        if variable not in proxy.get_list_of_columns(node):
+            return 'No such variable: {}'.format(escape(variable))
+    
         begin = request.args.get('begin')
         end = request.args.get('end')
         minutes = request.args.get('minutes')
@@ -70,8 +64,6 @@ the node is in that particular site. Trying to phase out the concept of "site".
              'description':desc,
              'bounds':bounds,
              'samples':None}
-
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
         
         if begin is not None:
             begin = float(begin)
@@ -118,36 +110,41 @@ def get_xy(node,variables):
     """Example:
 https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=1500000000&end=1500082230&time_col=Timestamp
 """
-
     logger.debug((node,variables))
 
-    variables = variables.split(',')    # require: no comma in variable name
+    variables = variables.split(',')    # assumption: no comma in variable name
     begin = request.args.get('begin')
     end = request.args.get('end')
     time_col = request.args.get('time_col')
 
-    if begin is None or end is None or time_col is None:
-        return 'begin, end, and time_col must be supplied'
+    if begin is None:
+        return 'missing: begin'
+    if end is None:
+        return 'missing: end'
+    if time_col is None:
+        return 'missing: time_col'
+
     begin = float(begin)
     end = float(end)
-    
-    store = storage()
-    if node not in store.get_list_of_tables():
-        return 'No such node: {}'.format(escape(node))
-
-    for var in variables:
-        if var not in store.get_list_of_columns(node):
-            return 'No such variable: {}'.format(escape(var))
-
-    if time_col not in store.get_list_of_columns(node):
-        return 'No such time column: {}'.format(escape(time_col))
-
-    #return str((begin,end,time_col))
 
     try:
         proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-        r = proxy.query_time_range(node,variables,begin,end,time_col)
-        return dumps([r[k] for k in variables],separators=(',',':'))
+
+        if node not in proxy.get_list_of_tables():
+            return 'No such node: {}'.format(escape(node))
+
+        columns = proxy.get_list_of_columns(node)
+        if time_col not in columns:
+            return 'No such time column: {}'.format(escape(time_col))
+        for var in variables:
+            if var not in columns:
+                return 'No such variable: {}'.format(escape(var))
+
+        #return str((begin,end,time_col))
+
+        r = proxy.query_time_range2(node,variables,begin,end,time_col)
+        #return dumps([r[k] for k in variables],separators=(',',':'))
+        return dumps(r,separators=(',',':'))
     except:
         traceback.print_exc()
         return "it's beyond my paygrade 2"

@@ -35,31 +35,33 @@ def strip_none_nan(r):
     #return {time_col:r[0],var:r[1]}
     return dict(zip(r.keys(),zip(*d)))
 
-'''def fix_ts_format(r,time_col):
-    # convert datetime.datetime to POSIX timestamps (float)
-    if len(r[time_col]) <= 0:
-        return r
-    if type(r[time_col][0]) is datetime:
-        logging.debug('This thing is still using datetime instead of timestamp: {}'.format(node))
-        r[time_col] = [dt2ts(tmp) for tmp in r[time_col]]
-    return r'''
-
 def query_time_range(node,variables,begin,end,time_col):
     assert type(begin) in [float,int],"begin is not float/int"
     assert type(end) in [float,int],"end is not float/int"
-    assert begin < end,"begin >= end"
+    #assert begin < end,"begin >= end"
     store = storage()
     if type(variables) is not list:
-        var = variables
-        r = store.read_time_range(node,time_col,[time_col,var],begin,end)
-        r = strip_none_nan(r)
-        #r = fix_ts_format(r,time_col)
+        tmp = list([variables])
     else:
-        tmp = list(variables)
-        tmp.insert(0,time_col)
-        r = store.read_time_range(node,time_col,tmp,begin,end)
+        tmp = variables
+    #tmp.insert(0,time_col)
+    r = store.read_time_range(node,time_col,tmp,begin,end)
+    r = strip_none_nan(r)
+    #r = fix_ts_format(r,time_col)
     return r
-    
+
+def query_time_range2(node,variables,begin,end,time_col):
+    assert type(begin) in [float,int],"begin must be a float/int"
+    assert type(end) in [float,int],"end must be a float/int"
+    store = storage()
+    if type(variables) is not list:
+        tmp = list([variables])
+    else:
+        tmp = variables
+    r = store.read_time_range2(node,time_col,tmp,begin,end)
+    r = filter(lambda p: all([v is not None for v in p]),r)     # reject any row containing None
+    r = filter(lambda p: all([not math.isnan(v) for v in p]),r) # reject any row containing NaN
+    return r
 
 def get_last_N_minutes(node,var,minutes):
     assert type(minutes) in [float,int] and minutes > 0
@@ -67,15 +69,26 @@ def get_last_N_minutes(node,var,minutes):
     time_col = auto_time_col(store.get_list_of_columns(node))
     r = store.read_last_N_minutes(node,time_col,minutes,nonnull=var)
     r = strip_none_nan(r)
-    #r = fix_ts_format(r,time_col)
     return r
+
+# I'll worry about performance later. like reusing db connection etc.
+def get_list_of_tables():
+    store = storage()
+    return store.get_list_of_tables()
+
+def get_list_of_columns(node):
+    store = storage()
+    return store.get_list_of_columns(node)
 
 
 if '__main__' == __name__:
     from SimpleXMLRPCServer import SimpleXMLRPCServer
-    server = SimpleXMLRPCServer(('localhost',8000),allow_none=True)
+    server = SimpleXMLRPCServer(('localhost',8000),allow_none=True,logRequests=False)
     #server = SimpleXMLRPCServer(('localhost',8000)) # who knows, these may be rewritten in Haskell/Golang later.
     server.register_function(condense,'condense')
     server.register_function(query_time_range,'query_time_range')
+    server.register_function(query_time_range2,'query_time_range2')
     server.register_function(get_last_N_minutes,'get_last_N_minutes')
+    server.register_function(get_list_of_tables,'get_list_of_tables')
+    server.register_function(get_list_of_columns,'get_list_of_columns')
     server.serve_forever()
