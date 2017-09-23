@@ -1,0 +1,59 @@
+# Tests for endpoints used by Lokoia App (Judy, Marion, Jaime)
+#
+# Test all the links in
+# https://docs.google.com/document/d/1wcoqjGphouiHhaTdeWq-PdXdAQimPbeOZJ20sEugNyU/edit
+#
+# Stanley H.I. Lio
+# hlio@hawaii.edu
+# University of Hawaii
+import unittest,requests,logging
+
+
+logging.basicConfig(level=logging.WARNING)
+
+
+class TestLokoiadevApp(unittest.TestCase):
+    
+    def test_pastN(self):
+        urls = ['https://grogdata.soest.hawaii.edu/poh/data/node-004/O2Concentration.json?minutes=1&max_count=1',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-004/O2Concentration.json?minutes=1440&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-004/O2Concentration.json?minutes=10080&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-004/O2Concentration.json?minutes=43200&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-004/Temperature.json?minutes=1440&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-004/O2Concentration.json?minutes=1440&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/location/makaha1/depth.json?minutes=1440&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-025/salinity_seabird.json?minutes=1440&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/node-007/Wind_average.json?minutes=1440&max_count=144',
+                'https://grogdata.soest.hawaii.edu/poh/data/location/makaha2/depth.json?minutes=1440&max_count=144',
+                'http://grogdata.soest.hawaii.edu/poh/data/node-004/Temperature.json?minutes=1&max_count=1',
+                'http://grogdata.soest.hawaii.edu/poh/data/node-004/O2Concentration.json?minutes=1&max_count=1',
+                'http://grogdata.soest.hawaii.edu/poh/data/location/makaha1/depth.json?minutes=1&max_count=1',
+                'http://grogdata.soest.hawaii.edu/poh/data/node-025/salinity_seabird.json?minutes=1&max_count=1',
+                'http://grogdata.soest.hawaii.edu/poh/data/node-007/Wind_average.json?minutes=1&max_count=1',
+                ]
+        for url in urls:
+            logging.info(url)
+            self.assertTrue(200 == requests.get(url).status_code)
+
+
+    def test_static_plots(self):
+        urls = ['https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-004/weekly/Temperature.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-004/weekly/O2Concentration.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-009/weekly/depth_feet.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-025/weekly/salinity_seabird.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-007/weekly/Wind_average.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-004/monthly/Temperature.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-004/monthly/O2Concentration.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-009/monthly/depth_feet.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-025/monthly/salinity_seabird.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-007/monthly/Wind_average.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-008/weekly/depth_feet.png',
+                'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-008/monthly/depth_feet.png',
+                ]
+        for url in urls:
+            logging.info(url)
+            self.assertTrue(200 == requests.get(url).status_code)
+        
+
+if __name__ == '__main__':
+    unittest.main()

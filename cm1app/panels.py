@@ -14,22 +14,22 @@ from datetime import datetime,timedelta
 time_col = 'ReceptionTime'  # TODO: get rid of this
 
 
-@app.route('/<site>/widgets/panels/')
-def route_debug_panels(site):
-    if 'poh' != site:
-        return 'No such site: {}'.format(site)
-    
-    # AJAX vs. server-side
-    '''met_data = route_meteorological()
-    m1 = route_makahaN('makaha1')
-    m2 = route_makahaN('makaha2')
-    tmb = route_makahaN('triplemakahab')
-    return render_template('panels.html',
-                           met_data=Markup(met_data),
-                           makaha1_data=Markup(m1),
-                           makaha2_data=Markup(m2),
-                           triplemakahab_data=Markup(tmb))'''
-    return render_template('panels.html')
+#@app.route('/<site>/widgets/panels/')
+#def route_debug_panels(site):
+#    if 'poh' != site:
+#        return 'No such site: {}'.format(site)
+#    
+#    # AJAX vs. server-side
+#    '''met_data = route_meteorological()
+#    m1 = route_makahaN('makaha1')
+#    m2 = route_makahaN('makaha2')
+#    tmb = route_makahaN('triplemakahab')
+#    return render_template('panels.html',
+#                           met_data=Markup(met_data),
+#                           makaha1_data=Markup(m1),
+#                           makaha2_data=Markup(m2),
+#                           triplemakahab_data=Markup(tmb))'''
+#    return render_template('panels.html')
 
 
 def get_time_boundary(begin,end,minutes):

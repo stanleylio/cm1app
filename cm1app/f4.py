@@ -32,6 +32,8 @@ the node is in that particular site. Trying to phase out the concept of "site".
 
     logger.debug((site,node,variable))
 
+    time_col = 'ReceptionTime'
+
     #if site not in ['poh','coconut','makaipier','sf']:
     if site not in sites:
         logger.error('no such site: {}'.format(escape(site)))
@@ -78,7 +80,7 @@ the node is in that particular site. Trying to phase out the concept of "site".
                 return dumps({'error':errmsg},separators=(',',':'))
             else:
                 logger.debug('from {} to {}'.format(begin,end))
-                r = proxy.query_time_range(node,variable,begin,end,'ReceptionTime')
+                r = proxy.query_time_range(node,[time_col,variable],begin,end,time_col)
         else:
             if minutes is None:
                 minutes = 24*60
@@ -93,7 +95,7 @@ the node is in that particular site. Trying to phase out the concept of "site".
             max_count = int(max_count)
             if max_count > 0:
                 assert 2 == len(r.keys())   # a time column and a variable column
-                time_col = list(set(r.keys()) - set([variable]))[0]
+                #time_col = list(set(r.keys()) - set([variable]))[0]
                 tmp = zip(r[time_col],r[variable])
                 tmp = proxy.condense(zip(r[time_col],r[variable]),max_count)
                 tmp = zip(*tmp)

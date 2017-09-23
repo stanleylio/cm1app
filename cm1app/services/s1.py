@@ -14,6 +14,7 @@ subsample at a 2:1 ratio"""
         return condense(d[0::2],max_count)
     return d
 
+# Simple to write yes, but the whole row is discarded when any field is None/NaN.
 def strip_none_nan(r):
     # convert None into float('nan')
     #r[var] = [float('nan') if tmp is None else tmp for tmp in r[var]]
