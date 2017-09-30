@@ -5,16 +5,16 @@ from flask import Flask,render_template,Markup,request
 from cm1app import app
 from json import dumps
 from node.storage.storage2 import storage,auto_time_col
-from node.config.config_support import get_list_of_nodes,get_list_of_disp_vars,\
+from node.config.config_support import get_list_of_devices,get_list_of_disp_vars,\
      get_attr,get_unit,get_range,get_interval
 
 
 # ... just get rid of this already. so is that blob of public keys.
 site_base_map = {'poh':'base-003',
                  'makaipier':'base-002',
-                 'sf':'base-005',
-                 'coconut':'base-000',
-                 'uhm':'base-000',
+                 'sf':'base-000',
+                 'coconut':'base-010',
+                 'uhm':'base-005',
                  }
 
 
@@ -23,7 +23,7 @@ def data_dashboard(site):
     if site not in site_base_map.keys():
         return 'Error: Unknown site: {}'.format(site)
     
-    nodes = get_list_of_nodes(site)
+    nodes = get_list_of_devices(site)
     store = storage()
     
     S = {}

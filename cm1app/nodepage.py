@@ -6,7 +6,7 @@ from flask import Flask,render_template,Markup,send_from_directory,request,escap
 from cm1app import app
 from json import dumps
 from node.config.config_support import get_list_of_disp_vars,get_attr,\
-     get_unit,get_range,get_description,get_list_of_nodes,config_as_dict,get_interval
+     get_unit,get_range,get_description,get_list_of_devices,config_as_dict,get_interval
 from query_data import read_latest_group_average
 
 
@@ -22,7 +22,7 @@ def route_site_node(site,node):
     if site not in sites:
         return 'Error: Unknown site: {}'.format(escape(site))
 
-    if node not in get_list_of_nodes(site):
+    if node not in get_list_of_devices(site):
         return 'Error: Unknown node: {}'.format(escape(node))
     
     return render_template('nodepage.html',

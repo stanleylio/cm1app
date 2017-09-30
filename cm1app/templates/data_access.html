@@ -15,12 +15,19 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
-			<h2>HTTP API</h2>
+			<h2>Version 2 API</h2>
+			<blockquote>https://grogdata.soest.hawaii.edu/data/2/<span style="color: red"><b>&lt;nodeid&gt;</b></span>/<span style="color: fuchsia"><b>&lt;variables&gt;</b></span>.json?begin=<b>&lt;start time in UNIX time&gt;</b>&end=<b>&lt;end time in UNIX time&gt;</b></blockquote>
+			<h4>Examples</h4>
+			<blockquote><a href="/data/2/node-008/ReceptionTime,d2w.json?begin=1506401855.0&end=1506403655.0&time_col=ReceptionTime">https://grogdata.soest.hawaii.edu/data/2/<span style="color: red"><b>node-008</b></span>/<span style="color: fuchsia"><b>ReceptionTime,d2w</b></span>.json?begin=<b>1506401855</b>&end=<b>1506403655</b></a></blockquote>
+			<p><a href="/static/uhcm/static/api2_get_example.py">Fetch data</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a>)</p>
+			<p><a href="/static/uhcm/static/api2_plot_example.py">Plot data</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a> and <a href="https://matplotlib.org/">matplotlib</a>)</p>
+
+			<h2>Version 1 API (legacy)</h2>
 			<blockquote>https://grogdata.soest.hawaii.edu/<span style="color: orange"><b>&lt;site&gt;</b></span>/data/<span style="color: red"><b>&lt;nodeid&gt;</b></span>/<span style="color: fuchsia"><b>&lt;variable&gt;</b></span>.json?begin=<b>&lt;start time in UNIX time&gt;</b>&end=<b>&lt;end time in UNIX time&gt;</b></blockquote>
-			
-			<h3>Example</h3>
+			<h4>Examples</h4>
 			<p>This returns <span style="color:red">node-008</span> water level data (<span style="color: fuchsia">d2w</span>) from June 22, 2017 8:26:40 AM to June 22, 2017 10:14:07 AM</p>
 			<blockquote><a href="/poh/data/node-008/d2w.json?begin=1498120000&end=1498126447">https://grogdata.soest.hawaii.edu/<span style="color: orange">poh</span>/data/<span style="color: red">node-008</span>/<span style="color: fuchsia">d2w</span>.json?begin=1498120000&end=1498126447</a></blockquote>
+			<p><a href="/static/uhcm/static/api1_get_example.py">Fetch data</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a>)</p>
 		</div>
 	</div>
 	<hr>

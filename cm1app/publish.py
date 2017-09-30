@@ -20,8 +20,7 @@ def to_uhcm_xchg(line,routing_key):
                               body=line,
                               properties=pika.BasicProperties(delivery_mode=2,
                                                               content_type='text/plain',
-                                                              expiration=str(30*24*3600*1000),
-                                                              timestamp=time.time()))
+                                                              expiration=str(30*24*3600*1000)))
         connection.close()
     except:
         logging.exception(traceback.format_exc())

@@ -64,13 +64,13 @@ def fish_handler(request):
             d.append({'ReceptionTime':s[0],'d2w':s[1]})
         return nodeid,d
     else:
-        # firmware version p3~p5c
+        # firmware version p3~p5d
         if u'd2w' == request.form['event']:
             rt = time.time()
             d = []
             for k,s in enumerate(json.loads(request.form['data'])):
                 # is that cheating?
-                # ReceptionTime has to be unique in db, but they do arrive almost at the same time
+                # ReceptionTime has to be unique in db, but they do arrive at almost the same time
                 if 2 == len(s):
                     d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]})
                 elif 3 == len(s):
