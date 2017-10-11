@@ -72,9 +72,11 @@ def fish_handler(request):
                 # is that cheating?
                 # ReceptionTime has to be unique in db, but they do arrive at almost the same time
                 if 2 == len(s):
-                    d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]})
+                    #d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]})
+                    d.append({'Timestamp':s[0],'d2w':s[1]})
                 elif 3 == len(s):
-                    d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
+                    #d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
+                    d.append({'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
             return nodeid,d
         elif u'debug' == request.form['event']:
             d = json.loads(request.form['data'])

@@ -107,7 +107,9 @@ the node is in that particular site. Trying to phase out the concept of "site".
         traceback.print_exc()
         return "it's beyond my paygrade"
 
+# check __init__.py for the line that enable CORS on this endpoint
 @app.route('/data/2/<node>/<variables>.json')
+#@cross_origin() this doesn't work for some reason
 def get_xy(node,variables):
     """Example:
 https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=1500000000&end=1500082230&time_col=Timestamp

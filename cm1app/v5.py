@@ -12,7 +12,7 @@ import logging,traceback,sys,time,json
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from node.helper import dt2ts
-from node.storage.storage2 import storage
+from node.z import send
 from particle import fish_handler
 from publish import to_uhcm_xchg
 from cred import cred
@@ -77,7 +77,8 @@ def s5electronussubmit():
 
         #print(json.dumps(dict(request.form),separators=(',',':')))
         # as it is it's no better than parsing and storing here...
-        to_uhcm_xchg(json.dumps(dict(request.form),separators=(',',':')),request.form['coreid'] + '.samples')
+        # actually no. should parse and reformat to feed into RabbitMQ so data is not lost when db is down. TODO
+        #to_uhcm_xchg(json.dumps(dict(request.form),separators=(',',':')),request.form['coreid'] + '.samples')
 
         # processing
         if u'test-event' == request.form['event']:
@@ -87,13 +88,10 @@ def s5electronussubmit():
             table,d = fish_handler(request)
             if table is None:
                 return d
-            
-            store = storage()
+
             for s in d:
-                #store.insert(table,{'ReceptionTime':s[0],'d2w':s[1]})   # hum... no. Those are Timestamp, NOT ReceptionTime.
-                # but this will mess up plotting until auto_time_col is ready (plot against ReceptionTime only if Timestamp is not available).
-                store.insert(table,s)
-            #return str(d)
+                to_uhcm_xchg(send(None,s,src=table),table + '.samples')
+
             return '{},ok'.format(datetime.utcnow().isoformat())
     except:
         logging.exception(traceback.format_exc())
