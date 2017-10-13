@@ -32,8 +32,9 @@ class TestLokoiadevApp(unittest.TestCase):
                 'http://grogdata.soest.hawaii.edu/poh/data/node-007/Wind_average.json?minutes=1&max_count=1',
                 ]
         for url in urls:
-            logging.info(url)
-            self.assertTrue(200 == requests.get(url).status_code)
+            if not 200 == requests.get(url).status_code:
+                logging.info(url)
+                self.assertTrue(False)
 
 
     def test_static_plots(self):
@@ -51,8 +52,9 @@ class TestLokoiadevApp(unittest.TestCase):
                 'https://grogdata.soest.hawaii.edu/static/uhcm/img/poh/node-008/monthly/depth_feet.png',
                 ]
         for url in urls:
-            logging.info(url)
-            self.assertTrue(200 == requests.get(url).status_code)
+            if not 200 == requests.get(url).status_code:
+                logging.info(url)
+                self.assertTrue(False)
         
 
 if __name__ == '__main__':

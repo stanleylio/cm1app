@@ -5,8 +5,8 @@ sys.path.append(expanduser('~'))
 from flask import Flask,render_template,Markup,send_from_directory,request,escape
 from cm1app import app
 from json import dumps
-from node.config.config_support import get_list_of_disp_vars,get_attr,\
-     get_unit,get_range,get_description,get_list_of_devices,config_as_dict,get_interval
+from node.config.config_support import get_list_of_disp_vars,\
+     get_unit,get_range,get_description,get_list_of_devices,config_as_dict,get_interval,get_plot_range,get_config
 from query_data import read_latest_group_average
 
 
@@ -35,7 +35,7 @@ def route_dataportal(site,node,variable):
         return 'Error: Unknown site: {}'.format(escape(site))
     
     end = request.args.get('end',default=time.time(),type=float)
-    begin = request.args.get('begin',default=end - 7*24*3600,type=float)
+    begin = request.args.get('begin',default=end - get_plot_range(node,variable)*3600,type=float)
         
     return render_template('varpage.html',
                            site=site,
@@ -49,9 +49,9 @@ def data_site_node(site,node):
     if site not in sites:
         return 'Error: Unknown site: {}'.format(escape(site))
     
-    S = {'name':get_attr(node,'name'),
-         'location':get_attr(node,'location'),
-         'note':get_attr(node,'note'),
+    S = {'name':get_config('name',node),
+         'location':get_config('location',node),
+         'note':get_config('note',node),
          }
     
     R = {}

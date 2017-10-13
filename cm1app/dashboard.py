@@ -6,7 +6,7 @@ from cm1app import app
 from json import dumps
 from node.storage.storage2 import storage,auto_time_col
 from node.config.config_support import get_list_of_devices,get_list_of_disp_vars,\
-     get_attr,get_unit,get_range,get_interval
+     get_unit,get_range,get_interval,get_config
 
 
 # ... just get rid of this already. so is that blob of public keys.
@@ -31,8 +31,8 @@ def data_dashboard(site):
     # this way I can add/test config file without a db entry while web is running
     for node in set(nodes).intersection(set([tmp.replace('_','-') for tmp in store.get_list_of_tables()])):
         S[node] = {}
-        S[node]['name'] = get_attr(node,'name')
-        S[node]['location'] = get_attr(node,'location')
+        S[node]['name'] = get_config('name',node)
+        S[node]['location'] = get_config('location',node)
         S[node]['latest_non_null'] = {}
         #print(node,S[node]['name'])
 
