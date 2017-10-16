@@ -73,31 +73,42 @@ def read_baro_avg(site,time_col):
 # ... or should I?
 # map to node, correct for config change (moved sensor etc.), scale and convert unit, filter, remove junk... all optional
 # - - - - -
-
 # query water depth in meter by location (makaha/dock) (not by node)
-# written specifically for the poh app
+# written specifically for the poh apps
 def read_water_depth_by_location(site,location,begin,end):
     time_col = 'ReceptionTime'
     
     if 'poh' == site:
         mnmap = {'makaha1':'node-009',
                  'makaha2':'node-008',
-                 'makaha3':'node-015'}
+                 'makaha3':'node-051',
+                 'river':'node-014',}
         vnmap = {'makaha1':'d2w',
                  'makaha2':'d2w',
-                 'makaha3':'d2w',}
+                 'makaha3':'d2w',
+                 'river':'d2w',}
         fnmap = {'makaha1':lambda x: (50.7 + 1100 - x)/1e3,
                  'makaha2':lambda x: (50.7 + 2180 - x)/1e3,
-                 'makaha3':lambda x: (1701.8 - x)/1e3,}   # 5'7"
+# TODO
+                 'makaha3':lambda x: (1701.8 - x)/1e3,  # 5'7" is for node-015 - need cal for node-051
+                 'river':lambda x: (1422 - x)/1e3,}     # temporary, peak of past 229 days
     elif 'makaipier' == site:
         mnmap = {'dock1':'node-010',}
         vnmap = {'dock1':'d2w',}
         fnmap = {'dock1':lambda x: (6197.6 - x)/1e3,}
+    elif 'coconut' == site:
+        mnmap = {'noaa':'node-046',
+                 'bridge':'node-040'}
+        vnmap = {'noaa':'d2w',
+                 'bridge':'d2w'}
+        fnmap = {'noaa':lambda x: (1400 - x)/1e3,       # again, just the peak. need actual cal params TODO
+                 'bridge':lambda x: (2900 - x)/1e3,}    # TODO
     else:
         assert False
 
     if begin > end:
         return [[],[]]
+    
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
 
@@ -106,14 +117,13 @@ def read_water_depth_by_location(site,location,begin,end):
 
     # convert distance to water (d2w in mm) to water depth (in meter)
     d = [fnmap[location](tmp) for tmp in d]
-    # TODO: node-008 has been moved
 
     # strip all out-of-range readings
     #d = [tmp if tmp >= 0 else float('nan') for tmp in d]
     d = [tmp for tmp in d if tmp >= 0]
 
     # remove spike
-    #d = medfilt(d,21)
+    d = medfilt(d,21)
 
     # don't need(claim) that many digits...
     d = [round(tmp,3) for tmp in d]
@@ -142,8 +152,37 @@ def read_optode_by_location(site,location,begin,end,var):
     t = d[time_col]
     d = d[vnmap[location]]
 
-    # convert distance to water (d2w in mm) to water depth (in meter)
-    #d = [fnmap[location](tmp) for tmp in d]
+    # strip all out-of-range readings
+    d = [tmp if tmp >= 0 else float('nan') for tmp in d]
+
+    # remove spike
+    #d = medfilt(d,21)
+
+    # don't need(claim) that many digits...
+    d = [round(tmp,3) for tmp in d]
+    
+    return [t,d]
+
+
+# this scheme doesn't make sense.
+
+def read_ctd_by_location(site,location,begin,end,var):
+    time_col = 'ReceptionTime'
+
+    if 'poh' == site:
+        mnmap = {'makaha1':'node-025',}
+        vnmap = {'makaha1':'salinity_seabird'}
+        fnmap = {'makaha1':lambda x: x,}
+    else:
+        assert False
+
+    if begin > end:
+        return [[],[]]
+    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
+
+    t = d[time_col]
+    d = d[vnmap[location]]
 
     # strip all out-of-range readings
     d = [tmp if tmp >= 0 else float('nan') for tmp in d]
@@ -155,6 +194,7 @@ def read_optode_by_location(site,location,begin,end,var):
     d = [round(tmp,3) for tmp in d]
     
     return [t,d]
+
 
 if '__main__' == __name__:
     from datetime import datetime,timedelta
