@@ -79,7 +79,7 @@ def read_water_depth_by_location(site,location,begin,end):
     time_col = 'ReceptionTime'
     
     if 'poh' == site:
-        mnmap = {'makaha1':'node-009',
+        mnmap = {'makaha1':'node-049',
                  'makaha2':'node-008',
                  'makaha3':'node-051',
                  'river':'node-014',}
