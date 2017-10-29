@@ -13,6 +13,8 @@ from datetime import datetime,timedelta
 
 time_col = 'ReceptionTime'  # TODO: get rid of this
 
+makaha1_depth = []
+
 
 def get_time_boundary(begin,end,minutes):
     if begin is not None:
@@ -24,16 +26,19 @@ def get_time_boundary(begin,end,minutes):
         if begin >= end:
             errmsg = 'require: begin < end'
             logging.error(errmsg)
-            return dumps({'error':errmsg},separators=(',',':'))
+            #return dumps({'error':errmsg},separators=(',',':'))
+            begin,end = None,None
         else:
             logging.debug('from {} to {}'.format(begin,end))
     elif minutes is not None:
         minutes = float(minutes)
         end = dt2ts()
         begin = end - 60*minutes
-    else:
+
+    if end is None:
         end = dt2ts()
-        begin = dt2ts() - 60
+    if begin is None:
+        begin = end - 60
 
     assert begin is not None
     assert end is not None
@@ -72,12 +77,29 @@ def route_processed_data(site,location,var):
                                   request.args.get('end'),
                                   request.args.get('minutes'))
 
-    if 'depth' == var:
-        t,d = read_water_depth_by_location(site,location,begin,end)
-    elif var in ['oxygen','air','temperature']:
-        t,d = read_optode_by_location(site,location,begin,end,var)
-    elif var in ['salinity']:
-        t,d = read_ctd_by_location(site,location,begin,end,var)
+# - - - - -
+#<tide prediction hack>
+    if 'makaha1' == location and 'depth' == var:
+        global makaha1_depth
+        if len(makaha1_depth) <= 0:
+            for line in open('/var/www/uhcm/data/haha_1452898800_1513554000.csv').readlines():
+                line = line.strip().split(',')
+                makaha1_depth.append([float(line[0]),float(line[1])])
+        tmp = [p for p in makaha1_depth if p[0] >= begin and p[0] <= end]   # window in time
+        if len(tmp):
+            t,d = zip(*tmp)
+        else:
+            t,d = [],[]
+        d = [tmp/1e3 for tmp in d]  # mm to m
+    else:
+#</tide prediction hack>
+# - - - - -
+        if 'depth' == var:
+            t,d = read_water_depth_by_location(site,location,begin,end)
+        elif var in ['oxygen','air','temperature']:
+            t,d = read_optode_by_location(site,location,begin,end,var)
+        elif var in ['salinity']:
+            t,d = read_ctd_by_location(site,location,begin,end,var)
 
     max_count = request.args.get('max_count')
     if max_count is not None:

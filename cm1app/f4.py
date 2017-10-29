@@ -7,14 +7,14 @@ from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
 from node.helper import dt2ts
-from node.config.config_support import get_unit,get_range,get_description,config_as_dict
+from node.config.config_support import get_unit,get_range,get_description,get_list_of_sites
 import panels,dashboard,nodepage,v5
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
-sites = config_as_dict().keys()
+sites = get_list_of_sites()
 
 
 @app.route('/')
@@ -57,10 +57,7 @@ the node is in that particular site. Trying to phase out the concept of "site".
         unit = get_unit(node,variable)
         desc = get_description(node,variable)
         bounds = get_range(node,variable)
-        if bounds is None:
-            bounds = [float('-inf'),float('inf')]
-        else:
-            bounds = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in bounds]
+        assert None not in bounds
 
         d = {'unit':unit,
              'description':desc,

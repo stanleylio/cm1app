@@ -6,14 +6,14 @@ from flask import Flask,render_template,Markup,send_from_directory,request,escap
 from cm1app import app
 from json import dumps
 from node.config.config_support import get_list_of_disp_vars,\
-     get_unit,get_range,get_description,get_list_of_devices,config_as_dict,get_interval,get_plot_range,get_config
+     get_unit,get_range,get_description,get_list_of_devices,get_list_of_sites,get_interval,get_plot_range,get_config
 from query_data import read_latest_group_average
 
 
 time_col = 'ReceptionTime'
 
 
-sites = config_as_dict().keys()
+sites = get_list_of_sites()
 
 
 @app.route('/<site>/nodepage/<node>/')
