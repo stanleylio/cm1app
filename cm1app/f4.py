@@ -7,14 +7,14 @@ from cm1app import app
 from json import dumps
 from datetime import datetime,timedelta
 from node.helper import dt2ts
-from node.config.config_support import get_unit,get_range,get_description,get_list_of_sites
+from node.config.config_support import get_unit,get_range,get_description
 import panels,dashboard,nodepage,v5
+from common import time_col,validate_id
+
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
-
-sites = get_list_of_sites()
 
 
 @app.route('/')
@@ -26,18 +26,14 @@ def site_node_variable(site,node,variable):
     """Examples:
 http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
 
-"site" needs to be one of the defined sites, but it no longer checks if
-the node is in that particular site. Trying to phase out the concept of "site".
+The "site" argument is ignored.
 """
 
     logger.debug((site,node,variable))
 
-    time_col = 'ReceptionTime'
-
-    #if site not in ['poh','coconut','makaipier','sf']:
-    if site not in sites:
-        logger.error('no such site: {}'.format(escape(site)))
-        return 'No such site: {}'.format(escape(site))
+    b,m = validate_id(node)
+    if not b:
+        return m
 
     try:
         proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
@@ -58,6 +54,7 @@ the node is in that particular site. Trying to phase out the concept of "site".
         desc = get_description(node,variable)
         bounds = get_range(node,variable)
         assert None not in bounds
+        assert bounds[0] <= bounds[1]
 
         d = {'unit':unit,
              'description':desc,
@@ -70,20 +67,19 @@ the node is in that particular site. Trying to phase out the concept of "site".
                 end = dt2ts()     # assumption: database time too is in UTC
             else:
                 end = float(end)
-            if begin >= end:
+            '''if begin >= end:
                 # don't actually need this check - sql will just give you [] in this case.
                 errmsg = 'require: begin < end'
                 logger.error(errmsg)
                 return dumps({'error':errmsg},separators=(',',':'))
-            else:
-                logger.debug('from {} to {}'.format(begin,end))
-                r = proxy.query_time_range(node,[time_col,variable],begin,end,time_col)
+            else:'''
+            logger.debug('from {} to {}'.format(begin,end))
+            r = proxy.query_time_range(node,[time_col,variable],begin,end,time_col)
         else:
             if minutes is None:
                 minutes = 24*60
             minutes = float(minutes)
             logger.debug('minutes={}'.format(minutes))
-            #r = get_last_N_minutes(site,node,variable,minutes)
             r = proxy.get_last_N_minutes(node,variable,minutes)
 
         # deal with max_count
@@ -144,7 +140,6 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
         #return str((begin,end,time_col))
 
         r = proxy.query_time_range2(node,variables,begin,end,time_col)
-        #return dumps([r[k] for k in variables],separators=(',',':'))
         return dumps(r,separators=(',',':'))
     except:
         traceback.print_exc()

@@ -33,8 +33,8 @@ class TestAPI(unittest.TestCase):
         for node in nodes:
             end = random.randint(1497130276,1500154178)
             begin = end - 6*3600
-            # no longer checks if node is in site. site has to be a known site though.
-            ep = '/poh/data/{node}/d2w.json?begin={begin}&end={end}'.\
+            # no longer checks if node is in site.
+            ep = '/anysitewilldo/data/{node}/d2w.json?begin={begin}&end={end}'.\
                  format(node=node,
                         begin=begin,
                         end=end)

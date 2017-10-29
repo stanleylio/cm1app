@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# experimenting with HTTP Basic Auth instead of public key signing
+#
+# Stuff that requires Auth. Mostly POST.
 #
 # Stanley H.I. Lio
 # hlio@hawaii.edu
@@ -21,11 +22,10 @@ from cred import cred
 logging.basicConfig(level=logging.DEBUG)
 
 
-# need to add "WSGIPassAuthorization On" to apache site .conf file
+# need to add "WSGIPassAuthorization On" to apache site .conf file to make this work
 
 def check_auth(username,password):
     return username in cred and cred[username] == password
-    #return username == 'uhcm' and password == 'password'
 
 def authenticate():
     return Response(
@@ -46,6 +46,7 @@ def requires_auth(f):
 @app.route('/api/5/raw',methods=['POST'])
 @requires_auth
 def s5rawsubmit():
+    """Store POSTed messages to a text file."""
     try:
         msg = request.form['m']
         src = request.form['src']
@@ -56,16 +57,15 @@ def s5rawsubmit():
             return '{},ok'.format(dt.isoformat())
     except:
         logging.exception(traceback.format_exc())
-        return ''
+        return 'Error'
 
 
-# TODO: options:
-#   pass it verbatium into uhcm;
-#   parse it here before passing to uhcm;
-#   pass both into uhcm?
 @app.route('/api/5/electron_us',methods=['POST'])
 @requires_auth
 def s5electronussubmit():
+    """Accept data from Particle Electrons (via webhooks).
+Parse and reformat data into the send() form and redirect them into RabbitMQ.
+Also maintains a plain-text copy of all messages."""
     try:
         # debug log
         with open('/var/www/uhcm/electron.txt','a') as f:
@@ -75,14 +75,9 @@ def s5electronussubmit():
                                            request.form['event'],
                                            request.form['data']))
 
-        #print(json.dumps(dict(request.form),separators=(',',':')))
-        # as it is it's no better than parsing and storing here...
-        # actually no. should parse and reformat to feed into RabbitMQ so data is not lost when db is down. TODO
-        #to_uhcm_xchg(json.dumps(dict(request.form),separators=(',',':')),request.form['coreid'] + '.samples')
-
         # processing
         if u'test-event' == request.form['event']:
-            return 'this is a test'
+            return 'a test event. ignore.'
 
         if request.form['event'] in [u'd2w',u'debug']:
             table,d = fish_handler(request)
@@ -96,4 +91,4 @@ def s5electronussubmit():
     except:
         logging.exception(traceback.format_exc())
         logging.exception(request)
-        return ''
+        return 'Error'
