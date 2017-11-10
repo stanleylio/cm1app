@@ -19,7 +19,6 @@ def coreid2nodeid(coreid):
                     fish_map[tmp] = node
     return fish_map.get(coreid,None)
 
-
 def parse_electron_msg(ts,s,sample_interval=60):
     s = s.split(',')
     s = [float(tmp) for tmp in s]
@@ -29,6 +28,7 @@ def parse_electron_msg(ts,s,sample_interval=60):
     return zip(t,s)
 
 def fish_handler(request):
+    """return (node-id,list of samples) if message is recognized; (None,reason as string) otherwise"""
     nodeid = coreid2nodeid(request.form['coreid'])
     if nodeid is None:
         return None,'unknown coreid'
@@ -46,18 +46,19 @@ def fish_handler(request):
         # firmware version p3~p5e
         if u'd2w' == request.form['event']:
             rt = time.time()
-            d = []
+            D = []
             for k,s in enumerate(json.loads(request.form['data'])):
-                # is that cheating?
-                # ReceptionTime has to be unique in db, but they do arrive at almost the same time
                 if 2 == len(s):
-                    #d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1]})
-                    d.append({'Timestamp':s[0],'d2w':s[1]})
+                    D.append({'Timestamp':s[0],'d2w':s[1]})
                 elif 3 == len(s):
-                    #d.append({'ReceptionTime':rt + k*1e-5,'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
-                    d.append({'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
-            return nodeid,d
+                    D.append({'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
+            return nodeid,D
+        elif u'd' == request.form['event']:
+            D = json.loads(request.form['data'])
+            return nodeid,D
         elif u'debug' == request.form['event']:
             d = json.loads(request.form['data'])
-            d['ReceptionTime'] = time.time()
+            #d['ReceptionTime'] = time.time()
             return nodeid,[d]
+        else:
+            return None,'Unknown event'

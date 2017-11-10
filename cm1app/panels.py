@@ -82,7 +82,7 @@ def route_processed_data(site,location,var):
     if 'makaha1' == location and 'depth' == var:
         global makaha1_depth
         if len(makaha1_depth) <= 0:
-            for line in open('/var/www/uhcm/data/haha_1452898800_1513554000.csv').readlines():
+            for line in open('/var/www/uhcm/data/tideprediction.csv').readlines():
                 line = line.strip().split(',')
                 makaha1_depth.append([float(line[0]),float(line[1])])
         tmp = [p for p in makaha1_depth if p[0] >= begin and p[0] <= end]   # window in time

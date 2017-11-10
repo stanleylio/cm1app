@@ -13,9 +13,10 @@ name = 'uhcm'
 passwd = cred['uhcm']
 
 
-class TestPEStuff(unittest.TestCase):
+class TestPEd2w(unittest.TestCase):
 
     def test_PEConfig(self):
+        # what's this for?
         self.assertTrue('node-046' == coreid2nodeid('360064001951343334363036'))
 
     def test_submit_api(self):

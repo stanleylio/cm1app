@@ -55,6 +55,7 @@ The "site" argument is ignored.
         bounds = get_range(node,variable)
         assert None not in bounds
         assert bounds[0] <= bounds[1]
+        bounds = [b if b not in [float('-inf'),float('inf')] else None for b in bounds]
 
         d = {'unit':unit,
              'description':desc,

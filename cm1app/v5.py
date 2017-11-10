@@ -79,15 +79,15 @@ Also maintains a plain-text copy of all messages."""
         if u'test-event' == request.form['event']:
             return 'a test event. ignore.'
 
-        if request.form['event'] in [u'd2w',u'debug']:
-            table,d = fish_handler(request)
-            if table is None:
-                return d
+        #if request.form['event'] in [u'd2w',u'debug']:
+        table,D = fish_handler(request)
+        if table is None:
+            return D
 
-            for s in d:
-                to_uhcm_xchg(send(None,s,src=table),table + '.samples')
+        for sample in D:
+            to_uhcm_xchg(send(None,sample,src=table),table + '.samples')
 
-            return '{},ok'.format(datetime.utcnow().isoformat())
+        return '{},ok'.format(datetime.utcnow().isoformat())
     except:
         logging.exception(traceback.format_exc())
         logging.exception(request)

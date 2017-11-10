@@ -9,7 +9,7 @@ host = 'https://grogdata.soest.hawaii.edu'
 
 
 def test1(ep):
-    """Check that the endpoint is available, and there's no None or NaN in the response."""
+    """Check that the endpoint is available, and there's no None, NaN, or inf/-inf in the response."""
     logging.debug('Testing {}'.format(ep))
     result = True
 
@@ -21,6 +21,7 @@ def test1(ep):
     for k in r['samples']:
         result &= all([tmp is not None for tmp in r['samples'][k]])
         result &= all([not math.isnan(tmp) for tmp in r['samples'][k]])
+        result &= all([tmp not in [float('-inf'),float('inf')] for tmp in r['samples'][k]])
     return result
 
 
@@ -28,11 +29,11 @@ class TestAPI(unittest.TestCase):
 
     def testGauges(self):
         # tide gauges
-        nodes = ['node-008','node-009','node-014','node-040','node-047','node-048','node-049','node-075']
+        nodes = ['node-008','node-009','node-014','node-040','node-046','node-048','node-049','node-051','node-070','node-075']
 
         for node in nodes:
             end = random.randint(1497130276,1500154178)
-            begin = end - 6*3600
+            begin = end - 3600
             # no longer checks if node is in site.
             ep = '/anysitewilldo/data/{node}/d2w.json?begin={begin}&end={end}'.\
                  format(node=node,
@@ -55,6 +56,16 @@ class TestAPI(unittest.TestCase):
         self.assertTrue('ReceptionTime' in r['samples'].keys())
         self.assertTrue('Chlorophyll_FLNTUS' in r['samples'].keys())
         self.assertTrue(len(r['samples']['Chlorophyll_FLNTUS']) > 0)
+
+    def test_no_inf(self):
+        ep = '/uhm/data/base-005/uptime_second.json?begin=1506802303.13&end=1509394303.13'
+        ep = host + ep
+        logging.debug('Testing {}'.format(ep))
+        self.assertTrue(test1(ep))
+        r = requests.get(ep).json()
+        self.assertTrue(float('inf') not in r['bounds'])
+        self.assertTrue(float('-inf') not in r['bounds'])
+        self.assertTrue(float('nan') not in r['bounds'])
 
     def testmisc(self):
         eps = [
