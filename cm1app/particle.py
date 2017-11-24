@@ -53,10 +53,11 @@ def fish_handler(request):
                 elif 3 == len(s):
                     D.append({'Timestamp':s[0],'d2w':s[1],'sample_size':s[2]})
             return nodeid,D
-        elif u'd' == request.form['event']:
+        elif u'D1XKIMTJGU' == request.form['event']:
             D = json.loads(request.form['data'])
             return nodeid,D
         elif u'debug' == request.form['event']:
+#TODO: this is not as general as the one above. merge them?
             d = json.loads(request.form['data'])
             #d['ReceptionTime'] = time.time()
             return nodeid,[d]
