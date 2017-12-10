@@ -9,7 +9,6 @@ from node.config.config_support import get_list_of_devices,get_list_of_disp_vars
      get_unit,get_range,get_interval,get_config,get_list_of_sites
 
 
-
 @app.route('/<site>/data/dashboard.json')
 def data_dashboard(site):
     if site not in get_list_of_sites():
