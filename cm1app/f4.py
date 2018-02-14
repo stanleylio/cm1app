@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-import traceback,sys,logging,xmlrpclib,socket
+import traceback, sys, logging, xmlrpclib, socket, json
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-from flask import Flask,render_template,request,escape
+from flask import Flask, render_template, request, escape
 from cm1app import app
-from json import dumps
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from node.helper import dt2ts
-from node.config.config_support import get_unit,get_range,get_description
-import panels,dashboard,nodepage,v5
-from common import time_col,validate_id
+from node.config.config_support import get_unit, get_range, get_description, config_as_dict
+import panels, dashboard, nodepage, v5
+from common import time_col, validate_id
 
 
 
@@ -22,14 +21,14 @@ def route_default():
     return render_template('index.html')
 
 @app.route('/<site>/data/<node>/<variable>.json')
-def site_node_variable(site,node,variable):
+def site_node_variable(site, node, variable):
     """Examples:
 http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
 
 The "site" argument is ignored.
 """
 
-    logger.debug((site,node,variable))
+    logger.debug((site, node, variable))
 
     b,m = validate_id(node)
     if not b:
@@ -50,9 +49,9 @@ The "site" argument is ignored.
         max_count = request.args.get('max_count')
 
         variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
-        unit = get_unit(node,variable)
-        desc = get_description(node,variable)
-        bounds = get_range(node,variable)
+        unit = get_unit(node, variable)
+        desc = get_description(node, variable)
+        bounds = get_range(node, variable)
         assert None not in bounds
         assert bounds[0] <= bounds[1]
         bounds = [b if b not in [float('-inf'),float('inf')] else None for b in bounds]
@@ -72,16 +71,16 @@ The "site" argument is ignored.
                 # don't actually need this check - sql will just give you [] in this case.
                 errmsg = 'require: begin < end'
                 logger.error(errmsg)
-                return dumps({'error':errmsg},separators=(',',':'))
+                return json.dumps({'error':errmsg},separators=(',',':'))
             else:'''
-            logger.debug('from {} to {}'.format(begin,end))
-            r = proxy.query_time_range(node,[time_col,variable],begin,end,time_col)
+            logger.debug('from {} to {}'.format(begin, end))
+            r = proxy.query_time_range(node, [time_col, variable], begin, end, time_col)
         else:
             if minutes is None:
                 minutes = 24*60
             minutes = float(minutes)
             logger.debug('minutes={}'.format(minutes))
-            r = proxy.get_last_N_minutes(node,variable,minutes)
+            r = proxy.get_last_N_minutes(node, variable, minutes)
 
         # deal with max_count
         #if 'error' not in r and max_count is not None:
@@ -90,25 +89,30 @@ The "site" argument is ignored.
             if max_count > 0:
                 assert 2 == len(r.keys())   # a time column and a variable column
                 #time_col = list(set(r.keys()) - set([variable]))[0]
-                tmp = zip(r[time_col],r[variable])
-                tmp = proxy.condense(zip(r[time_col],r[variable]),max_count)
+                tmp = zip(r[time_col], r[variable])
+                tmp = proxy.condense(zip(r[time_col], r[variable]), max_count)
                 tmp = zip(*tmp)
-                r = {time_col:tmp[0],variable:tmp[1]}
+                r = {time_col:tmp[0], variable:tmp[1]}
         
         d['samples'] = r
-        return dumps(d,separators=(',',':'))
+        return json.dumps(d, separators=(',',':'))
     except:
         traceback.print_exc()
         return "it's beyond my paygrade"
 
+
+@app.route('/data/2/config/listing')
+def get_listing():
+    return json.dumps(config_as_dict(), separators=(',',':'))
+
 # check __init__.py for the line that enable CORS on this endpoint
 @app.route('/data/2/<node>/<variables>.json')
 #@cross_origin() this doesn't work for some reason
-def get_xy(node,variables):
+def get_xy(node, variables):
     """Example:
 https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=1500000000&end=1500082230&time_col=Timestamp
 """
-    logger.debug((node,variables))
+    logger.debug((node, variables))
 
     variables = variables.split(',')    # assumption: no comma in variable name
     begin = request.args.get('begin')
@@ -140,8 +144,8 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
 
         #return str((begin,end,time_col))
 
-        r = proxy.query_time_range2(node,variables,begin,end,time_col)
-        return dumps(r,separators=(',',':'))
+        r = proxy.query_time_range2(node, variables, begin, end, time_col)
+        return json.dumps(r, separators=(',',':'))
     except:
         traceback.print_exc()
         return "it's beyond my paygrade 2"

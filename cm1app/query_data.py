@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-import sys,logging,time
+import sys, logging, time
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-from node.config.config_support import get_list_of_nodes,get_list_of_variables
+from node.config.config_support import get_list_of_nodes, get_list_of_variables
 from node.helper import dt2ts
 from datetime import datetime
 from numpy import mean
@@ -15,27 +15,27 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 
-def unnamed(t,x):
+def unnamed(t, x):
     """calculate the medfilt-ed average from observations"""
     if len(t) > 3:
-        return (mean(t),mean(medfilt(x,3)))
+        return (mean(t), mean(medfilt(x, 3)))
     else:
-        return (mean(t),mean(x))
+        return (mean(t), mean(x))
 
-def last(t,x):
-    return (t[-1],x[-1])
+def last(t, x):
+    return (t[-1], x[-1])
 
-def read_latest_group_average(site,time_col,node,variable):
+def read_latest_group_average(site, time_col, node, variable):
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.get_last_N_minutes(node,variable,1)
+    d = proxy.get_last_N_minutes(node, variable, 1)
     assert d is not None
     if len(d[time_col]) <= 0:
-        logger.debug('No data for {} using {}'.format((site,node,variable),time_col))
+        logger.debug('No data for {} using {}'.format((site, node, variable), time_col))
         return None
-    #return unnamed(d[time_col],d[variable])
-    return last(d[time_col],d[variable])
+    #return unnamed(d[time_col], d[variable])
+    return last(d[time_col], d[variable])
 
-def read_baro_avg(site,time_col):
+def read_baro_avg(site, time_col):
     t = []
     p = []
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
@@ -44,17 +44,17 @@ def read_baro_avg(site,time_col):
         variables = get_list_of_variables(node)
         var = 'P_180'   # different units (kPa vs Pa)... WHY...
         if var in variables:
-            r = proxy.query_time_range(node,['ReceptionTime',var],now-60*60,now,'ReceptionTime')
+            r = proxy.query_time_range(node,['ReceptionTime', var], now-60*60, now, 'ReceptionTime')
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend([tmp/1e3 for tmp in r[var]])
         var = 'P_280'
         if var in variables:
-            r = proxy.query_time_range(node,['ReceptionTime',var],now-60*60,now,'ReceptionTime')
+            r = proxy.query_time_range(node,['ReceptionTime', var], now-60*60, now, 'ReceptionTime')
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend(r[var])
-    return unnamed(t,p)
+    return unnamed(t, p)
 
 '''def read_water_depth(site,time_col,node,baro_avg=None):
     """Get water depth in meter."""
@@ -75,7 +75,7 @@ def read_baro_avg(site,time_col):
 # - - - - -
 # query water depth in meter by location (makaha/dock) (not by node)
 # written specifically for the poh apps
-def read_water_depth_by_location(site,location,begin,end):
+def read_water_depth_by_location(site, location, begin, end):
     time_col = 'ReceptionTime'
     
     if 'poh' == site:
@@ -107,10 +107,10 @@ def read_water_depth_by_location(site,location,begin,end):
         assert False
 
     if begin > end:
-        return [[],[]]
+        return [[], []]
     
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
+    d = proxy.query_time_range(mnmap[location], [time_col, vnmap[location]], begin, end, time_col)
 
     t = d[time_col]
     d = d[vnmap[location]]
@@ -123,15 +123,15 @@ def read_water_depth_by_location(site,location,begin,end):
     d = [tmp for tmp in d if tmp >= 0]
 
     # remove spike
-    d = medfilt(d,21)
+    d = medfilt(d, 21)
 
     # don't need(claim) that many digits...
-    d = [round(tmp,3) for tmp in d]
+    d = [round(tmp, 3) for tmp in d]
     
-    return [t,d]
+    return [t, d]
 
 
-def read_optode_by_location(site,location,begin,end,var):
+def read_optode_by_location(site, location, begin, end, var):
     time_col = 'ReceptionTime'
     
     if 'poh' == site:
@@ -145,9 +145,9 @@ def read_optode_by_location(site,location,begin,end,var):
         assert False
 
     if begin > end:
-        return [[],[]]
+        return [[], []]
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
+    d = proxy.query_time_range(mnmap[location], [time_col, vnmap[location]], begin, end, time_col)
 
     t = d[time_col]
     d = d[vnmap[location]]
@@ -166,7 +166,7 @@ def read_optode_by_location(site,location,begin,end,var):
 
 # this scheme doesn't make sense.
 
-def read_ctd_by_location(site,location,begin,end,var):
+def read_ctd_by_location(site, location, begin, end, var):
     time_col = 'ReceptionTime'
 
     if 'poh' == site:
@@ -179,7 +179,7 @@ def read_ctd_by_location(site,location,begin,end,var):
     if begin > end:
         return [[],[]]
     proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
-    d = proxy.query_time_range(mnmap[location],[time_col,vnmap[location]],begin,end,time_col)
+    d = proxy.query_time_range(mnmap[location], [time_col, vnmap[location]], begin, end, time_col)
 
     t = d[time_col]
     d = d[vnmap[location]]
@@ -197,7 +197,7 @@ def read_ctd_by_location(site,location,begin,end,var):
 
 
 if '__main__' == __name__:
-    from datetime import datetime,timedelta
+    from datetime import datetime, timedelta
 #    print get_last_N_minutes('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
-    print(query_time_range('poh','node-008','d2w',datetime.utcnow() - timedelta(hours=1)))
+    print(query_time_range('poh', 'node-008', 'd2w', datetime.utcnow() - timedelta(hours=1)))
     
