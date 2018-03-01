@@ -1,4 +1,4 @@
-import pika,logging,traceback,time,sys
+import pika, logging, traceback, time, sys
 from socket import gethostname
 from os.path import expanduser
 sys.path.append(expanduser('~'))
@@ -7,14 +7,19 @@ from cred import cred
 
 nodeid = gethostname()
 
+# HACK
+BROKER = '192.168.0.28'
+PORT = 5672
 
-def to_uhcm_xchg(line,routing_key):
+
+def to_uhcm_xchg(line, routing_key):
     try:
         exchange = 'uhcm'
-        credentials = pika.PlainCredentials(nodeid,cred['rabbitmq'])
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/',credentials))
+        credentials = pika.PlainCredentials(nodeid, cred['rabbitmq'])
+        #connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/',credentials))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(BROKER, PORT, '/', credentials))
         channel = connection.channel()
-        channel.exchange_declare(exchange=exchange,exchange_type='topic',durable=True)
+        channel.exchange_declare(exchange=exchange, exchange_type='topic', durable=True)
         channel.basic_publish(exchange=exchange,
                               routing_key=routing_key,
                               body=line,
@@ -28,4 +33,4 @@ def to_uhcm_xchg(line,routing_key):
 
 if '__main__' == __name__:
     for i in range(100):
-        to_uhcm_xchg('haha!',nodeid + '.debug')
+        to_uhcm_xchg('haha!', nodeid + '.debug')
