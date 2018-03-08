@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-import traceback, sys, logging, xmlrpclib, socket, json
-from os.path import expanduser
-sys.path.append(expanduser('~'))
+import traceback, logging, xmlrpc.client, socket, json
 from flask import Flask, render_template, request, escape
 from cm1app import app
 from datetime import datetime, timedelta
 from node.helper import dt2ts
 from node.config.config_support import get_unit, get_range, get_description, config_as_dict
-import panels, dashboard, nodepage, v5
-from common import time_col, validate_id
+from cm1app import panels, dashboard, nodepage, v5
+from cm1app.common import time_col, validate_id
 
 
 
@@ -35,7 +33,7 @@ The "site" argument is ignored.
         return m
 
     try:
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
 
         if node not in proxy.get_list_of_tables():
             return 'No such node: {}'.format(escape(node))
@@ -130,7 +128,7 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
     end = float(end)
 
     try:
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
 
         if node not in proxy.get_list_of_tables():
             return 'No such node: {}'.format(escape(node))

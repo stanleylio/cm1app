@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-import sys,traceback,logging,xmlrpclib
+import sys, traceback, logging, xmlrpc.client
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-from flask import Flask,render_template,request
+from flask import Flask, render_template, request
 from cm1app import app
 from json import dumps
 from node.helper import *
-from query_data import read_latest_group_average,read_baro_avg,\
-     read_water_depth_by_location,read_optode_by_location,read_ctd_by_location
-from datetime import datetime,timedelta
+from cm1app.query_data import read_latest_group_average, read_baro_avg,\
+     read_water_depth_by_location, read_optode_by_location, read_ctd_by_location
+from datetime import datetime, timedelta
 
 
 time_col = 'ReceptionTime'  # TODO: get rid of this
@@ -105,14 +105,15 @@ def route_processed_data(site,location,var):
     if max_count is not None:
         max_count = int(max_count)
         if max_count > 0:
-            proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+            proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
             if len(t) <= 0:
-                return dumps({time_col:[],var:[]},separators=(',',':'))
-            tmp = proxy.condense(zip(t,d),max_count)
+                return dumps({time_col:[], var:[]}, separators=(',', ':'))
+            print(type(t[0]), type(d[0]))
+            tmp = proxy.condense(list(zip(t, d)), max_count)
             t,d = zip(*tmp)
 
     r = {time_col:t,var:d}
-    return dumps(r,separators=(',',':'))
+    return dumps(r, separators=(',', ':'))
 
 
 @app.route('/<site>/data/meteorological.json')

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
-import sys, logging, time
+import sys, logging, time, xmlrpc.client
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from node.config.config_support import get_list_of_nodes, get_list_of_variables
@@ -8,7 +7,6 @@ from node.helper import dt2ts
 from datetime import datetime
 from numpy import mean
 from scipy.signal import medfilt
-import xmlrpclib
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +24,7 @@ def last(t, x):
     return (t[-1], x[-1])
 
 def read_latest_group_average(site, time_col, node, variable):
-    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.get_last_N_minutes(node, variable, 1)
     assert d is not None
     if len(d[time_col]) <= 0:
@@ -38,7 +36,7 @@ def read_latest_group_average(site, time_col, node, variable):
 def read_baro_avg(site, time_col):
     t = []
     p = []
-    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
     now = time.time()
     for node in get_list_of_nodes(site):
         variables = get_list_of_variables(node)
@@ -109,7 +107,7 @@ def read_water_depth_by_location(site, location, begin, end):
     if begin > end:
         return [[], []]
     
-    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.query_time_range(mnmap[location], [time_col, vnmap[location]], begin, end, time_col)
 
     t = d[time_col]
@@ -126,8 +124,8 @@ def read_water_depth_by_location(site, location, begin, end):
     d = medfilt(d, 21)
 
     # don't need(claim) that many digits...
-    d = [round(tmp, 3) for tmp in d]
-    
+    # must convert back to Python's native type, otherwise "can't marshal numpy.float64"
+    d = [round(tmp.item(), 3) for tmp in d]
     return [t, d]
 
 
@@ -146,7 +144,7 @@ def read_optode_by_location(site, location, begin, end, var):
 
     if begin > end:
         return [[], []]
-    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.query_time_range(mnmap[location], [time_col, vnmap[location]], begin, end, time_col)
 
     t = d[time_col]
@@ -159,7 +157,8 @@ def read_optode_by_location(site, location, begin, end, var):
     #d = medfilt(d,21)
 
     # don't need(claim) that many digits...
-    d = [round(tmp,3) for tmp in d]
+    # must convert back to Python's native type, otherwise "can't marshal numpy.float64"
+    d = [round(tmp.item(), 3) for tmp in d]
     
     return [t,d]
 
@@ -178,7 +177,7 @@ def read_ctd_by_location(site, location, begin, end, var):
 
     if begin > end:
         return [[],[]]
-    proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.query_time_range(mnmap[location], [time_col, vnmap[location]], begin, end, time_col)
 
     t = d[time_col]
@@ -191,9 +190,9 @@ def read_ctd_by_location(site, location, begin, end, var):
     #d = medfilt(d,21)
 
     # don't need(claim) that many digits...
-    d = [round(tmp,3) for tmp in d]
+    d = [round(tmp, 3) for tmp in d]
     
-    return [t,d]
+    return [t, d]
 
 
 if '__main__' == __name__:

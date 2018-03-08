@@ -1,5 +1,6 @@
-from s1 import query_time_range,logging
-import xmlrpclib,math,unittest
+from s1 import query_time_range, logging
+import math, unittest
+from xmlrpc.client import ServerProxy
 
 
 logging.basicConfig(level=logging.INFO)
@@ -15,20 +16,20 @@ class Testcm1serv(unittest.TestCase):
         # conversion. All time data in db should now be in POSIX timestamp.
         time_col = 'ReceptionTime'
         keys = [time_col,'d2w']
-        r = query_time_range('node-047',keys,1506150000,1506157362,time_col)
+        r = query_time_range('node-051',keys,1506150000,1506157362,time_col)
         logging.debug(r)
         self.assertTrue(len(keys) == len(r))    # all and only what we asked for
         self.assertTrue(all([len(r[k]) == len(r[time_col]) for k in r]))    # all values (lists) are of the same length
         self.assertTrue(len(r['ReceptionTime']) > 0)
 
     def test_proxy_get_list_of_tables(self):
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        proxy = ServerProxy('http://127.0.0.1:8000/')
         tmp = proxy.get_list_of_tables()
         self.assertTrue(all([t in tmp for t in ['node-003','node-004','node-009','node-009','node-020']]))
         self.assertTrue(len(proxy.get_list_of_columns('node-020')) > 0)
 
     def test_proxy_query_time_range(self):
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        proxy = ServerProxy('http://127.0.0.1:8000/')
 
         r = proxy.query_time_range('node-021',['PH_EXT'],1482820675,1482825675,'ReceptionTime')
         logging.debug(r)
@@ -44,7 +45,7 @@ class Testcm1serv(unittest.TestCase):
         self.assertTrue(all([tmp is not None for tmp in r['d2w']]))
 
     def test_get_last_N_minutes(self):
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        proxy = ServerProxy('http://127.0.0.1:8000/')
         r = proxy.get_last_N_minutes('node-021','PH_EXT',10)
         logging.debug(r)
         self.assertTrue('ReceptionTime' in r)
@@ -52,12 +53,12 @@ class Testcm1serv(unittest.TestCase):
         self.assertTrue(len(r['ReceptionTime']) == len(r['PH_EXT']))
 
     def test_condense(self):
-        proxy = xmlrpclib.ServerProxy('http://127.0.0.1:8000/')
+        proxy = ServerProxy('http://127.0.0.1:8000/')
         from random import randint
         for i in range(100):
             N = randint(1,1000)
             lim = randint(1,N)
-            a = range(N)
+            a = list(range(N))
             assert len(proxy.condense(a,lim)) <= lim
 
 

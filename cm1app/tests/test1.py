@@ -29,7 +29,17 @@ class TestAPI(unittest.TestCase):
 
     def testGauges(self):
         # tide gauges
-        nodes = ['node-008','node-009','node-014','node-040','node-046','node-048','node-049','node-051','node-070','node-075']
+        nodes = ['node-008',
+                 'node-009',
+                 'node-014',
+                 'node-040',
+                 'node-046',
+                 'node-048',
+                 'node-049',
+                 'node-051',
+                 'node-070',
+                 'node-075',
+                 'node-092']
 
         for node in nodes:
             end = random.randint(1497130276,1500154178)
