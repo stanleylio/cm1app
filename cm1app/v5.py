@@ -48,7 +48,7 @@ def s5rawsubmit():
     try:
         msg = request.form['m']
         src = request.form['src']
-        with open('/var/uhcm/incoming/api/5/tsraw.txt','a',0) as f:
+        with open('/var/uhcm/incoming/api/5/tsraw.txt', 'a', 1) as f:
             dt = datetime.utcnow()
             ts = dt2ts(dt)
             f.write('{},{},{},{}\n'.format(dt.isoformat(),ts,src,msg))
