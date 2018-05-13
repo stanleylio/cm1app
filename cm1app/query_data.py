@@ -158,7 +158,7 @@ def read_optode_by_location(site, location, begin, end, var):
 
     # don't need(claim) that many digits...
     # must convert back to Python's native type, otherwise "can't marshal numpy.float64"
-    d = [round(tmp.item(), 3) for tmp in d]
+    d = [round(tmp, 3) for tmp in d]
     
     return [t,d]
 

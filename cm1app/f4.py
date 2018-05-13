@@ -87,9 +87,9 @@ The "site" argument is ignored.
             if max_count > 0:
                 assert 2 == len(r.keys())   # a time column and a variable column
                 #time_col = list(set(r.keys()) - set([variable]))[0]
-                tmp = zip(r[time_col], r[variable])
-                tmp = proxy.condense(zip(r[time_col], r[variable]), max_count)
-                tmp = zip(*tmp)
+                tmp = list(zip(r[time_col], r[variable]))
+                tmp = proxy.condense(tmp, max_count)
+                tmp = list(zip(*tmp))
                 r = {time_col:tmp[0], variable:tmp[1]}
         
         d['samples'] = r
