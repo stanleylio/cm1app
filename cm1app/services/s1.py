@@ -51,7 +51,7 @@ def query_time_range(node, variables, begin, end, time_col):
     #r = fix_ts_format(r,time_col)
     return r
 
-def query_time_range2(node,variables,begin,end,time_col):
+def query_time_range2(node, variables, begin, end, time_col):
     assert type(begin) in [float,int],"begin must be a float/int"
     assert type(end) in [float,int],"end must be a float/int"
     store = storage()
@@ -68,7 +68,7 @@ def get_last_N_minutes(node, var, minutes):
     assert type(minutes) in [float, int] and minutes > 0
     store = storage()
     time_col = auto_time_col(store.get_list_of_columns(node))
-    r = store.read_last_N_minutes(node,time_col,minutes,nonnull=var)
+    r = store.read_last_N_minutes(node, time_col, minutes, nonnull=var)
     r = strip_none_nan(r)
     return r
 

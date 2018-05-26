@@ -42,7 +42,7 @@ class TestAPI(unittest.TestCase):
                  'node-092']
 
         for node in nodes:
-            end = random.randint(1497130276,1500154178)
+            end = random.randint(1497130276, 1500154178)
             begin = end - 3600
             # no longer checks if node is in site.
             ep = '/anysitewilldo/data/{node}/d2w.json?begin={begin}&end={end}'.\
@@ -58,14 +58,14 @@ class TestAPI(unittest.TestCase):
 
     def testdataapiformat(self):
         # make sure there's a time_col even though it's not specified in the link
-        url = host + '/poh/data/node-003/Chlorophyll_FLNTUS.json?begin=1505513530.79&end=1506118330.79'
+        url = host + '/poh/data/node-009/d2w.json?begin=1505513530.79&end=1506118330.79'
         r = requests.get(url)
         self.assertTrue(r.status_code == 200)
         r = r.json()
         self.assertTrue(all([p in r.keys() for p in [u'unit', u'description', u'samples', u'bounds']]))
         self.assertTrue('ReceptionTime' in r['samples'].keys())
-        self.assertTrue('Chlorophyll_FLNTUS' in r['samples'].keys())
-        self.assertTrue(len(r['samples']['Chlorophyll_FLNTUS']) > 0)
+        self.assertTrue('d2w' in r['samples'].keys())
+        self.assertTrue(len(r['samples']['d2w']) > 0)
 
     def test_no_inf(self):
         ep = '/uhm/data/base-005/uptime_second.json?begin=1506802303.13&end=1509394303.13'
