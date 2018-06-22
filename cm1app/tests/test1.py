@@ -1,4 +1,4 @@
-import requests,random,math,unittest,logging
+import requests, random, math, unittest, logging, json
 
 
 logging.basicConfig(level=logging.INFO)
@@ -32,14 +32,15 @@ class TestAPI(unittest.TestCase):
         nodes = ['node-008',
                  'node-009',
                  'node-014',
+                 'node-037',
                  'node-040',
                  'node-046',
                  'node-048',
                  'node-049',
                  'node-051',
                  'node-070',
-                 'node-075',
-                 'node-092']
+                 'node-092',
+                 'node-097',]
 
         for node in nodes:
             end = random.randint(1497130276, 1500154178)
@@ -51,7 +52,11 @@ class TestAPI(unittest.TestCase):
                         end=end)
             ep = host + ep
 
-            result = test1(ep)
+            try:
+                result = test1(ep)
+            except json.decoder.JSONDecodeError:
+                result = False
+                
             if not result:
                 logging.warning('FAILED: ' + ep)
                 self.assertTrue(False)
