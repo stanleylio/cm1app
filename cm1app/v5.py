@@ -33,15 +33,15 @@ def authenticate():
 
 def requires_auth(f):
     @wraps(f)
-    def decorated(*args,**kwargs):
+    def decorated(*args, **kwargs):
         auth = request.authorization
-        if not auth or not check_auth(auth.username,auth.password):
+        if not auth or not check_auth(auth.username, auth.password):
             return authenticate()
-        return f(*args,**kwargs)
+        return f(*args, **kwargs)
     return decorated
 
 
-@app.route('/api/5/raw',methods=['POST'])
+@app.route('/api/5/raw', methods=['POST'])
 @requires_auth
 def s5rawsubmit():
     """Store POSTed messages to a text file."""
@@ -51,14 +51,14 @@ def s5rawsubmit():
         with open('/var/uhcm/incoming/api/5/tsraw.txt', 'a', 1) as f:
             dt = datetime.utcnow()
             ts = dt2ts(dt)
-            f.write('{},{},{},{}\n'.format(dt.isoformat(),ts,src,msg))
+            f.write('{},{},{},{},{}\n'.format(dt.isoformat(), ts, request.remote_addr, src, msg))
             return '{},ok'.format(dt.isoformat())
     except:
         logging.exception(traceback.format_exc())
         return 'Error'
 
 
-@app.route('/api/5/electron_us',methods=['POST'])
+@app.route('/api/5/electron_us', methods=['POST'])
 @requires_auth
 def s5electronussubmit():
     """Accept data from Particle Electrons (via webhooks).
@@ -66,7 +66,7 @@ Parse and reformat data into the send() form and redirect them into RabbitMQ.
 Also maintains a plain-text copy of all messages."""
     try:
         # debug log
-        with open('/var/www/uhcm/electron.txt','a') as f:
+        with open('/var/www/uhcm/electron.txt', 'a') as f:
             f.write('{},{},{},{},{}\n'.format(datetime.utcnow(),
                                            time.time(),
                                            request.form['coreid'],
@@ -77,13 +77,12 @@ Also maintains a plain-text copy of all messages."""
         if u'test-event' == request.form['event']:
             return 'a test event. ignore.'
 
-        #if request.form['event'] in [u'd2w',u'debug']:
-        table,D = fish_handler(request)
+        table, D = fish_handler(request)
         if table is None:
             return D
 
         for sample in D:
-            to_uhcm_xchg(send(None,sample,src=table),table + '.samples')
+            to_uhcm_xchg(send(None, sample, src=table), table + '.samples')
 
         return '{},ok'.format(datetime.utcnow().isoformat())
     except:
