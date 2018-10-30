@@ -37,9 +37,13 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h2>Timestamp Format</h2>
-			<p>All measurements are tagged with a timestamp in <a href="https://en.wikipedia.org/wiki/Unix_time" target=_blank>UNIX time</a> format. The time when the data arrive at the database is named <em>ReceptionTime</em> (server's clock). The time when the data was measured at the sensors/loggers in the field is named <em>Timestamp</em> (sensor/logger's clock). Some field sensors do not have internal real-time clock (such as the tide gauges), so they do not have the corresponding Timestamp variable (most of them do have a monotonically increasing 1Hz ticker, however).</p>
-			<p>During normal operation, the difference between ReceptionTime and Timestamp is negligable. However, when the link between field base stations and the database server is temporarily lost (WiFi drop, internet issues...), data messages are queued up at the field base stations. When network is restored, all queued messages are sent to the database at once. ReceptionTime no longer correlates with actual sample time (Timestamp) in such case (<a href="/static/uhcm/img/bad_rt_n17_air_pressure.png">example</a>).</p>
-			<p>All plots on this site are plotted against ReceptionTime. For analysis, the use of Timestamp is encouraged. A handy UNIX time converter can be found <a href="https://www.epochconverter.com/" target=_blank>here</a>.</p>
+			<p>All measurements are tagged with a timestamp in <a href="https://en.wikipedia.org/wiki/Unix_time" target=_blank>POSIX time</a> format (so in UTC). The time when a reading reaches the database is named <em>ReceptionTime</em> (server's clock). The time when the data was measured at the sensors/loggers in the field is named <em>Timestamp</em> or more recently, <em>ts</em> (sensor/logger's clock). Some field sensors do not have internal real-time clock (such as the tide gauges), so they do not have the corresponding Timestamp/ts variable. Some of these do have a monotonically increasing 1Hz ticker, however.</p>
+			<p>During normal operation, the difference between ReceptionTime and Timestamp is negligable. However, when the link between field gateways and the database server is temporarily lost (WiFi dropout, internet blackouts...), sensor readings are queued up at the field gateways. When the link is restored, all queued messages are sent to the database as fast as the server can handle. In this case, ReceptionTime no longer correlates with the actual sample time (Timestamp/ts) (<a href="/static/uhcm/img/bad_rt_n17_air_pressure.png">example</a>).</p>
+			<p>All plots on this site are plotted against ReceptionTime. A handy UNIX time converter can be found <a href="https://www.epochconverter.com/" target=_blank>here</a>.</p>
+			
+			<h3>Burst Sampling</h3>
+			<p>Some devices such as the cellular tide gauges queue up several readings before transmitting at once (for power and bandwidth concern). All readings transmitted in a group would then have ReceptionTime very close to each other. For analysis, Timestamp/ts should be used instead of ReceptionTime.</p>
+			<p>Some instruments do however take a burst of readings in every interval (like node-004), but they always have internal real-time clock and a Timestamp for every reading.</p>
 		</div>
 	</div>
 	<hr>

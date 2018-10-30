@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # need to add "WSGIPassAuthorization On" to apache site .conf file to make this work
 
-def check_auth(username,password):
+def check_auth(username, password):
     return username in cred and cred[username] == password
 
 def authenticate():
@@ -54,7 +54,7 @@ def s5rawsubmit():
             f.write('{},{},{},{},{}\n'.format(dt.isoformat(), ts, request.remote_addr, src, msg))
             return '{},ok'.format(dt.isoformat())
     except:
-        logging.exception(traceback.format_exc())
+        logging.exception('{}: {}'.format(request.form['src'], request.form['m']))
         return 'Error'
 
 
@@ -86,6 +86,5 @@ Also maintains a plain-text copy of all messages."""
 
         return '{},ok'.format(datetime.utcnow().isoformat())
     except:
-        logging.exception(traceback.format_exc())
         logging.exception(request)
         return 'Error'
