@@ -45,8 +45,9 @@
 						['Alekok Fishpond',21.948550,-159.369983,false],
 						['Folly Beach', 32.648056, -79.961389, false],
 						['Nomilo Fishpond', 21.884722, -159.527500, true],
-						['Malama Loko Ea Fishpond', 21.595943, -158.102186, true],
-						['Mokauea Island', 21.307778, -157.891389, true]
+						['Malama Loko Ea Fishpond', 21.595943, -158.102186, false],
+						['Mokauea Island', 21.307778, -157.891389, false],
+						['HBOI', 27.534682, -80.356201, false]
 						];
 					
 					function initMap() {
@@ -101,7 +102,15 @@
 		<div class="visible-xs"><hr></div>
 		
 		<div class="col-md-2 col-md-pull-8">
-			<div id="poh"><img src="/static/uhcm/static/circleball.gif"></div>
+			<!--div id="poh"><img src="/static/uhcm/static/circleball.gif"></div-->
+			<ul class="nav nav-pills" role="tablist">
+				<!--li role="presentation" class="active"><a href="#poh" aria-controls="home" role="tab" data-toggle="tab">He'eia Fishpond</a></li-->
+				<li role="presentation"><a href="#poh" aria-controls="home" role="tab" data-toggle="tab">He'eia Fishpond</a></li>
+			</ul>
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active in" id="poh"><img src="/static/uhcm/static/circleball.gif"></div>
+			</div>
+
 			{% include 'legends.html' %}
 		</div>
 		
