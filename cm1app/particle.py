@@ -42,7 +42,7 @@ def fish_handler(request):
     if nodeid is None:
         return None, 'unknown coreid'
 
-    # firmware version p3~p6c
+    # firmware version p3~latest
     if u'd2w' == request.form['event']:
         rt = time.time()
         D = []

@@ -8,11 +8,12 @@
 	begin = '{{ begin }}';
 	end = '{{ end }}';
 </script>
-<script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/modules/annotations.js"></script>
-<!--script src="https://code.highcharts.com/stock/modules/exporting.js"></script-->
-<!--script src="/static/uhcm/static/highstock/code/highstock.js"></script>
-<script src="/static/uhcm/static/highstock/code/modules/exporting.js"></script-->
+<!--7.0.0 and 7.0.1 bug: it only honors time:useUTC update once. Say Local Time is selected and you switch to UTC, that works. Switch it back to Local Time and the X axis labels are stuck in UTC. Same thing the other way around.-->
+<script src="https://code.highcharts.com/stock/6.2.0/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/6.2.0/modules/annotations.js"></script>
+<!--script src="https://code.highcharts.com/stock/7.0.0/modules/exporting.js"></script-->
+<!--script src="/static/uhcm/static/highstock/highstock.js"></script-->
+<!--script src="/static/uhcm/static/highstock/code/modules/exporting.js"></script-->
 <!--script src="/static/uhcm/static/reconnecting-websocket.min.js"></script-->
 <script src="/static/uhcm/static/jquery.csv.min.js"></script>
 <script
