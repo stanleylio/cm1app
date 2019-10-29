@@ -37,8 +37,8 @@ def strip_none_nan(r):
     return dict(zip(r.keys(), zip(*d)))
 
 def query_time_range(node, variables, begin, end, time_col):
-    assert type(begin) in [float, int],"begin is not float/int"
-    assert type(end) in [float, int],"end is not float/int"
+    assert type(begin) in [float, int], "begin is not float/int"
+    assert type(end) in [float, int], "end is not float/int"
     #assert begin < end,"begin >= end"
     store = storage()
     if type(variables) is not list:
@@ -52,15 +52,15 @@ def query_time_range(node, variables, begin, end, time_col):
     return r
 
 def query_time_range2(node, variables, begin, end, time_col):
-    assert type(begin) in [float,int],"begin must be a float/int"
-    assert type(end) in [float,int],"end must be a float/int"
+    assert type(begin) in [float, int], "begin must be a float/int"
+    assert type(end) in [float, int], "end must be a float/int"
     store = storage()
     if type(variables) is not list:
         tmp = list([variables])
     else:
         tmp = variables
     r = store.read_time_range2(node, time_col, tmp, begin, end)
-    r = filter(lambda p: all([v is not None for v in p]),r)     # reject any row containing None
+    r = filter(lambda p: all([v is not None for v in p]), r)     # reject any row containing None
     r = filter(lambda p: all([not math.isnan(v) for v in p]), r) # reject any row containing NaN
     return list(r)
 
