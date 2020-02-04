@@ -156,6 +156,10 @@ def about():
 def tech():
     return render_template('tech.html')
 
+@app.route('/tech/tidegauge/')
+def tidegauge():
+    return render_template('tidegauge.html')
+
 @app.route('/dev/')
 def dev():
     return render_template('dev.html')
