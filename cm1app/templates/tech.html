@@ -5,7 +5,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12">
-			<h1 class="page-header">Technology</h1>
+			<h1 class="page-header" id="implementation">Implementation</h1>
 		</div>
 	</div>
 	
@@ -19,121 +19,27 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<h3>System Overview</h3>
+		
+		
 
-			<p>The He'eia fishpond is the primary test site for the real-time monitoring system, but there are several other sites where there are a small number of sensors deployed. At each site, sensor readings are transmitted to a custom internet gateway (a <em>base station</em>) via low-power radio transceivers. The base station then relays the data to a UH server for storage and visualization.</p>
-			<p>There is at least one base station per site. Data are made publicly available through HTTP, STOMP over WebSocket, and MySQL database dump (SQL/CSV).</p>
-			
-			<a href="/static/uhcm/img/hosts.png" data-lightbox="df1" data-title="Data Flow">
-				<figure class="figure">
-					<img src="/static/uhcm/img/hosts.png" class="figure-img img-fluid img-rounded img_responsive" alt="Data Flow" style="width:100%">
-				</figure>
-			</a>
+<p>A broad overview of the technology involved in the SMART Coastlines real-time monitoring system.</p>
+<h2 id="system-overview">System Overview</h2>
+<p>The real-time monitor system was first tested at the He`eia fishpond. It has since been expanded to several other sites on and off the Hawaiian islands.</p>
+<p>Sites like the He`eia fishpond has internet, so most instruments on the site report to the server via internet gateway onsite. Other reach the server either through embedded cellular modems or through industrial LTE gateways.</p>
+<p>Data are accepted through AMQP, MQTT, and HTTP POST requests. Data are served publicly through HTTP and WebSocket.</p>
+<p>Most sensors are configured to take measurements at predefined intervals, but there are a few exception which use a query-response scheme.</p>
+<h2 id="instrument-design">Instrument Design</h2>
+<p>Several early prototypes were powered by the <a href="https://beagleboard.org/black">Beaglebone Black</a> single-board computer, with each computer controlling multiple sensors. More recent designs are controlled by custom low-power 8-bit microcontrollers, with each sensor having its own dedicated solar panel, battery backup, and controller. All sensors are solar-powered with battery backup.</p>
+<p>Mechanical parts consist of a mix of custom 3D-printed parts and off-the-shelf plumbing supplies. Software used include Python, C, and SQL. Electronics are mostly fabricated in-house.</p>
+<h2 id="gateway-to-the-internet">Gateway to the Internet</h2>
+<p>The internet gateways are based on the <a href="https://beagleboard.org/black">Beaglebone Black</a> or the <a href="https://www.raspberrypi.org/">Raspberry Pi</a> single-board computers with custom support circuitry. They relay the instruments&#39; broadcast to the server. They hold the received data in their buffer during internet outage (up to ~7 days).</p>
+<p>Most of the tide gauges have their own embedded cellular (2G/3G/LTE) modems, so they submit data directly through the internet. For more details, see their own dedicated <a href="/tech/tidegauge">page</a>.</p>
+
+		
+		
+		
 		</div>
 	</div>
-
-	<hr>
-	
-	<div class="row">
-		<div class="col-sm-12">
-			<h3>Sensor Locations at He`eia Fishpond</h3>
-
-			<div class="textwrap">
-				<a href="/static/uhcm/img/loc1b.jpg" data-lightbox="sat1" data-title="He'eia Fishpond Location of Interest">
-					<figure class="figure">
-						<img src="/static/uhcm/img/loc1b.jpg" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
-					</figure>
-				</a>
-			</div>
-
-			<div class="textwrap">
-				<a href="/static/uhcm/img/df1.png" data-lightbox="dev1" data-title="Fishpond Sensors Network">
-					<figure class="figure">
-						<img src="/static/uhcm/img/df1.png" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
-					</figure>
-				</a>
-			</div>
-			
-			<p>The graph on the right shows the communication links between sensors at the He`eia fishpond.</p>
-			<p>At the fishpond, sensors are installed at the makahas, as shown in the satellite photo. The custom internet gateways also stores the sensor data locally for redundancy. The base station uploads received data to the central server at the University of Hawaii using RabbitMQ (real-time) and rsync (backup). Data are then made publicly available on the <a href="/">project website</a>.</p>
-			<p></p>
-		</div>
-	</div>
-
-	<hr>
-
-	<div class="row">
-		<div class="col-sm-12">
-			<h3>Implementation</h3>
-			
-			<p><a href="http://www.aanderaa.com/productsdetail.php?Oxygen-Optodes-2">Research-grade O2 optodes</r>, <a href="http://www.seabird.com/seaphox">pH sensors</a>, <a href="http://www.seabird.com/sbe19plusv2-seacat-ctd">CTD</a>, as well as a multitude of low-cost commercial-off-the-shelf sensors are employed. As the controller, Beaglebone Black single-board computers (SBCs) and Arduinos query the sensors periodically. Some nodes store data locally in SQL database in addition to beaming them to the internet gateway. Communications between sensor nodes and base stations are handled by XBee (ISM band low-power transceivers).</p>
-			
-			<br>
-			
-			<h4>Architecture</h4>
-			
-			<div class="textwrap">
-				<a href="/static/uhcm/img/capev2.png" data-lightbox="pcb1" data-title="Custom Beaglebone Cape">
-					<figure class="figure">
-						<img src="/static/uhcm/img/capev2.png" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
-					</figure>
-				</a>
-			</div>
-			
-			<p>The primary tasks for the SBCs are
-				<ul>
-					<li>Regularly read the sensors, store, and broadcast the collected data</li>
-					<li>Respond to base station query for unscheduled sampling</li>
-				</ul>
-			</p>
-			<p>Each Beaglebone Black SBC is equipped with real-time clock and watchdog timer, all integrated on a custom cape.</p>
-
-			<p>The software used are all open source. Specific technology used for each task are
-				<ul>
-					<li>I/O: Python Twisted, C (8-bit AVR)</li>
-					<li>Communication: ZeroMQ (node internal), RabbitMQ/AMQP, UDP and SSH (WAN between gateways)</li>
-					<li>Data storage: MySQL, SQLite, plain-text CSV</li>
-					<li>Analysis and visualization: Python pandas; matplotlib for static plots, Highcharts.js for interactive/live plots</li>
-					<li>Data endpoints and website: Python Flask (web framework), Python Autobahn (WebSocket)</li>
-				</ul>
-			</p>
-			
-			<h4>Source Code</h4>
-			<p>Source code for the project is <a href="https://github.com/stanleylio/fishie" target=_blank>on github</a>.</p>
-			
-			<br>
-			
-			<h4>Communication Links Between Processes</h4>
-			<p>The graph below shows the data flows between the base stations and server.</p>
-			<a href="/static/uhcm/img/proc.png" data-lightbox="df2" data-title="Data Flow">
-				<figure class="figure">
-					<img src="/static/uhcm/img/proc.png" class="figure-img img-fluid img-rounded img_responsive" alt="Data Flow" style="width:100%">
-				</figure>
-			</a>
-
-			<h4>Power</h4>
-			<p>Most of the nodes are powered by solar panels with battery backup. Depending on power consumption, batteries from portable USB battery pack to sealed lead acid car battery are used. Some low-power nodes are powered by primary cells.</p>
-		</div>
-	</div>
-
-	<!--hr>
-
-	<div class="row">
-		<div class="col-sm-12">
-			<h3>Custom Data Loggers</h3>
-			<p><a href="puck.JPG" data-lightbox="hack1"><img src="puck.JPG" alt="copper epoxy" class="img_responsive" style="width:20%"></a></p>
-			<p>anti-biofouling + waterproofing</p>
-		</div>
-	</div-->
-	
-	<!--div class="row">
-		<div class="col-xs-12">
-			<h3>Bench Tests</h3>
-			<p>characterize and compare low-cost MEMS sensors: accuracy, resolution/precision, noise/variance, drift/bias/stability, ease of deployment (mechanical: waterproofing)</p>
-			<div id="tester"></div>
-			<br><br>
-		</div>
-	</div-->
 </div>
 <script src="/static/uhcm/static/lightbox2/js/lightbox.min.js" type="text/javascript"></script>
 <script>
