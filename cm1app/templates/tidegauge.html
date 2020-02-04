@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Tide Gauge Design Note{% endblock %}
+{% block content %}
+<link href="/static/uhcm/static/lightbox2/css/lightbox.min.css" rel="stylesheet" type="text/css">
+<div class="container">
+	
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="page-header" id="tide-gauge-design-note">Tide Gauge Design Note</h1>
+		</div>
+	</div>
+
+	<style>
+		.textwrap {
+			float: right;
+			margin: 1em;
+			max-width: 20%
+		}
+	</style>
+
+	<div class="row">
+		<div class="col-xs-12">
+
+
+<!--https://markdowntohtml.com/-->
+<!--source in tide_gauge\manual-->
+
+<h2 id="operating-principle">Operating Principle</h2>
+<p>The tide gauges are mounted on fixed structure above water. They measure the distance from the sensor to the water surface by measuring the time-of-flight of ultrasound (ping, then listen for echo). This variable is named <strong><em>d2w</em></strong> (&quot;distance to water&quot;). Since the mount height is fixed relative to the bottom of the water body, e.g. the side of a bridge or a pier, <strong>water depth can be inferred by subtracting d2w from the height of the sensor</strong>.</p>
+<h2 id="distance-measurement">Distance Measurement</h2>
+<p>The operating range of the distance sensors is typically <strong>0.3 to 5 meter</strong>, though a few recent ones are now equipped with 0.5~10 meter sensors. Resolution is 1 mm while accuracy is <em>TBD</em> with internal temperature compensation. The temperature sensor measures the housing temperature. It does not directly measure the temperature of the air column.</p>
+<p>The distance measurements are in unit of millimeters.</p>
+<p>At the lower limit (&quot;high tide&quot;), for the 0.3~5m version, a reading of 300 means the target (water surface in this case) is <strong>300 mm <em>or less</em> to the sensor</strong> (e.g. during abnormal flooding events). For the 0.5~10m version, that number is <strong>500</strong>.</p>
+<p>At the upper limit (&quot;low tide&quot;), the maximum reported distance for the 0.3~5m version is 4999; a reading of 5000 means no target is detected. For the 0.5~10m version, the numbers are 9998 and 9999 respectively. <strong>No-target readings are excluded</strong> in the sample average and standard deviation calculation.</p>
+<h2 id="measurement-interval">Measurement Interval</h2>
+<p>There are currently two sampling schemes as of January 2020.</p>
+<p>For tide gauges deployed before 2020: one distance <em>measurement</em> is taken every second. Once 60 measurements have been collected, the measurements are averaged into one <em>sample</em>. Depending on configuration, some transmit as soon as a sample is computed (i.e. transmission interval is one minute), while other collect up to 10 samples before transmission (i.e. 10-minute transmission interval, each containing 10 samples).</p>
+<p>Starting in 2020, some tide gauges employ an alternative sampling scheme: 181 distance measurements are taken at one measurement per second, followed by ~179 seconds of idling. The 181 measurements are averaged into one sample. A transmission is made when two samples have been collected. In other word: one sample every <strong>6 minutes</strong>, one transmission every <strong>12 minutes</strong>, each containing two samples, with each sample being the average of <strong>181</strong> distance measurements.</p>
+<p><em>Note about the &quot;averaging&quot;: among the 181 measurements, those outside of 3-sigma are rejected. No-target readings are also rejected as well as failed sensor reads. Average and standard deviation are calculated again for the remaining measurements.</em></p>
+<h2 id="implementation-details">Implementation Details</h2>
+<h3 id="data-link">Data Link</h3>
+<p>There are two types of tide gauges in terms of the data link used: an <a href="https://www.digi.com/xbee">XBee</a> version (900 MHz ISM-band), and a cellular (2G/3G/LTE) version. The 900MHz version requires on-site internet gateway for internet access, while the cellular ones connect to the internet directly.</p>
+<p>There is no non-volatile data memory in the tide gauges.</p>
+<h3 id="timing">Timing</h3>
+<p>All data (tide gauge or not) coming into the server are timestamped by the server. This variable is named <em>ReceptionTime</em>, and is the server&#39;s time (UTC) when the data reached the server.</p>
+<p>While the tide gauges do not contain internal real-time clock, the cellular version does synchronize its clock and timestamp the samples using internet time prior to every transmission (variable <em>Timestamp</em> or <em>ts</em>). The 900MHz tide gauges on the other hand do <em>not</em> timestamp their samples and instead rely solely on <em>ReceptionTime</em>.</p>
+<h3 id="energy-source">Energy Source</h3>
+<p>The tide gauges are solar powered with battery backup (lithium rechargeable from 11 Wh to 26 Wh depending on configuration). The cellular version can operate without solar input for 7~22 days (depends on battery configuration, firmware+hardware revision, and cellular signal strength), while the 900MHz version would last about 30 days. <strong>The cellular version would shut down for 24 hours when battery charge is low.</strong> It then checks battery level every 24 hr. It only resumes operation if battery charge level is above threshold (~3.6V for recent deployments).</p>
+<p><img src="/static/uhcm/img/predeployment.jpg" alt="Tide gauge components with 0mm mark (pre-deployment)" title="Tide gauge components with 0mm mark (pre-deployment)"></p>
+<h2 id="-todo-configuration-matrix">[TODO]Configuration Matrix</h2>
+<p>For all nodes: Measurement rate (ping rate), N_AVG, N_SAMPLE, range {[0.3,5], [0.5,10]}, link medium {900MHz/cellular}, solar panel wattage {0W, 2W, 5.6W, battery {3Ah, 7Ah}
+... may as well share the Google Sheet instead. Latest tide gauges also self-report these params.</p>
+
+
+
+		</div>
+	</div>
+</div>
+<script src="/static/uhcm/static/lightbox2/js/lightbox.min.js" type="text/javascript"></script>
+<script>
+	lightbox.option({
+		'resizeDuration':100,
+		'fadeDuration':100,
+		'wrapAround':false,
+	})
+</script>
+{% endblock %}
