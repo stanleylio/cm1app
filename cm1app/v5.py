@@ -9,7 +9,7 @@ from cm1app import app
 from functools import wraps
 from flask import request, Response
 from datetime import datetime
-import logging, traceback, sys, time, json
+import logging, sys, time, json, bcrypt
 from node.helper import dt2ts
 from node.z import send
 from cm1app.particle import fish_handler
@@ -23,6 +23,13 @@ logging.basicConfig(level=logging.DEBUG)
 # need to add "WSGIPassAuthorization On" to apache site .conf file to make this work
 
 def check_auth(username, password):
+    try:
+        if cred.get(username, None) == bcrypt.hashpw(password.encode(), cred[username]):
+            return True
+    except TypeError:
+        # the legacy stuff is not in binary so bcrypt would complain.
+        pass
+    # legacy.
     return username in cred and cred[username] == password
 
 def authenticate():
@@ -40,7 +47,6 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-
 @app.route('/api/5/raw', methods=['POST'])
 @requires_auth
 def s5rawsubmit():
@@ -56,7 +62,6 @@ def s5rawsubmit():
     except:
         logging.exception('{}: {}'.format(request.form['src'], request.form['m']))
         return 'Error'
-
 
 @app.route('/api/5/electron_us', methods=['POST'])
 @requires_auth

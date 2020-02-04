@@ -14,7 +14,7 @@ def coreid2nodeid(coreid):
     if coreid not in fish_map:
         for site in sorted(get_list_of_sites()):
             for node in get_list_of_nodes(site):
-                tmp = get_config('coreid',node)
+                tmp = get_config('coreid', node)
                 if tmp is not None:
                     fish_map[tmp] = node
     return fish_map.get(coreid, None)
@@ -51,12 +51,16 @@ def fish_handler(request):
                 D.append({'Timestamp':s[0], 'd2w':s[1]})
             elif 3 == len(s):
                 D.append({'Timestamp':s[0], 'd2w':s[1], 'sample_size':s[2]})
+            elif 4 == len(s):
+                D.append({'ts':s[0], 'd2w':s[1], 'std':s[2], 'sc':s[3]})
         return nodeid, D
     elif u'D1XKIMTJGU' == request.form['event']:    # node-047
+        # this is not in use. to be removed soon.
         #D = json.loads(request.form['data'])
         D = parse_node_047_msg(request.form['data'])
         return nodeid, D
     elif request.form['event'] in [u's', u'debug']:
+        # A Particle Photon in Casey's soil warming setup uses this. There might be other as well.
         d = json.loads(request.form['data'])
         return nodeid, [d]
     else:
