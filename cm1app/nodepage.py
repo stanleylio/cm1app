@@ -6,10 +6,9 @@ from flask import render_template, send_from_directory, request, escape
 from cm1app import app
 from json import dumps
 from node.config.config_support import get_list_of_disp_vars,\
-     get_unit, get_range, get_description, get_interval, get_plot_range, get_config
+     get_unit, get_range, get_description, get_interval, get_plot_range, get_config, get_site
 from cm1app.query_data import read_latest_group_average
 from cm1app.common import time_col, validate_id
-
 
 
 @app.route('/<site>/nodepage/<node>/')
@@ -21,7 +20,8 @@ def route_site_node(site, node):
         return m
 
     return render_template('nodepage.html',
-                           site=escape(site),
+                           #site=escape(site),
+                           site=get_site(node),
                            node=escape(node))
 
 @app.route('/<site>/dataportal/<node>/<variable>/')
@@ -35,7 +35,8 @@ def route_dataportal(site, node, variable):
     begin = request.args.get('begin', default=end - get_plot_range(node, variable)*3600, type=float)
         
     return render_template('varpage.html',
-                           site=escape(site),
+                           #site=escape(site),
+                           site=get_site(node),
                            node=escape(node),
                            variable=escape(variable),
                            begin=escape(begin),
@@ -43,14 +44,17 @@ def route_dataportal(site, node, variable):
 
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site, node):
-
+    """Example: https://grogdata.soest.hawaii.edu/staging/nodepage/node-200.json"""
     b,m = validate_id(node)
     if not b:
         return m
+
+    site = get_site(node)
     
     S = {'name':get_config('name', node),
          'location':get_config('location', node),
          'note':get_config('note', node),
+         'tags':get_config('tags', node, default=[])
          }
     
     R = {}
