@@ -9,7 +9,6 @@ from cm1app import panels, dashboard, nodepage, v5
 from cm1app.common import time_col, validate_id
 
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
@@ -113,9 +112,10 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
     logger.debug((node, variables))
 
     variables = variables.split(',')    # assumption: no comma in variable name
+    variables = [v.strip() for v in variables]
     begin = request.args.get('begin')
     end = request.args.get('end')
-    time_col = request.args.get('time_col')
+    time_col = request.args.get('time_col').strip()
 
     if begin is None:
         return 'missing: begin'
@@ -124,8 +124,14 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
     if time_col is None:
         return 'missing: time_col'
 
-    begin = float(begin)
-    end = float(end)
+    if time_col not in variables:
+        return '"time_col" must be among the list of variables.'
+
+    try:
+        begin = float(begin)
+        end = float(end)
+    except ValueError:
+        return '"begin" and "end" must be numbers.'
 
     try:
         proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
@@ -159,6 +165,10 @@ def tech():
 @app.route('/tech/tidegauge/')
 def tidegauge():
     return render_template('tidegauge.html')
+
+@app.route('/tech/logger/')
+def kiwilogger():
+    return render_template('logger.html')
 
 @app.route('/dev/')
 def dev():
