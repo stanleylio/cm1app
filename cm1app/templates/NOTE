@@ -1,0 +1,1 @@
+Simpler to serve jquery and highcharts etc. here instead of asking from third party server, but then you lose CDN and stuff.

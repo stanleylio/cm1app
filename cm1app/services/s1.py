@@ -1,3 +1,4 @@
+# ... I... forgot why I needed this. Can flask not access storage and MySQL directly?
 import sys, logging, math
 from os.path import expanduser
 sys.path.append(expanduser('~'))

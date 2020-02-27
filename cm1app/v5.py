@@ -86,8 +86,8 @@ Also maintains a plain-text copy of all messages."""
         if table is None:
             return D
 
-        for sample in D:
-            to_uhcm_xchg(send(None, sample, src=table), table + '.samples')
+        D = [send(None, d, src=table) for d in D]
+        to_uhcm_xchg(D, table + '.samples')
 
         return '{},ok'.format(datetime.utcnow().isoformat())
     except:

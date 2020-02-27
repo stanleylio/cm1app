@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
-{% block title %}Tide Gauge Design Note{% endblock %}
+{% block title %}Tide Gauge{% endblock %}
 {% block content %}
 <link href="/static/uhcm/static/lightbox2/css/lightbox.min.css" rel="stylesheet" type="text/css">
 <div class="container">
 	
 	<div class="row">
 		<div class="col-xs-12">
-			<h1 class="page-header" id="tide-gauge-design-note">Tide Gauge Design Note</h1>
+			<h1 class="page-header" id="tide-gauge-design-note">Tide Gauge</h1>
 		</div>
 	</div>
 
@@ -36,7 +36,7 @@
 <p>There are currently two sampling schemes as of January 2020.</p>
 <p>For tide gauges deployed before 2020: one distance <em>measurement</em> is taken every second. Once 60 measurements have been collected, the measurements are averaged into one <em>sample</em>. Depending on configuration, some transmit as soon as a sample is computed (i.e. transmission interval is one minute), while other collect up to 10 samples before transmission (i.e. 10-minute transmission interval, each containing 10 samples).</p>
 <p>Starting in 2020, some tide gauges employ an alternative sampling scheme: 181 distance measurements are taken at one measurement per second, followed by ~179 seconds of idling. The 181 measurements are averaged into one sample. A transmission is made when two samples have been collected. In other word: one sample every <strong>6 minutes</strong>, one transmission every <strong>12 minutes</strong>, each containing two samples, with each sample being the average of <strong>181</strong> distance measurements.</p>
-<p><em>Note about the &quot;averaging&quot;: among the 181 measurements, those outside of 3-sigma are rejected. No-target readings are also rejected as well as failed sensor reads. Average and standard deviation are calculated again for the remaining measurements.</em></p>
+<p><em>Note about the &quot;averaging&quot;: among the 181 measurements, those outside of 3-sigma are rejected. No-target readings are also rejected as well as failed sensor reads (e.g. sensor did not respond within the 1s measurement window; usually indicative of hardware damage such as water intrusion). Average and standard deviation are calculated again for the remaining measurements.</em></p>
 <h2 id="implementation-details">Implementation Details</h2>
 <h3 id="data-link">Data Link</h3>
 <p>There are two types of tide gauges in terms of the data link used: an <a href="https://www.digi.com/xbee">XBee</a> version (900 MHz ISM-band), and a cellular (2G/3G/LTE) version. The 900MHz version requires on-site internet gateway for internet access, while the cellular ones connect to the internet directly.</p>
