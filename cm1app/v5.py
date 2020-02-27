@@ -14,7 +14,7 @@ from node.helper import dt2ts
 from node.z import send
 from cm1app.particle import fish_handler
 from cm1app.publish import to_uhcm_xchg
-from cred import cred
+from cred import cred, permission
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -90,6 +90,25 @@ Also maintains a plain-text copy of all messages."""
         to_uhcm_xchg(D, table + '.samples')
 
         return '{},ok'.format(datetime.utcnow().isoformat())
+    except:
+        logging.exception(request)
+        return 'Error'
+
+@app.route('/api/5/ingress', methods=['POST'])
+@requires_auth
+def s5ingress():
+    """"""
+    try:
+        src = request.form['src']
+        if src not in permission.get(request.authorization['username'], []):
+            logging.debug('{} does not own {}'.format(request.authorization['username'], src))
+            return 'Error'
+        data = json.loads(request.form['data'])
+        #print(request.remote_addr, src, data)
+        to_uhcm_xchg(send(None, data, src=src), '{}.samples'.format(src))
+        return '{},ok'.format(datetime.utcnow().isoformat())
+    except json.decoder.JSONDecodeError:
+        logging.exception('malformed json string: {}'.format(request.form['data']))
     except:
         logging.exception(request)
         return 'Error'
