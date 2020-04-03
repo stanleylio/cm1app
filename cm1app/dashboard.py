@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys, traceback
+import sys
 sys.path.append('/home/nuc')
 from flask import Flask, render_template, Markup, request
 from cm1app import app
@@ -61,3 +61,7 @@ def data_dashboard(site):
          'nodes':S}
     
     return dumps(r, separators=(',', ':'))
+
+@app.route('/data/2/status')
+def data_status():
+    pass

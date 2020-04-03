@@ -54,8 +54,15 @@ def data_site_node(site, node):
     S = {'name':get_config('name', node),
          'location':get_config('location', node),
          'note':get_config('note', node),
-         'tags':get_config('tags', node, default=[])
+         'tags':get_config('tags', node, default=[]),
          }
+
+    tmp = get_config('latitude', node, default=None)
+    if tmp is not None:
+        S['latitude'] = tmp
+    tmp = get_config('longitude', node, default=None)
+    if tmp is not None:
+        S['longitude'] = tmp
     
     R = {}
     variables = sorted(get_list_of_disp_vars(node),key=lambda x: x.lower())
