@@ -1,18 +1,23 @@
-from node.config.config_support import get_list_of_sites,get_list_of_devices,get_list_of_variables
+import MySQLdb
 
+def validate_id(nodeid, var=None):
+    conn = MySQLdb.connect(host='localhost', user='webapp', passwd='', db='uhcm', charset='utf8mb4')
+    c = conn.cursor()
+    c.execute("SELECT nodeid FROM uhcm.`devices` WHERE nodeid=%s", (nodeid,))
+    row = c.fetchone()
+    if row is None:
+        conn.close()
+        return False, 'Error: Unknown node'
 
-time_col = 'ReceptionTime'
-sites = get_list_of_sites()
-# getting rid of "site". req: node IDs are unique across "site" folders.
-devices = []
-for site in sites:
-    devices.extend(get_list_of_devices(site))
+    if var is None:
+        conn.close()
+        return True, ''
+    
+    c.execute("SELECT name from uhcm.`variables` where name=%s", (nodeid, var, ))
+    row = c.fetchone()
+    if row is None:
+        conn.close()
+        return False, 'Error: Unknown variable'
 
-
-def validate_id(node,var=None):
-    if node not in devices:
-        return False,'Error: Unknown node'
-
-    if var is not None and var not in get_list_of_variables(node):
-        return False,'Error: Unknown variable'
-    return True,''
+    conn.close()
+    return True, ''

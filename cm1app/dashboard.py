@@ -1,53 +1,85 @@
 # -*- coding: utf-8 -*-
-import sys
+# TODO: To see a good API design, look at RabbitMQ's management console.
+#... just get rid of "site" will you? TODO
+import sys, redis, json, time, math
 sys.path.append('/home/nuc')
-from flask import Flask, render_template, Markup, request
+from flask import Flask, Markup, request, escape
+from datetime import timedelta
 from cm1app import app
-from json import dumps
-from node.storage.storage2 import storage, auto_time_col
-from node.config.config_support import get_list_of_devices, get_list_of_disp_vars,\
-     get_unit, get_range, get_interval, get_config, get_list_of_sites
-
+from node.storage.storage2 import Storage, auto_time_col
+from node.config.c import get_list_of_sites, get_list_of_devices, get_node_attribute, get_variable_attribute, get_list_of_disp_vars
 
 @app.route('/<site>/data/dashboard.json')
 def data_dashboard(site):
-    if site not in get_list_of_sites():
-        return 'Error: Unknown site: {}'.format(site)
-    
-    nodes = get_list_of_devices(site)
-    store = storage()
-    
+    """Example:
+    https://grogdata.soest.hawaii.edu/poh/data/dashboard.json
+    https://grogdata.soest.hawaii.edu/poh/data/dashboard.json?nodes=node-049,base-011
+    """
+
+    # Either supply a list of nodes as query params, or specify a valid "site" name
+    nodes = request.args.get('nodes', default=None)
+    if nodes is not None:
+        nodes = [node.strip() for node in nodes.split(',')]
+    else:
+        if site not in get_list_of_sites():
+            return 'Error: Unknown site: {}'.format(site)
+        nodes = get_list_of_devices(site=site)
+    store = Storage()
+    redis_server = redis.StrictRedis(host='localhost', port=6379, db=0)
+
     S = {}
     # "only for nodes defined in the site config AND have table in db" TODO: "... AND have at least one visible variable"
     # this way I can add/test config file without a db entry while site is running
-    for node in set(nodes).intersection(set([tmp.replace('_', '-') for tmp in store.get_list_of_tables()])):
+    nodes = set(nodes).intersection(set([tmp.replace('_', '-') for tmp in store.get_list_of_tables()]))
+    for node in nodes:
+
         S[node] = {}
-        S[node]['name'] = get_config('name', node)
-        S[node]['location'] = get_config('location', node)
+        S[node]['name'] = get_node_attribute(node, 'name')
+        S[node]['location'] = get_node_attribute(node, 'location')
         S[node]['latest_non_null'] = {}
-        #print(node,S[node]['name'])
 
         dbcols = store.get_list_of_columns(node)
         time_col = auto_time_col(dbcols)
         for var in set(dbcols).intersection(set(get_list_of_disp_vars(node))):
-            # [timestamp,reading,unit,[lower bound, upper bound]]
 
-            tmp = store.read_latest_non_null(node, time_col, var)
-            if tmp is not None:
-                r = [tmp[time_col], tmp[var]]
+            # Response format: [timestamp, value, unit, [lower bound, upper bound], interval, description]
+            r = []
+
+            # TIME AND LATEST VALUE
+            # Latest readings are cached in redis.
+            # They are being cached by log2mysql.py as they come in, as well as inserted after db query here (due to cache miss).
+            tmp = redis_server.get('latest:{}:{}'.format(node, var))
+            if tmp:
+                # cache hit
+                r = json.loads(tmp.decode())
             else:
-                r = [None, None]
+                # cache miss. query db
+                tmp = store.read_latest_non_null(node, time_col, var)
+                if tmp:
+                    r = [tmp[time_col], tmp[var]]
+                    # put in cache (to speed up the decommissioned ones)
+                    redis_server.set('latest:{}:{}'.format(node, var), json.dumps(r), ex=int(timedelta(days=1).total_seconds()))
+                else:
+                    r = [None, None]
 
-            # add unit
-            r.append(get_unit(node, var))
+            # UNIT
+            r.append(get_variable_attribute(node, var, 'unit'))
 
-            # put in the boundaries/limits/range of the variable
-            # use [None,None] if the limits of a variable are not defined.
-            b = get_range(node, var)
-            b = [None if tmp in [float('-inf'), float('inf')] else tmp for tmp in b]
+            # BOUNDARIES
+            lb = get_variable_attribute(node, var, 'lower_bound')
+            ub = get_variable_attribute(node, var, 'upper_bound')
+            b = [lb, ub]
+            #b = [None if tmp in [float('-inf'), float('inf')] else tmp for tmp in b]
             r.append(b)
 
-            r.append(get_interval(node, var))
+            # INTERVAL
+            v = get_variable_attribute(node, var, 'interval_second')
+            if v is None or math.isnan(v):
+                v = None
+            r.append(v)
+
+            # DESCRIIPTION
+            r.append(get_variable_attribute(node, var, 'description'))
 
             S[node]['latest_non_null'][var] = r
 
@@ -60,8 +92,12 @@ def data_dashboard(site):
          #'gmap_link':get_attr(base,'google_earth_link'),
          'nodes':S}
     
-    return dumps(r, separators=(',', ':'))
+    return json.dumps(r, separators=(',', ':'))
 
-@app.route('/data/2/status')
+'''@app.route('/data/2/status.json')
 def data_status():
-    pass
+    """http://grogdata.soest.hawaii.edu/data/2/status.json?nodes=node-138,node-173"""
+    nodes = request.args.get('nodes')
+    nodes = [n.strip() for n in nodes.split(',')]
+    return escape('{}'.format(nodes))
+'''

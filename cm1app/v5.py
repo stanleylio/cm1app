@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Stuff that requires Auth. Mostly POST.
 #
 # Stanley H.I. Lio

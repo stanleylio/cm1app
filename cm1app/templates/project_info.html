@@ -10,81 +10,93 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-8 col-md-push-2">
-			<div class="row">
-				<div class="col-sm-3 col-sm-push-9">
-					<a href="/static/uhcm/img/loc1b.jpg" data-lightbox="sat1" data-title="He'eia Fishpond Satellite View">
-						<figure class="figure">
-							<img src="/static/uhcm/img/loc1b.jpg" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:100%">
-						</figure>
-					</a>
-				</div>
-				<div class="col-sm-9 col-sm-pull-3">
-					<h3>The Project</h3>
-					<p>The project was <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1737357">funded by the National Science Foundation</a> for development and testing of custom, inexpensive, multi-parameter dataloggers with integrated telemetry capability to allow for wireless streaming of data from sensor mininodes to an internet-connected base node. This is a continuation of our <a href="https://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/Research_benthic_boundary.html">recent work</a> on cabled, networked, nearshore observatories. </p>
-					<!--p>In addition to the <a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/Research_benthic_boundary.html">recent work</a> we've done on cabled, networked, nearshore observatories, we have been <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1538697&amp;HistoricalAwards=false">funded by NSF</a> for development and testing of custom, inexpensive, multi-parameter dataloggers with  integrated RF telemetry capability to allow for wireless streaming of data from sensor mininodes to an internet-connected base node.</p-->
-					<p>We have partnered with long-time collaborator, <a href="http://paepaeoheeia.org/" target=_blank>Paepae o He`eia</a>, to implement this wireless coastal sensor network in the He`eia ahupua`a (watershed) to assist with environmental restoration and management efforts and engage K-12 and undergrad audiences in STEM training.</p>
-					<p>The spaces, links, and datasets provided here are rapidly evolving and largely preliminary. Please contact <a href="mailto:glazer@hawaii.edu">Brian Glazer</a> with any project related questions, or <a href="mailto:hlio@soest.hawaii.edu">Stanley Lio</a> for questions regarding data access, bug report, and feature request.
-					</p>
-					
-					<p>Current deployment sites are shown in the map:</p>
-					<div id="map" style="height: 32em; width: 48em;"></div>
-					<script>
-					var coords = [
-						['He`eia Fishpond',21.436212,-157.807639,true],
-						['Hīhīmanu',21.433912,-157.805338,false],
-						['Kahoʻokele',21.435435,-157.805250,false],
-						['Mākāhā Nui',21.437214,-157.805827,false],
-						['Kahoalāhui',21.438390,-157.806729,false],
-						['Coconut Island',21.433901,-157.788155,false],
-						['Makai Pier',21.319512,-157.668308,false],
-						['Moli\'i Fishpond',21.5099857,-157.8458009,false],
-						['Waikalua Loko',21.4104244,-157.7844803,false],
-						['Kaloko`eli Fishpond',21.079767,-157.000367,true],
-						['Ali`i Fishpond',21.0715221,-156.9803577,false],
-						['Alekok Fishpond',21.948550,-159.369983,false],
-						['Folly Beach', 32.648056, -79.961389, false],
-						['Nomilo Fishpond', 21.884722, -159.527500, true],
-						['Malama Loko Ea Fishpond', 21.595943, -158.102186, false],
-						['Mokauea Island', 21.307778, -157.891389, false],
-						['HBOI', 27.534682, -80.356201, false],
-						['Hawaii Kai Marina', 21.281868, -157.708439, false],
-						['Hoonoua Anchialine Pool', 18.973874, -155.601263, false]
-						];
-					
-					function initMap() {
-						var map = new google.maps.Map(document.getElementById('map'), {
-							zoom: 8,
-							center: {lat:coords[0][1],lng:coords[0][2]},
-							mapTypeId: google.maps.MapTypeId.HYBRID
-						});
-						
-						for (var i = 0; i < coords.length; i++) {
-							var m = new google.maps.Marker({
-								position: {lat:coords[i][1],lng:coords[i][2]},
-								map: map
-							});
-							var w = new google.maps.InfoWindow();
-							var ding = function(marker,window,content) {
-								window.setContent(content);
-								window.open(map,marker);
-							};
-							google.maps.event.addListener(m,'click',ding.bind(null,m,w,coords[i][0]));
-							if (coords[i][3]) {
-								ding(m,w,coords[i][0]);
-							}
-						}
-					}
-					</script>
-					<script async defer
-					src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoUjyiVdNFE5c6L5IPd_87m23OhGr5dq4&callback=initMap">
-					</script>
-				</div>
+		<div class="col-md-2 col-md-push-8">
+			<!--div id="poh"><img src="/static/uhcm/static/circleball.gif"></div-->
+			<ul class="nav nav-pills" role="tablist">
+				<!--li role="presentation" class="active"><a href="#poh" aria-controls="home" role="tab" data-toggle="tab">He'eia Fishpond</a></li-->
+				<li class="nav-item"><a class="nav-link" href="#poh" aria-controls="home" role="tab" data-toggle="tab">He'eia Fishpond</a></li>
+			</ul>
+			<!--THIS THING IS A CONSTANT SOURCE OF ANNOYANCE. THE ONLY EXCEPTION THAT ALWAYS BUGS OUT ON EVERY UPDTAE. div class="tab-content">
+				<div role="tabpanel" class="tab-pane active in" id="poh"><img src="/static/uhcm/static/circleball.gif"></div>
+			</div-->
+			<div id="table_placeholder">
+				<img src="/static/uhcm/static/circleball.gif">
 			</div>
+
+			<!--{% include 'legends.html' %}-->
+		</div>
+		
+		<div class="visible-xs"><hr></div>
+		
+		<div class="col-md-8 col-md-pull-2">
+			<h4>The Project</h4>
+			<!--a href="/static/uhcm/img/loc1b.jpg" data-lightbox="sat1" data-title="He'eia Fishpond Satellite View">
+				<figure class="figure">
+					<img src="/static/uhcm/img/loc1b.jpg" class="figure-img img-fluid img-rounded img_responsive" alt="He'eia fishpond satellite" style="width:20%">
+				</figure>
+			</a-->
+			<p>The project was <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1737357">funded by the National Science Foundation</a> for development and testing of custom, inexpensive, multi-parameter dataloggers with integrated telemetry capability to allow for wireless streaming of data from sensor mininodes to an internet-connected base node. This is a continuation of our <a href="https://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/Research_benthic_boundary.html">recent work</a> on cabled, networked, nearshore observatories. </p>
+			<!--p>In addition to the <a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/Research_benthic_boundary.html">recent work</a> we've done on cabled, networked, nearshore observatories, we have been <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1538697&amp;HistoricalAwards=false">funded by NSF</a> for development and testing of custom, inexpensive, multi-parameter dataloggers with  integrated RF telemetry capability to allow for wireless streaming of data from sensor mininodes to an internet-connected base node.</p-->
+			<p>We have partnered with long-time collaborator, <a href="http://paepaeoheeia.org/" target=_blank>Paepae o He`eia</a>, to implement this wireless coastal sensor network in the He`eia ahupua`a (watershed) to assist with environmental restoration and management efforts and engage K-12 and undergrad audiences in STEM training.</p>
+			<p>The spaces, links, and datasets provided here are rapidly evolving and largely preliminary. Please contact <a href="mailto:glazer@hawaii.edu">Brian Glazer</a> with any project related questions, or <a href="mailto:hlio@soest.hawaii.edu">Stanley Lio</a> for questions regarding data access, bug report, and feature request.
+			</p>
+			
+			<p>Some sites on the Hawaiian islands:</p>
+			<div id="map" style="height: 30em; width: 40em;"></div>
+			<script>
+			var coords = [
+				['He`eia Fishpond',21.436212,-157.807639,true],
+				['Hīhīmanu',21.433912,-157.805338,false],
+				['Kahoʻokele',21.435435,-157.805250,false],
+				['Mākāhā Nui',21.437214,-157.805827,false],
+				['Kahoalāhui',21.438390,-157.806729,false],
+				['Coconut Island',21.433901,-157.788155,false],
+				['Makai Pier',21.319512,-157.668308,false],
+				['Moli\'i Fishpond',21.5099857,-157.8458009,false],
+				['Waikalua Loko',21.4104244,-157.7844803,false],
+				['Kaloko`eli Fishpond',21.079767,-157.000367,true],
+				['Ali`i Fishpond',21.0715221,-156.9803577,false],
+				['Alekok Fishpond',21.948550,-159.369983,false],
+				['Folly Beach', 32.648056, -79.961389, false],
+				['Nomilo Fishpond', 21.884722, -159.527500, true],
+				['Malama Loko Ea Fishpond', 21.595943, -158.102186, false],
+				['Mokauea Island', 21.307778, -157.891389, false],
+				['HBOI', 27.534682, -80.356201, false],
+				['Hawaii Kai Marina', 21.281868, -157.708439, false],
+				['Hoonoua Anchialine Pool', 18.973874, -155.601263, false]
+				];
+			
+			function initMap() {
+				var map = new google.maps.Map(document.getElementById('map'), {
+					zoom: 6,
+					center: {lat:coords[0][1],lng:coords[0][2]},
+					mapTypeId: google.maps.MapTypeId.HYBRID
+				});
+				
+				for (var i = 0; i < coords.length; i++) {
+					var m = new google.maps.Marker({
+						position: {lat:coords[i][1],lng:coords[i][2]},
+						map: map
+					});
+					var w = new google.maps.InfoWindow();
+					var ding = function(marker,window,content) {
+						window.setContent(content);
+						window.open(map,marker);
+					};
+					google.maps.event.addListener(m,'click',ding.bind(null,m,w,coords[i][0]));
+					if (coords[i][3]) {
+						ding(m,w,coords[i][0]);
+					}
+				}
+			}
+			</script>
+			<script async defer
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoUjyiVdNFE5c6L5IPd_87m23OhGr5dq4&callback=initMap">
+			</script>
 
 			<hr>
 			
-			<h3>Wireless sensor mininodes in He`eia Fishpond</h3>
+			<h4>Wireless sensor mininodes in He`eia Fishpond</h4>
 			<p>Several low-cost wireless sensor nodes are deployed at He'eia Fishpond, Kāneʻohe Bay, Oahu. The <a href="/tech/">sensor packages</a> are collecting continuous environmental data to better understand physical conditions and biogeochemical cycles in real-time.</p>
 			<!--p>The nodes measure a combination of meteorological conditions, such as water depth, conductivity, temperature, dissolved oxygen, turbidity, and chlorophyll. They are deployed at the following locations:
 			<ul>
@@ -103,30 +115,15 @@
 		
 		<div class="visible-xs"><hr></div>
 		
-		<div class="col-md-2 col-md-pull-8">
-			<!--div id="poh"><img src="/static/uhcm/static/circleball.gif"></div-->
-			<ul class="nav nav-pills" role="tablist">
-				<!--li role="presentation" class="active"><a href="#poh" aria-controls="home" role="tab" data-toggle="tab">He'eia Fishpond</a></li-->
-				<li role="presentation"><a href="#poh" aria-controls="home" role="tab" data-toggle="tab">He'eia Fishpond</a></li>
-			</ul>
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane active in" id="poh"><img src="/static/uhcm/static/circleball.gif"></div>
-			</div>
-
-			{% include 'legends.html' %}
-		</div>
-		
-		<div class="visible-xs"><hr></div>
-		
 		<div class="col-md-2">
-			<h4>About</h4>
+			<h6>About</h6>
 			<p><a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1737357" target=_blank>Project Abstract (NSF)</a></p>
 			<p><a href="https://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/Lab_People.html">People</a></p>
 			<p><a href="https://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/Research.html">Biogeochemistry</a></p>
 			<p><a href="/tech/">Technology</a></p>
 			<p><a href="https://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/DataLoggers/PoH/Photos/IMG_8144.JPG">Outreach</a></p>
 			<hr>
-			<h4>Data</h4>
+			<h6>Data</h6>
 			<p><a href="/">System Status</a></p>
 			<!--p><a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/DataLoggers/PoH/dbDownload">Full dataset (SQLite)</a></p-->
 			<!--p><a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/DataLoggers/PoH/base-003/www/storage/sensor_data.db">Full data set (SQLite)</a></p-->
@@ -134,7 +131,7 @@
 			<!--p><a href="/static/data/sensor_data.db">Full data set (SQLite)</a></p>
 			<p><a href="/static/uhcm/data/mysql.sql.gz">Full data set (MySQL dump)</a></p-->
 			<hr>
-			<h4>How to Help</h4>
+			<h6>How to Help</h6>
 			<p><a href="http://paepaeoheeia.org/volunteer/">Volunteer!</a></p>
 			<p><a href="https://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/Opportunities.html">Donate!</a></p>
 			<p><a href="https://docs.google.com/a/hawaii.edu/forms/d/1efq7dS65d45ehaIAsHXPN-lSEcUifjznwar2Gu0xuTE/edit?usp=drive_web">Help provide data!</a></p>
@@ -143,7 +140,8 @@
 </div>
 <script src="/static/uhcm/static/lightbox2/js/lightbox.min.js" type="text/javascript"></script>
 <script>
-	sites = ['poh'];
+	// what a hack... why do we keep that poh table on this project info page?
+	site_name_map = {"poh":"He'eia Fishpond", };
 </script>
 <script src="/static/uhcm/static/dashboard.js" type="text/javascript"></script>
 <script>

@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-import sys, traceback, time
+import sys, time
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from flask import render_template, send_from_directory, request, escape
 from cm1app import app
 from json import dumps
-from node.config.config_support import get_list_of_disp_vars,\
-     get_unit, get_range, get_description, get_interval, get_plot_range, get_config, get_site
+from node.config.c import get_list_of_disp_vars, get_node_attribute, get_variable_attribute
 from cm1app.query_data import read_latest_group_average
-from cm1app.common import time_col, validate_id
+from cm1app.common import validate_id
 
 
 @app.route('/<site>/nodepage/<node>/')
@@ -21,7 +19,7 @@ def route_site_node(site, node):
 
     return render_template('nodepage.html',
                            #site=escape(site),
-                           site=get_site(node),
+                           site=get_node_attribute(node, 'site'),
                            node=escape(node))
 
 @app.route('/<site>/dataportal/<node>/<variable>/')
@@ -32,11 +30,11 @@ def route_dataportal(site, node, variable):
         return m
     
     end = request.args.get('end', default=time.time(), type=float)
-    begin = request.args.get('begin', default=end - get_plot_range(node, variable)*3600, type=float)
+    begin = request.args.get('begin', default=end - get_variable_attribute(node, variable, 'plot_range_second'), type=float)
         
     return render_template('varpage.html',
                            #site=escape(site),
-                           site=get_site(node),
+                           site=get_node_attribute(node, 'site'),
                            node=escape(node),
                            variable=escape(variable),
                            begin=escape(begin),
@@ -49,32 +47,32 @@ def data_site_node(site, node):
     if not b:
         return m
 
-    site = get_site(node)
+    site = get_node_attribute(node, 'site')
     
-    S = {'name':get_config('name', node),
-         'location':get_config('location', node),
-         'note':get_config('note', node),
-         'tags':get_config('tags', node, default=[]),
+    S = {'name':get_node_attribute(node, 'name'),
+         'location':get_node_attribute(node, 'location'),
+         'note':get_node_attribute(node, 'note'),
+         'tags':get_node_attribute(node, 'tags'),
          }
 
-    tmp = get_config('latitude', node, default=None)
+    tmp = get_node_attribute(node, 'latitude')
     if tmp is not None:
         S['latitude'] = tmp
-    tmp = get_config('longitude', node, default=None)
+    tmp = get_node_attribute(node, 'longitude')
     if tmp is not None:
         S['longitude'] = tmp
     
     R = {}
     variables = sorted(get_list_of_disp_vars(node),key=lambda x: x.lower())
     for k,var in enumerate(variables):
-        d = read_latest_group_average(site, time_col, node, var)
+        d = read_latest_group_average(site, 'ReceptionTime', node, var)
         if d is not None:
             r = {'var':var,
                  'ts':round(d[0], 1),
                  'val':round(d[1], 3),
-                 'unit':get_unit(node, var),
-                 'interval':get_interval(node, var),
-                 'desc':get_description(node, var),
+                 'unit':get_variable_attribute(node, var, 'unit'),
+                 'interval':get_variable_attribute(node, var, 'interval_second'),
+                 'desc':get_variable_attribute(node, var, 'description'),
                  }
         else:
             r = {'var':var,
@@ -84,9 +82,9 @@ def data_site_node(site, node):
                  'interval':None,
                  'desc':None,
                  }
-        b = get_range(node, var)
-        if b is not None:
-            r['range'] = [None if tmp in [float('-inf'),float('inf')] else tmp for tmp in b]
+        lb = get_variable_attribute(node, var, 'lower_bound')
+        ub = get_variable_attribute(node, var, 'upper_bound')
+        r['range'] = [lb, ub]
 
         R[k] = r
     S['readings'] = R

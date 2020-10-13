@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sys, logging, time, xmlrpc.client
 from os.path import expanduser
 sys.path.append(expanduser('~'))

@@ -1,0 +1,228 @@
+<h1 id="huliwai-a-low-cost-water-level-logger">Huliwai: A Low-cost Water Level Logger</h1>
+<p><a href="/static/uhcm/static/kiwi/logger_resized.jpg" data-lightbox="plots"><img src="/static/uhcm/static/kiwi/logger_resized.jpg" alt="A wild logger spotted!" style="width:240px;"/></a></p>
+<p>The <strong><em>huliwai</em></strong> is a data logger capable of measuring <strong>temperature, pressure, and light intensity</strong> for over 100 days at one measurement per minute. Powered by two AA battery cells, it is user-serviceable and completely self-contained, with sensors and data logger integrated in one waterproof package.</p>
+<p><a href="https://www.tablesgenerator.com/markdown_tables"></a></p>
+<h2 id="specifications">Specifications</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Metric</th>
+<th>Value</th>
+<th>Unit</th>
+<th>Condition</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Temperature</td>
+<td>Range</td>
+<td>[0,40]</td>
+<td>°C</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Accuracy</td>
+<td>+/-0.1</td>
+<td>°C</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Resolution</td>
+<td>16 or 24</td>
+<td>bit</td>
+<td>-</td>
+<td>Configuration-dependent.</td>
+</tr>
+<tr>
+<td>Pressure</td>
+<td>Range</td>
+<td>[0,30]</td>
+<td>Bar</td>
+<td>-</td>
+<td>Roughly 300 meters depth; configuration-dependent.</td>
+</tr>
+<tr>
+<td></td>
+<td>Accuracy</td>
+<td>100</td>
+<td>mBar</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Resolution</td>
+<td>0.5</td>
+<td>mBar</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>RGB Light</td>
+<td>Range</td>
+<td>[0,65535]</td>
+<td>N/A</td>
+<td>-</td>
+<td>RGB+W; un-calibrated raw count.</td>
+</tr>
+<tr>
+<td>Ambient Light (HDR)</td>
+<td>Range</td>
+<td>[0,65535]</td>
+<td>N/A</td>
+<td>-</td>
+<td>Dual-channel; un-calibrated raw count.</td>
+</tr>
+<tr>
+<td>Sampling Interval</td>
+<td>-</td>
+<td>{0.2, 1, 60}</td>
+<td>Second</td>
+<td>-</td>
+<td>User-configurable.</td>
+</tr>
+<tr>
+<td>Endurance</td>
+<td>-</td>
+<td>43</td>
+<td>Hour</td>
+<td>0.2s interval</td>
+<td>Memory-limited.</td>
+</tr>
+<tr>
+<td></td>
+<td>-</td>
+<td>9</td>
+<td>Day</td>
+<td>1s interval</td>
+<td>Memory-limited.</td>
+</tr>
+<tr>
+<td></td>
+<td>-</td>
+<td>110</td>
+<td>Day</td>
+<td>60s interval; Energizer EN91</td>
+<td>Battery-limited.</td>
+</tr>
+</tbody>
+</table>
+<p>Note: Endurance tests were conducted with off-the-shelf alkaline cells (e.g. Energizer EN91). Lithium primaries such as Energizer L91 typically last ~30% longer.</p>
+<h2 id="interface">Interface</h2>
+<p>The logger has an IrCOMM (IrDA) interface to enable configuration and data transfer without opening the housing. A USB to IR adapter is used to communicate with the loggers.</p>
+<p><a href="/static/uhcm/static/kiwi/iradapter_resized.jpg" data-lightbox="plots"><img src="/static/uhcm/static/kiwi/iradapter_resized.jpg" alt="USB-IR Adapter" style="width:240px;"/></a></p>
+<h2 id="quick-start-guide">Quick Start Guide</h2>
+<ul>
+<li>Download the example software from <a href="https://github.com/smartcoastlines-org/huliwai">https://github.com/smartcoastlines-org/huliwai</a></li>
+<li>Install Python 3:<ul>
+<li><a href="https://www.python.org/downloads/">https://www.python.org/downloads/</a></li>
+</ul>
+</li>
+<li>Install Python libraries. Open a terminal / command prompt:<ul>
+<li>Mac/Linux: <code>python3 -m pip install --upgrade pyserial matplotlib</code></li>
+<li>Windows: <code>python -m pip install --upgrade pyserial matplotlib</code></li>
+</ul>
+</li>
+<li>(optional for modern computers) Install the driver for the USB IR Adapter<ul>
+<li><a href="https://www.ftdichip.com/Drivers/VCP.htm">https://www.ftdichip.com/Drivers/VCP.htm</a></li>
+<li>Recent Windows, Mac, and Debian Linux either already have the driver built-in or can fetch and install automatically when USB IR Adapter is plugged in the first time</li>
+</ul>
+</li>
+<li>Connect the USB IR Adapter to the logger<ul>
+<li>Try different orientations until the blue light on the logger come on</li>
+<li>Verify that the green light on the logger is flashing</li>
+<li>Logger and USB IR Adapter can communicate while separated by up to 10 cm</li>
+</ul>
+</li>
+<li>Connect the USB cable to your computer / Raspberry Pi<ul>
+<li>(optional) Locate the serial port on the PC/Mac. On the Raspberry Pi it’s usually <code>/dev/ttyUSB0</code></li>
+</ul>
+</li>
+<li>Press the Reset Switch at least once on the USB IR Adapter (see photo below)</li>
+<li>Execute the script <code>discover.py</code> in the downloaded example folder<ul>
+<li>Mac/Linux: <code>python3 discover.py</code></li>
+<li>Windows: <code>python discover.py</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="operating-modes">Operating Modes</h2>
+<p>In <strong>sleep</strong> mode, power consumption is reduced to minimum and communication with the logger is not possible. In <strong>idle</strong> mode, logger is ready to accept commands from PC.</p>
+<p>The logger automatically enters sleep mode if</p>
+<ul>
+<li>A magnet is not present on the sensor frontend</li>
+<li>There is no active sampling session, and</li>
+<li>There is no communication from the PC in the past few minutes.</li>
+</ul>
+<p>The logger would exit sleep mode and enter idle mode if</p>
+<ul>
+<li>Power to the logger was interrupted, or</li>
+<li>A magnet is present on the sensor frontend</li>
+</ul>
+<p>When sampling at 1-minute interval, the logger would enter sleep mode between measurements. A magnet is needed to re-establish communication with the PC.</p>
+<p>When the logger is idling, a green light would flash every second. A (very dim) red light would flash every time a measurement is taken. The blue light would come on when a magnet is present regardless of the mode the logger is currently in.</p>
+<h2 id="handling-and-maintenance">Handling and Maintenance</h2>
+<ul>
+<li>Remove the batteries if the logger won’t be used for an extended period of time<ul>
+<li>The logger would still draw a small amount of power even when idling. Completely drained alkaline cells are prone to leakage</li>
+</ul>
+</li>
+<li>Inspect pressure sensor port, epoxy surface, and sensor frontend before and after every deployment<ul>
+<li>It is recommended to cover the pressure sensor port with high-vacuum grease before every deployment (see image below)</li>
+</ul>
+</li>
+<li>Do not poke the pressure sensor port</li>
+<li>Do not twist the grey sensor front end</li>
+<li>Do not shake or drop the logger</li>
+<li>Do not let the magnet go near ferromagnetic material or it might be attracted to it and shatter itself on impact</li>
+</ul>
+<p><a href="/static/uhcm/static/kiwi/frontend_resized.jpg" data-lightbox="plots"><img src="/static/uhcm/static/kiwi/frontend_resized.jpg" alt="Annotated sensor frontend" style="width:480px;"/></a></p>
+<h3 id="a-note-on-battery-replacement">A note on battery replacement</h3>
+<p>The sensor frontend is retained by friction only. It can be pulled out straight from the tube (avoid twisting). The O-ring is 3/32 width, dash number 118. Accepted batteries include 1.5V alkaline, 1.2 Ni-MH rechargeable cells, or 1.6V lithium primaries.</p>
+<p><a href="/static/uhcm/static/kiwi/internals.jpg" data-lightbox="annotated"><img src="/static/uhcm/static/kiwi/internals.jpg" alt="Logger internals" style="width:480px;"/></a></p>
+<p>The sensor frontend is connected to the circuit board (color may vary) with a 2x5 2mm-pitch connector:</p>
+<p><a href="/static/uhcm/static/kiwi/connector.JPG" data-lightbox="annotated"><img src="/static/uhcm/static/kiwi/connector.JPG" alt="Sensor frontend connector" style="width:240px;"/></a></p>
+<p>If the sensor frontend is disconnected from the circuit board, it must be reattached in the orientation shown below (notice the D-shape cutout):</p>
+<p><a href="/static/uhcm/static/kiwi/correct.JPG" data-lightbox="endcapconnection"><img src="/static/uhcm/static/kiwi/correct.JPG" alt="Correct orientation example" style="width:240px;"/></a>
+<a href="/static/uhcm/static/kiwi/incorrect.JPG" data-lightbox="endcapconnection"><img src="/static/uhcm/static/kiwi/incorrect.JPG" alt="Incorrect orientation example" style="width:240px;"/></a></p>
+<p><a href="/static/uhcm/static/kiwi/cutout.jpg" data-lightbox="endcapconnection"><img src="/static/uhcm/static/kiwi/cutout.jpg" alt="Sensor frontend cutout orientation" style="width:480px;"/></a></p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptoms</th>
+<th>Possible Causes and Proposed Solutions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logger does not wake up with magnet</td>
+<td>Replace the batteries<br> Verify sensor frontend connection</td>
+</tr>
+<tr>
+<td>Logger not responding to PC</td>
+<td>Bring the magnet close to the magnet switch on the sensor frontend to wake it up<br> Press the reset switch on the USB Adapter<br> Verify the selection of serial port on the PC</td>
+</tr>
+<tr>
+<td>Frequent communication error</td>
+<td>Bring the logger closer to the USB Adapter<br> Shield the sensor frontend from external light source</td>
+</tr>
+<tr>
+<td>Data extraction stopped before reaching 100%</td>
+<td>The percentage denotes the amount of data with respect to the total capacity of the logger, not the total amount of data stored in memory.</td>
+</tr>
+<tr>
+<td>I have started logging but the red light is not flashing</td>
+<td>The red light is very dim when lit. It only lights up when the logger is actively taking a measurement at the moment. If the sampling interval is 60 seconds, the red LED would only turn on briefly once every 60 seconds.</td>
+</tr>
+<tr>
+<td>The clock is wrong</td>
+<td>The example scripts set the logger to UTC time using the clock on the PC/RPi just before logging is started. Logger would lose track of time if power is out (low battery, or after battery replacement).</td>
+</tr>
+</tbody>
+</table>

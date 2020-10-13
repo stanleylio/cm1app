@@ -3,7 +3,7 @@ import sys, logging, math
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from datetime import datetime
-from node.storage.storage2 import storage, auto_time_col
+from node.storage.storage2 import Storage, auto_time_col
 from node.helper import dt2ts
 
 
@@ -41,7 +41,7 @@ def query_time_range(node, variables, begin, end, time_col):
     assert type(begin) in [float, int], "begin is not float/int"
     assert type(end) in [float, int], "end is not float/int"
     #assert begin < end,"begin >= end"
-    store = storage()
+    store = Storage()
     if type(variables) is not list:
         tmp = list([variables])
     else:
@@ -55,7 +55,7 @@ def query_time_range(node, variables, begin, end, time_col):
 def query_time_range2(node, variables, begin, end, time_col):
     assert type(begin) in [float, int], "begin must be a float/int"
     assert type(end) in [float, int], "end must be a float/int"
-    store = storage()
+    store = Storage()
     if type(variables) is not list:
         tmp = list([variables])
     else:
@@ -67,7 +67,7 @@ def query_time_range2(node, variables, begin, end, time_col):
 
 def get_last_N_minutes(node, var, minutes):
     assert type(minutes) in [float, int] and minutes > 0
-    store = storage()
+    store = Storage()
     time_col = auto_time_col(store.get_list_of_columns(node))
     r = store.read_last_N_minutes(node, time_col, minutes, nonnull=var)
     r = strip_none_nan(r)
@@ -75,11 +75,11 @@ def get_last_N_minutes(node, var, minutes):
 
 # I'll worry about performance later. like reusing db connection etc.
 def get_list_of_tables():
-    store = storage()
+    store = Storage()
     return store.get_list_of_tables()
 
 def get_list_of_columns(node):
-    store = storage()
+    store = Storage()
     return store.get_list_of_columns(node)
 
 

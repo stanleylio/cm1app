@@ -1,216 +1,211 @@
 ﻿{% block navbar %}
 <style>
-body { padding-top: 0.5em; }
+	body { padding-top: 3em; }
 </style>
 
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">SmartCoastlines.org</a>
-    </div>
-
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+	
+	<a class="navbar-brand" href="/">SmartCoastlines.org</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+  
 <!-- TODO: auto-generate this -->
 	
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Information <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<!--li><a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/DataLoggers/PoH/HeeiaDataHome" target="_blank">Project Homepage</a></li-->
-			<span class="navbar-text">Project</span>
-			<li><a href="/project_info/">Overview</a></li>
-			<li><a href="/data_access/">Data Access</a></li>
-			<li><a href="https://flic.kr/s/aHskUTVDaH" target=_blank>Photo Gallery</a></li>
-			<li role="separator" class="divider"></li>
-			<span class="navbar-text">Technology</span>
-			<li><a href="/tech/">Overview</a></li>
-			<li><a href="/tech/tidegauge">Tide Gauge</a></li>
-			<li><a href="/tech/logger">Water Level Logger</a></li>
-          </ul>
+    <div class="collapse navbar-collapse" id="navbarsExample03">
+      <ul class="navbar-nav mr-auto">
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="dropdown_information" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Information</a>
+			<div class="dropdown-menu" aria-labelledby="dropdown_information">
+				<!--li><a href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/DataLoggers/PoH/HeeiaDataHome" target="_blank">Project Homepage</a></li-->
+				<h6 class="dropdown-header">Project</h6>
+				<a class="dropdown-item" href="/project_info/">Overview</a>
+				<a class="dropdown-item" href="/data_access/">Data Access</a>
+				<a class="dropdown-item" href="https://flic.kr/s/aHskUTVDaH">Photo Gallery</a>
+				<div class="dropdown-divider"></div>
+				<h6 class="dropdown-header">Technology</h6>
+				<a class="dropdown-item" href="/tech/">Overview</a>
+				<a class="dropdown-item" href="/tech/tidegauge">Tide Gauge</a>
+				<a class="dropdown-item" href="/tech/logger">Water Level Logger</a>
+				<a class="dropdown-item" href="/tech/loggerhd">Water Level Logger (HD)</a>
+			</div>
 		</li>
-		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">He`eia <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <span class="navbar-text">Hīhīmanu</span>
-			<!--li><a href="/poh/nodepage/node-003/">CTD+O2+Turbidity (node-003)</a></li-->
-			<li><a href="/poh/nodepage/node-188/">Salinity (node-188)</a></li>
-			<li><a href="/poh/nodepage/node-189/">Dissolved Oxygen (node-189)</a></li>
-			<li><a href="/poh/nodepage/node-009/">Tide Gauge (node-009)</a></li>
-			<li><a href="/poh/nodepage/node-049/">Tide Gauge (node-049)</a></li>
-			<li><a href="/poh/nodepage/node-025/">Seabird CTD (node-025)</a></li>
-			<li role="separator" class="divider"></li>
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="dropdown_heeia" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">He`eia</a>
+			<div class="dropdown-menu" aria-labelledby="dropdown_heeia">
+				<h6 class="dropdown-header">Hīhīmanu</h6>
+				<!--li><a href="/poh/nodepage/node-003/">CTD+O2+Turbidity (node-003)</a></li-->
+				<a class="dropdown-item" href="/poh/nodepage/node-188/">Salinity (node-188)</a>
+				<a class="dropdown-item" href="/poh/nodepage/node-189/">Dissolved Oxygen (node-189)</a>
+				<a class="dropdown-item" href="/poh/nodepage/node-009/">Tide Gauge (node-009)</a>
+				<a class="dropdown-item" href="/poh/nodepage/node-049/">Tide Gauge (node-049)</a>
+				<a class="dropdown-item" href="/poh/nodepage/node-025/">Seabird CTD (node-025)</a>
+				<div class="dropdown-divider"></div>
 
-			<span class="navbar-text">Kahoʻokele</span>
-			<li><a href="/poh/nodepage/node-008/">Tide Gauge (node-008)</a></li>
-			<li role="separator" class="divider"></li>
-			
-			<span class="navbar-text">Mākāhā Nui</span>
-			<li><a href="/poh/nodepage/node-051/">Tide Gauge (node-051)</a></li>
-			<li role="separator" class="divider"></li>
-			
-			<span class="navbar-text">Wai #1</span>
-			<li><a href="/poh/nodepage/node-014/">Tide Gauge (node-014)</a></li>
-			<li role="separator" class="divider"></li>
+				<h6 class="dropdown-header">Kahoʻokele</h6>
+				<a class="dropdown-item" href="/poh/nodepage/node-008/">Tide Gauge (node-008)</a>
+				<div class="dropdown-divider"></div>
+				
+				<h6 class="dropdown-header">Mākāhā Nui</h6>
+				<a class="dropdown-item" href="/poh/nodepage/node-051/">Tide Gauge (node-051)</a>
+				<div class="dropdown-divider"></div>
+				
+				<h6 class="dropdown-header">Wai #1</h6>
+				<a class="dropdown-item" href="/poh/nodepage/node-014/">Tide Gauge (node-014)</a>
+				<div class="dropdown-divider"></div>
 
-			<span class="navbar-text">Pua Pond</span>
-			<li><a href="/poh/nodepage/node-182/">Salinity (node-182)</a></li>
-			<li><a href="/poh/nodepage/node-183/">Dissolved Oxygen (node-183)</a></li>
-			<li role="separator" class="divider"></li>
-			
-			<span class="navbar-text">Coast Guard Tower</span>
-			<li><a href="/poh/nodepage/node-006/">Met. Station (node-006)</a></li>
-			<li role="separator" class="divider"></li>
-			
-			<li><a href="/static/uhcm/static/pohrtwind.html">Real Time Wind</a></li>
-			<!--li><a href="https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=KHIKANEO20"><img src="http://banners.wunderground.com/cgi-bin/banner/ban/wxBanner?bannertype=wxstnsticker_both&weatherstationcount=KHIKANEO20" height="160" width="160" border="0" alt="Weather Underground PWS KHIKANEO20" /></a></li-->
-			<li><a href="https://www.wunderground.com/personal-weather-station/dashboard?ID=KHIKANEO20" target=_blank><span class="glyphicon glyphicon-tint" aria-hidden="true"></span> KHIKANEO20 @ Weather Underground</a></li>
-          </ul>
+				<h6 class="dropdown-header">Pua Pond</h6>
+				<a class="dropdown-item" href="/poh/nodepage/node-182/">Salinity (node-182)</a>
+				<a class="dropdown-item" href="/poh/nodepage/node-183/">Dissolved Oxygen (node-183)</a>
+				<div class="dropdown-divider"></div>
+				
+				<h6 class="dropdown-header">Coast Guard Tower</h6>
+				<a class="dropdown-item" href="/poh/nodepage/node-006/">Met. Station (node-006)</a>
+				<div class="dropdown-divider"></div>
+				
+				<a class="dropdown-item" href="/static/uhcm/static/pohrtwind.html">Real Time Wind</a>
+				<!--li><a href="https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=KHIKANEO20"><img src="http://banners.wunderground.com/cgi-bin/banner/ban/wxBanner?bannertype=wxstnsticker_both&weatherstationcount=KHIKANEO20" height="160" width="160" border="0" alt="Weather Underground PWS KHIKANEO20" /></a></li-->
+				<a class="dropdown-item" href="https://www.wunderground.com/personal-weather-station/dashboard?ID=KHIKANEO20" target=_blank><span class="glyphicon glyphicon-tint" aria-hidden="true"></span> KHIKANEO20 @ Weather Underground</a>
+			</div>
         </li>
 		<!--li class="dropdown">
 		  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Coconut<span class="caret"></span></a>
           <ul class="dropdown-menu">
-			<li><a href="/coconut/nodepage/node-040/">Tide Gauge (node-040)</a></li>
-			<li><a href="/coconut/nodepage/node-046/">Tide Gauge (node-046, cellular)</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="/coconut/nodepage/node-021/">Monty (node-021)</a></li>
-			<li><a href="/coconut/nodepage/node-022/">Coco (node-022)</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="/coconut/nodepage/node-020/">Coral Tank #1 (node-020)</a></li>
+			<a href="/coconut/nodepage/node-040/">Tide Gauge (node-040)</a>
+			<a href="/coconut/nodepage/node-046/">Tide Gauge (node-046, cellular)</a>
+			<div class="dropdown-divider"></div>
+			<a href="/coconut/nodepage/node-021/">Monty (node-021)</a>
+			<a href="/coconut/nodepage/node-022/">Coco (node-022)</a>
+			<div class="dropdown-divider"></div>
+			<a href="/coconut/nodepage/node-020/">Coral Tank #1 (node-020)</a>
           </ul>
 		</li-->
-		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Molokaʻi<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<li><a href="/molokai/nodepage/node-036/">Tide Gauge (node-036)</a></li>
-			<li><a href="/molokai/nodepage/node-048/">Tide Gauge (node-048, cellular)</a></li>
-          </ul>
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="dropdown_molokai" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Molokaʻi</a>
+			<div class="dropdown-menu" aria-labelledby="dropdown_molokai">
+				<a class="dropdown-item" href="/molokai/nodepage/node-036/">Tide Gauge (node-036)</a>
+				<a class="dropdown-item" href="/molokai/nodepage/node-048/">Tide Gauge (node-048, cellular)</a>
+			</div>
 		</li>
-		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Nomilo<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<li><a href="/nomilo/nodepage/node-184/">Salinity (node-184)</a></li>
-			<li><a href="/nomilo/nodepage/node-185/">DO (node-185)</a></li>
-			<li><a href="/nomilo/nodepage/node-121/">Tide Gauge (Tunnel, node-121)</a></li>
-			<li><a href="/nomilo/nodepage/node-123/">Tide Gauge (Beach, node-123)</a></li>
-			<li><a href="/nomilo/nodepage/node-034/">Tide Gauge (Beach, node-034)</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="/nomilo/nodepage/node-130/">Met. Station (node-130)</a></li>
-			<li><a href="/static/uhcm/static/nomilowind.html">Real Time Wind</a></li>
-          </ul>
+		<li class="nav-item dropdown">
+		  <a class="nav-link dropdown-toggle" href="#" id="dropdown_nomilo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nomilo</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown_nomilo">
+			<a class="dropdown-item" href="/nomilo/nodepage/node-184/">Salinity (node-184)</a>
+			<a class="dropdown-item" href="/nomilo/nodepage/node-185/">DO (node-185)</a>
+			<a class="dropdown-item" href="/nomilo/nodepage/node-121/">Tide Gauge (Tunnel, node-121)</a>
+			<a class="dropdown-item" href="/nomilo/nodepage/node-123/">Tide Gauge (Beach, node-123)</a>
+			<a class="dropdown-item" href="/nomilo/nodepage/node-034/">Tide Gauge (Beach, node-034)</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="/nomilo/nodepage/node-130/">Met. Station (node-130)</a>
+			<a class="dropdown-item" href="/static/uhcm/static/nomilowind.html">Real Time Wind</a>
+          </div>
 		</li>
 		<!--li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Waikalua<span class="caret"></span></a>
           <ul class="dropdown-menu">
-			<li><a href="/waikalua/nodepage/node-033/">Tide Gauge (node-033)</a></li>
-			<li><a href="/waikalua/nodepage/node-038/">Tide Gauge (node-038)</a></li>
-			<li><a href="/waikalua/nodepage/node-101/">O2 + Salinity (node-101)</a></li>
+			<li><a href="/waikalua/nodepage/node-033/">Tide Gauge (node-033)</a>
+			<li><a href="/waikalua/nodepage/node-038/">Tide Gauge (node-038)</a>
+			<li><a href="/waikalua/nodepage/node-101/">O2 + Salinity (node-101)</a>
           </ul>
 		</li-->
 		<!--li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Foster City <span class="caret"></span></a>
           <ul class="dropdown-menu">
-			<li><a href="/sf/nodepage/node-011/">Tide Gauge (node-011)</a></li>
-			<li><a href="/sf/nodepage/node-012/">Tide Gauge (node-012)</a></li>
+			<li><a href="/sf/nodepage/node-011/">Tide Gauge (node-011)</a>
+			<li><a href="/sf/nodepage/node-012/">Tide Gauge (node-012)</a>
           </ul>
 		</li-->
 		<!--li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Coconut <span class="caret"></span></a>
           <ul class="dropdown-menu">
-			<li><a href="/coconut/nodepage/node-026/">Hollie's (node-026)</a></li>
+			<li><a href="/coconut/nodepage/node-026/">Hollie's (node-026)</a>
           </ul>
 		</li-->
-		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SMART<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<span class="navbar-text">Manoa</span>
-			<li><a href="/smart/nodepage/node-039/">Aihualama (node-039)</a></li>
-			<li><a href="/smart/nodepage/node-090/">Manoa Stream (node-090)</a></li>
-			<li><a href="/smart/nodepage/node-097/">Kanewai (node-097)</a></li>
-			<li><a href="/smart/nodepage/node-139/">Met. Station - Lyon Aboretum CR3000 (node-139)</a></li>
-			<li><a href="/smart/nodepage/node-112/">Met. Station - Lyon Aboretum Wind (node-112)</a></li>
-			<li><a href="/smart/nodepage/node-084/">Met. Station - UHM (node-084)</a></li>
-			<li><a href="/static/uhcm/static/lyonwind.html">Real Time Wind (Lyon)</a></li>
-			<li><a href="/static/uhcm/static/msbwind.html">Real Time Wind (UHM)</a></li>
-			<li role="separator" class="divider"></li>
-			<span class="navbar-text">Palolo</span>
-			<li><a href="/smart/nodepage/node-037/">Wai‘ōma‘o Stream (node-037)</a></li>
-			<li><a href="/smart/nodepage/node-120/">Pükele Stream (node-120)</a></li>
-			<li><a href="/smart/nodepage/node-127/">Palolo Stream (node-127)</a></li>
-			<li><a href="/smart/nodepage/node-108/">Palolo Valley Rain (node-108)</a></li>
-			<li><a href="/smart/nodepage/node-088/">Manoa-Palolo Drainage (node-088)</a></li>
-			<li role="separator" class="divider"></li>
-			<span class="navbar-text">Makiki</span>
-			<li><a href="/smart/nodepage/node-098/">Makiki Stream (node-098)</a></li>
-			<li><a href="/smart/nodepage/node-109/">Makiki Rain (node-109)</a></li>
-			<li><a href="/smart/nodepage/node-129/">Liljestrand House Rain(node-129)</a></li>
-			<li role="separator" class="divider"></li>
-			<span class="navbar-text">Ala Wai</span>
-			<li><a href="/smart/nodepage/node-076/">Stream Gauge (node-076)</a></li>
-			<li><a href="/smart/nodepage/node-116/">Hawaii Yacht Club FDOM (node-116)</a></li>
-			<li><a href="/smart/nodepage/node-117/">FDOM (node-117)</a></li>
-			<li><a href="/smart/nodepage/node-118/">SeapHOx (node-118)</a></li>
-			<li><a href="/smart/nodepage/node-201/">Rain (node-201)</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="https://www.wunderground.com/personal-weather-station/dashboard?ID=KHIHONOL185" target=_blank><span class="glyphicon glyphicon-tint" aria-hidden="true"></span> KHIHONOL185 @ Weather Underground</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="http://smartalawai.org" target=_blank>SMART Ala Wai Project Website</a></li>
-          </ul>
+		<li class="nav-item dropdown">
+		  <a class="nav-link dropdown-toggle" href="#" id="dropdown_smart" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">SMART</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown_smart">
+			<h6 class="dropdown-header">Manoa</h6>
+			<a class="dropdown-item" href="/smart/nodepage/node-039/">Aihualama (node-039)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-090/">Manoa Stream (node-090)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-097/">Kanewai (node-097)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-139/">Met. Station - Lyon Aboretum CR3000 (node-139)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-112/">Met. Station - Lyon Aboretum Wind (node-112)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-084/">Met. Station - UHM (node-084)</a>
+			<a class="dropdown-item" href="/static/uhcm/static/lyonwind.html">Real Time Wind (Lyon)</a>
+			<a class="dropdown-item" href="/static/uhcm/static/msbwind.html">Real Time Wind (UHM)</a>
+			<div class="dropdown-divider"></div>
+			<h6 class="dropdown-header">Palolo</h6>
+			<a class="dropdown-item" href="/smart/nodepage/node-037/">Wai‘ōma‘o Stream (node-037)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-120/">Pükele Stream (node-120)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-127/">Palolo Stream (node-127)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-108/">Palolo Valley Rain (node-108)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-088/">Manoa-Palolo Drainage (node-088)</a>
+			<div class="dropdown-divider"></div>
+			<h6 class="dropdown-header">Makiki</h6>
+			<a class="dropdown-item" href="/smart/nodepage/node-098/">Makiki Stream (node-098)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-109/">Makiki Rain (node-109)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-129/">Liljestrand House Rain(node-129)</a>
+			<div class="dropdown-divider"></div>
+			<h6 class="dropdown-header">Ala Wai</h6>
+			<a class="dropdown-item" href="/smart/nodepage/node-076/">Stream Gauge (node-076)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-116/">Hawaii Yacht Club FDOM (node-116)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-117/">FDOM (node-117)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-118/">SeapHOx (node-118)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-201/">Rain (node-201)</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="https://www.wunderground.com/personal-weather-station/dashboard?ID=KHIHONOL185" target=_blank><span class="glyphicon glyphicon-tint" aria-hidden="true"></span> KHIHONOL185 @ Weather Underground</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="http://smartalawai.org" target=_blank>SMART Ala Wai Project Website</a>
+          </div>
 		</li>
-		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lyon<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<span class="navbar-text">Soil Warming</span>
-			<li><a href="/lyon/nodepage/node-113/">Controller (node-113)</a></li>
-			<li><a href="/lyon/nodepage/node-085/">Logger (node-085)</a></li>
-			<li><a href="/lyon/nodepage/node-140/">Logger (node-140)</a></li>
-			<li><a href="/lyon/nodepage/node-141/">Logger (node-141)</a></li>
-			<li><a href="/lyon/nodepage/node-142/">Logger (node-142)</a></li>
-			<li><a href="/lyon/nodepage/node-143/">Logger (node-143)</a></li>
-			<li><a href="/lyon/nodepage/node-144/">Logger (node-144)</a></li>
+		<li class="nav-item dropdown">
+		  <a class="nav-link dropdown-toggle" href="#" id="dropdown_lyon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lyon</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown_lyon">
+			<h6 class="dropdown-header">Soil Warming</h6>
+			<a class="dropdown-item" href="/lyon/nodepage/node-113/">Controller (node-113)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-085/">Logger (node-085)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-140/">Logger (node-140)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-141/">Logger (node-141)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-142/">Logger (node-142)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-143/">Logger (node-143)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-144/">Logger (node-144)</a>
 			<!--li><a href="/lyon/nodepage/node-145/">Logger (node-145, decommissioned)</a></li-->
-			<li><a href="/lyon/nodepage/node-146/">Logger (node-146)</a></li>
-			<li><a href="/lyon/nodepage/node-147/">Logger (node-147)</a></li>
-			<li><a href="/lyon/nodepage/node-148/">Logger (node-148)</a></li>
-			<li role="separator" class="divider"></li>
-			<span class="navbar-text">Meteorological Stations</span>
-			<li><a href="/smart/nodepage/node-139/">Lyon Aboretum CR3000 (node-139)</a></li>
-			<li><a href="/smart/nodepage/node-112/">Lyon Aboretum Wind (node-112)</a></li>
-			<li><a href="/static/uhcm/static/lyonwind.html">Real Time Wind</a></li>
-          </ul>
+			<a class="dropdown-item" href="/lyon/nodepage/node-146/">Logger (node-146)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-147/">Logger (node-147)</a>
+			<a class="dropdown-item" href="/lyon/nodepage/node-148/">Logger (node-148)</a>
+			<div class="dropdown-divider"></div>
+			<h6 class="dropdown-header">Meteorological Stations</h6>
+			<a class="dropdown-item" href="/smart/nodepage/node-139/">Lyon Aboretum CR3000 (node-139)</a>
+			<a class="dropdown-item" href="/smart/nodepage/node-112/">Lyon Aboretum Wind (node-112)</a>
+			<a class="dropdown-item" href="/static/uhcm/static/lyonwind.html">Real Time Wind</a>
+          </div>
 		</li>
-		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mokauea<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-			<li><a href="/mokauea/nodepage/node-104/">DO+Salinity (node-104)</a></li>
-			<li><a href="/mokauea/nodepage/node-128/">Tide Gauge (node-128)</a></li>
-			<li><a href="/mokauea/nodepage/node-161/">Water Temperature (node-161)</a></li>
-          </ul>
+		<li class="nav-item dropdown">
+		  <a class="nav-link dropdown-toggle" href="#" id="dropdown_Mokauea" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mokauea</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown_mokauea">
+			<a class="dropdown-item" href="/mokauea/nodepage/node-104/">DO+Salinity (node-104)</a>
+			<a class="dropdown-item" href="/mokauea/nodepage/node-128/">Tide Gauge (node-128)</a>
+			<a class="dropdown-item" href="/mokauea/nodepage/node-161/">Water Temperature (node-161)</a>
+          </div>
 		</li>
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Misc.<span class="caret"></span></a>
-			<ul class="dropdown-menu">
-			<li><a href="/static/uhcm/static/pohrtwind.html">He`eia Real Time Wind</a></li>
-			<li><a href="/static/uhcm/static/nomilowind.html">Nomilo Real Time Wind</a></li>
-			<li><a href="/static/uhcm/static/msbwind.html">MSB Real Time Wind</a></li>
-			<li><a href="/static/uhcm/static/lyonwind.html">Lyon Arboretum Real Time Wind</a></li>
-			<!--li><a href="/static/uhcm/static/higrtwind.html">HIG Real-time Wind</a></li-->
-			<li role="separator" class="divider"></li>
-			<li><a href="https://www.windyty.com/?20.972,-154.600,6" target=_blank>Windyty @ Hawaii</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="/dev">Under the hood</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="/about/">About</a></li>
-          </ul>
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="dropdown_misc" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Misc.</a>
+			<div class="dropdown-menu" aria-labelledby="dropdown_misc">
+				<a class="dropdown-item" href="/static/uhcm/static/pohrtwind.html">He`eia Real Time Wind</a>
+				<a class="dropdown-item" href="/static/uhcm/static/nomilowind.html">Nomilo Real Time Wind</a>
+				<a class="dropdown-item" href="/static/uhcm/static/msbwind.html">MSB Real Time Wind</a>
+				<a class="dropdown-item" href="/static/uhcm/static/lyonwind.html">Lyon Arboretum Real Time Wind</a>
+				<!--li><a href="/static/uhcm/static/higrtwind.html">HIG Real-time Wind</a></li-->
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="https://www.windyty.com/?20.972,-154.600,6" target=_blank>Windyty @ Hawaii</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="/dev">Under the hood</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="/about/">About</a>
+			</div>
 		</li>
       </ul>
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+  
 </nav>
 {% endblock %}

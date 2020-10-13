@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-import traceback, logging, xmlrpc.client, socket, json
+import logging, xmlrpc.client, socket, json
 from flask import Flask, render_template, request, escape
 from cm1app import app
 from datetime import datetime, timedelta
 from node.helper import dt2ts
-from node.config.config_support import get_unit, get_range, get_description, config_as_dict
+from node.config.c import config_as_dict, get_list_of_devices, get_list_of_variables, get_variable_attribute
 from cm1app import panels, dashboard, nodepage, v5
-from cm1app.common import time_col, validate_id
+from cm1app.common import validate_id
 
 
 logger = logging.getLogger(__name__)
@@ -17,7 +16,8 @@ logger.setLevel(logging.WARNING)
 def route_default():
     return render_template('index.html')
 
-@app.route('/<site>/data/<node>/<variable>.json')
+# migrated varpage from this. I don't think anything else is using this now.
+'''@app.route('/<site>/data/<node>/<variable>.json')
 def site_node_variable(site, node, variable):
     """Examples:
 http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
@@ -31,13 +31,13 @@ The "site" argument is ignored.
     if not b:
         return m
 
-    try:
-        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
+    conn = _config_import()
 
-        if node not in proxy.get_list_of_tables():
+    try:
+        if node not in get_list_of_devices(conn=conn):
             return 'No such node: {}'.format(escape(node))
 
-        if variable not in proxy.get_list_of_columns(node):
+        if variable not in get_list_of_variables(node, conn=conn):
             return 'No such variable: {}'.format(escape(variable))
     
         begin = request.args.get('begin')
@@ -45,31 +45,24 @@ The "site" argument is ignored.
         minutes = request.args.get('minutes')
         max_count = request.args.get('max_count')
 
-        variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
-        unit = get_unit(node, variable)
-        desc = get_description(node, variable)
+        #variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
+        unit = get_variable_attribute(node, variable, 'unit', conn=conn)
+        desc = get_variable_attribute(node, variable, 'description', conn=conn)
         bounds = get_range(node, variable)
-        assert None not in bounds
-        assert bounds[0] <= bounds[1]
-        bounds = [b if b not in [float('-inf'),float('inf')] else None for b in bounds]
+        lb = get_variable_attribute(node, variable, 'lower_bound', conn=conn)
+        ub = get_variable_attribute(node, variable, 'upper_bound', conn=conn)
+        b = [lb, ub]
+        bounds = [None if tmp in [float('-inf'), float('inf')] else tmp for tmp in b]
 
         d = {'unit':unit,
              'description':desc,
              'bounds':bounds,
              'samples':None}
-        
+
+        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
         if begin is not None:
             begin = float(begin)
-            if end is None:
-                end = dt2ts()     # assumption: database time too is in UTC
-            else:
-                end = float(end)
-            '''if begin >= end:
-                # don't actually need this check - sql will just give you [] in this case.
-                errmsg = 'require: begin < end'
-                logger.error(errmsg)
-                return json.dumps({'error':errmsg},separators=(',',':'))
-            else:'''
+            end = float(end)
             logger.debug('from {} to {}'.format(begin, end))
             r = proxy.query_time_range(node, [time_col, variable], begin, end, time_col)
         else:
@@ -94,15 +87,16 @@ The "site" argument is ignored.
         d['samples'] = r
         return json.dumps(d, separators=(',',':'))
     except:
-        traceback.print_exc()
+        logging.exception('')
         return "it's beyond my paygrade"
+'''
 
-
+# wait who is using this again?
 @app.route('/data/2/config/listing')
 def get_listing():
     return json.dumps(config_as_dict(), separators=(',',':'))
 
-# check __init__.py for the line that enable CORS on this endpoint
+# check __init__.py for the line that enables CORS at this endpoint
 @app.route('/data/2/<node>/<variables>.json')
 #@cross_origin() this doesn't work for some reason
 def get_xy(node, variables):
@@ -111,7 +105,7 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
 """
     logger.debug((node, variables))
 
-    variables = variables.split(',')    # assumption: no comma in variable name
+    variables = variables.split(',')                # assumption: no comma in variable name... it seems most of programming is the problem of encoding and decoding. "Do you mean this word literally or do you mean the thing behind this word"...
     variables = [v.strip() for v in variables]
     begin = request.args.get('begin')
     end = request.args.get('end')
@@ -125,7 +119,7 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
         return 'missing: time_col'
 
     if time_col not in variables:
-        return '"time_col" must be among the list of variables.'
+        return '"time_col" must be among the list of variables. Most likely one of {"ReceptionTime","Timestamp","ts"}.'
 
     try:
         begin = float(begin)
@@ -134,24 +128,21 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
         return '"begin" and "end" must be numbers.'
 
     try:
-        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
-
-        if node not in proxy.get_list_of_tables():
+        if node not in get_list_of_devices():
             return 'No such node: {}'.format(escape(node))
 
-        columns = proxy.get_list_of_columns(node)
+        columns = get_list_of_variables(node)
         if time_col not in columns:
             return 'No such time column: {}'.format(escape(time_col))
         for var in variables:
             if var not in columns:
                 return 'No such variable: {}'.format(escape(var))
 
-        #return str((begin,end,time_col))
-
+        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
         r = proxy.query_time_range2(node, variables, begin, end, time_col)
-        return json.dumps(r, separators=(',',':'))
+        return json.dumps(r, separators=(',', ':'))
     except:
-        traceback.print_exc()
+        logging.exception('')
         return "it's beyond my paygrade 2"
 
 @app.route('/about/')
@@ -169,6 +160,10 @@ def tidegauge():
 @app.route('/tech/logger/')
 def kiwilogger():
     return render_template('logger.html')
+
+@app.route('/tech/loggerhd/')
+def kiwiloggerhd():
+    return render_template('loggerhd.html')
 
 @app.route('/dev/')
 def dev():

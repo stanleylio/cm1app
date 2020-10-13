@@ -4,30 +4,31 @@
 <meta http-equiv="refresh" content="300">
 <link href="/static/uhcm/static/nodepage.css" rel="stylesheet" type="text/css">
 <link href="/static/uhcm/static/lightbox2/css/lightbox.min.css" rel="stylesheet" type="text/css">
-<div class="container-fluid">
+<div class="container">
 	<script>
 		var site = '{{ site }}';
 		var node = '{{ node }}';
 	</script>
-		
+
+	<div class="page-header row">
+		<div class="col-xs-12"></div>
+	</div>
+	
 	<div class="row">
-		<div class="col-xs-10 col-xs-offset-1">
-			<div class="page-header row">
-				<div class="col-xs-12"></div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12 col-md-9">
-					<div id="table">
-						<img src="/static/uhcm/static/circleball.gif">
-					</div>
-				</div>
-			</div>
-			<br>
-			<div class="row" id="static_plots"></div>
-			<br>
-			<div class="row">
-				<div class="col-xs-12"><div id="pagegeneratedts"></div></div>
-			</div>
+		<div class="col-xs-12 table-responsive" id="table">
+			<img src="/static/uhcm/static/circleball.gif">
+		</div>
+	</div>
+	
+	<hr>
+	
+	<div class="row" id="static_plots"></div>
+	
+	<hr>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div id="pagegeneratedts"></div>
 		</div>
 	</div>
 </div>
