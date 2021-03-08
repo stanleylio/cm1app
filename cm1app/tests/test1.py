@@ -21,7 +21,7 @@ def test1(ep):
     x,y = zip(*r)
 
     def p(v):
-        return v is not None and not math.isnan(v) and v not in [float('-inf'),float('inf')]
+        return v is not None and not math.isnan(v) and v not in [float('-inf'), float('inf')]
 
     result &= all([p(tmp) for tmp in x])
     result &= all([p(tmp) for tmp in y])
@@ -30,7 +30,7 @@ def test1(ep):
 
 class TestAPI(unittest.TestCase):
 
-    def testGauges(self):
+    def testxy2(self):
         # tide gauges
         nodes = ['node-008',
                  'node-009',
@@ -40,11 +40,10 @@ class TestAPI(unittest.TestCase):
                  'node-049',
                  'node-051',
                  'node-070',
-                 'node-092',
                  'node-097',]
 
         for node in nodes:
-            end = random.randint(1497130276, 1501054178)
+            end = 1615178655
             begin = end - timedelta(days=7).total_seconds()
             # no longer checks if node is in site.
             ep = '/data/2/{node}/ReceptionTime,d2w.json?begin={begin}&end={end}&time_col=ReceptionTime'.\
@@ -57,7 +56,36 @@ class TestAPI(unittest.TestCase):
             except:
                 print(ep)
                 result = False
-                
+            if not result:
+                logging.warning('FAILED: ' + ep)
+                self.assertTrue(False)
+
+    def testxy3(self):
+        # tide gauges
+        nodes = ['node-008',
+                 'node-009',
+                 'node-014',
+                 'node-046',
+                 'node-048',
+                 'node-049',
+                 'node-051',
+                 'node-070',
+                 'node-097',]
+
+        for node in nodes:
+            end = 1615178655
+            begin = end - timedelta(days=7).total_seconds()
+            # no longer checks if node is in site.
+            ep = '/data/3/{node}/ReceptionTime,d2w.json?begin={begin}&end={end}&time_col=ReceptionTime'.\
+                 format(node=node,
+                        begin=begin,
+                        end=end)
+            ep = host + ep
+            try:
+                result = test1(ep)
+            except:
+                print(ep)
+                result = False
             if not result:
                 logging.warning('FAILED: ' + ep)
                 self.assertTrue(False)

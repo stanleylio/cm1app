@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # TODO: To see a good API design, look at RabbitMQ's management console.
-#... just get rid of "site" will you? TODO
+#... just get rid of "site" already will you? TODO
 import sys, redis, json, time, math
 sys.path.append('/home/nuc')
-from flask import Flask, Markup, request, escape
+from flask import Flask, Markup, Response, request, escape
 from datetime import timedelta
 from cm1app import app
 from node.storage.storage2 import Storage, auto_time_col
@@ -92,7 +91,8 @@ def data_dashboard(site):
          #'gmap_link':get_attr(base,'google_earth_link'),
          'nodes':S}
     
-    return json.dumps(r, separators=(',', ':'))
+    return Response(json.dumps(r, separators=(',', ':')),
+                    mimetype='application/json; charset=utf-8')
 
 '''@app.route('/data/2/status.json')
 def data_status():

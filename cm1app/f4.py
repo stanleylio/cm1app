@@ -1,10 +1,10 @@
-import logging, xmlrpc.client, socket, json
-from flask import Flask, render_template, request, escape
+import logging, xmlrpc.client, socket, json, MySQLdb
+from flask import Flask, render_template, request, escape, Response
 from cm1app import app
 from datetime import datetime, timedelta
 from node.helper import dt2ts
 from node.config.c import config_as_dict, get_list_of_devices, get_list_of_variables, get_variable_attribute
-from cm1app import panels, dashboard, nodepage, v5
+from cm1app import dashboard, nodepage, v5
 from cm1app.common import validate_id
 
 
@@ -94,15 +94,20 @@ The "site" argument is ignored.
 # wait who is using this again?
 @app.route('/data/2/config/listing')
 def get_listing():
-    return json.dumps(config_as_dict(), separators=(',',':'))
+    return Response(json.dumps(config_as_dict(), separators=(',',':')),
+                    mimetype='application/json; charset=utf-8')
 
 # check __init__.py for the line that enables CORS at this endpoint
 @app.route('/data/2/<node>/<variables>.json')
 #@cross_origin() this doesn't work for some reason
-def get_xy(node, variables):
-    """Example:
-https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=1500000000&end=1500082230&time_col=Timestamp
-"""
+def get_xy2(node, variables):
+    """Examples:
+    https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=1500000000&end=1500082230&time_col=Timestamp
+    https://grogdata.soest.hawaii.edu/data/2/node-049/ReceptionTime,d2w.json?time_col=ReceptionTime&begin=1609495200.0&end=1614849169.1146927
+
+    Note: obsolete, but kept for backward compatibility. get_xy3 is more
+    performant (~25% response time).
+    """
     logger.debug((node, variables))
 
     variables = variables.split(',')                # assumption: no comma in variable name... it seems most of programming is the problem of encoding and decoding. "Do you mean this word literally or do you mean the thing behind this word"...
@@ -117,7 +122,6 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
         return 'missing: end'
     if time_col is None:
         return 'missing: time_col'
-
     if time_col not in variables:
         return '"time_col" must be among the list of variables. Most likely one of {"ReceptionTime","Timestamp","ts"}.'
 
@@ -140,10 +144,70 @@ https://grogdata.soest.hawaii.edu/data/2/node-047/Timestamp,d2w,t.json?begin=150
 
         proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
         r = proxy.query_time_range2(node, variables, begin, end, time_col)
-        return json.dumps(r, separators=(',', ':'))
+        return Response(json.dumps(r, separators=(',', ':')),
+                        mimetype='application/json; charset=utf-8')
     except:
         logging.exception('')
         return "it's beyond my paygrade 2"
+
+@app.route('/data/3/<node>/<variables>.json')
+def get_xy3(node, variables):
+    """Same semantics and function as get_xy2 above, except this talks
+    to the db directly. Six years into the project I now know there is
+    no other database, and local user can do passwordless login.
+
+    Example:
+    https://grogdata.soest.hawaii.edu/data/3/node-049/ReceptionTime,d2w.json?time_col=ReceptionTime&begin=1609495200.0&end=1614849169.1146927
+    """
+    variables = [v.strip() for v in variables.split(',')]
+    begin = request.args.get('begin')
+    end = request.args.get('end')
+    time_col = request.args.get('time_col').strip()
+
+    if begin is None:
+        return 'missing: begin'
+    if end is None:
+        return 'missing: end'
+    if time_col is None:
+        return 'missing: time_col'
+    if time_col not in variables:
+        return '"time_col" must be among the list of variables. Most likely one of {"ReceptionTime","Timestamp","ts"}.'
+    try:
+        begin = float(begin)
+        end = float(end)
+    except ValueError:
+        return '"begin" and "end" must be numbers.'
+
+    try:
+        conn = MySQLdb.connect('localhost', user='webapp', charset='utf8mb4')
+        cur = conn.cursor()
+
+        #cur.execute("""SELECT name FROM uhcm.`variables` WHERE nodeid=%s""", (node, ))
+        #if cur.fetchone() is None:
+        #    return 'unknown node {}'.format(escape(node))
+
+        #cur.execute("""SELECT * FROM uhcm.variables WHERE nodeid=%s and name=%s;""", (node, time_col, ))
+        #if cur.fetchone() is None:
+        #    return 'unknown time_col {}'.format(escape(time_col))
+
+        # wait, is it filtering "any NULL" or "all NULL"? I think I read
+        # it as "no NULL" in any *selected* columns, so it's ok if Vb is
+        # never in the same row as d2w, because they are not selected in
+        # the same call.
+        # Turns out coalesce gets you the row that has at least one
+        # non-null. That's not what I'm looking for.
+        cmd = """SELECT {} FROM uhcm.`{}`
+                WHERE {} BETWEEN %s AND %s
+                {}
+                """.format(','.join(variables), node, time_col, ' '.join(['AND {} IS NOT NULL'.format(v) for v in variables]))
+        print(cmd)
+        cur.execute(cmd, (begin, end, ))
+        return Response(json.dumps(list(cur.fetchall())),
+                        mimetype='application/json; charset=utf-8')
+    except MySQLdb.OperationalError as e:
+        m = '{}, {}, {}, {}, {}'.format(node, variables, time_col, begin, end, )
+        logger.exception(m)
+        return "It's beyond my paygrade: {}".format(escape(m))
 
 @app.route('/about/')
 def about():

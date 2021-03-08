@@ -6,7 +6,7 @@
 # Stanley H.I. Lio
 # hlio@hawaii.edu
 # University of Hawaii
-import unittest,requests,logging
+import unittest, requests, logging
 
 
 logging.basicConfig(level=logging.WARNING)

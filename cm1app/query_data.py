@@ -1,4 +1,4 @@
-import sys, logging, time, xmlrpc.client
+import sys, logging, time, MySQLdb
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from node.config.config_support import get_list_of_nodes, get_list_of_variables
@@ -22,7 +22,7 @@ def unnamed(t, x):
 def last(t, x):
     return (t[-1], x[-1])
 
-def read_latest_group_average(site, time_col, node, variable):
+'''def _read_latest_group_average(site, time_col, node, variable):
     proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
     d = proxy.get_last_N_minutes(node, variable, 1)
     assert d is not None
@@ -30,9 +30,33 @@ def read_latest_group_average(site, time_col, node, variable):
         logger.debug('No data for {} using {}'.format((site, node, variable), time_col))
         return None
     #return unnamed(d[time_col], d[variable])
-    return last(d[time_col], d[variable])
+    return last(d[time_col], d[variable])'''
 
-def read_baro_avg(site, time_col):
+def read_latest_group_average(time_col, node, var):
+    try:
+        conn = MySQLdb.connect('localhost', user='webapp', charset='utf8mb4')
+        cur = conn.cursor()
+
+        cmd = """SELECT {time_col},{var}
+                FROM uhcm.`{node}`
+                WHERE {var} IS NOT NULL
+                ORDER BY {time_col} DESC LIMIT 1""".format(time_col=time_col, node=node, var=var)
+        cur.execute(cmd)
+        return list(cur.fetchone())
+    except (MySQLdb.OperationalError, TypeError):
+        # you get TypeError if fetchone returns no row.
+        return None
+
+    '''proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
+    d = proxy.get_last_N_minutes(node, variable, 1)
+    assert d is not None
+    if len(d[time_col]) <= 0:
+        logger.debug('No data for {} using {}'.format((node, variable), time_col))
+        return None
+    #return unnamed(d[time_col], d[variable])
+    return last(d[time_col], d[variable])'''
+
+'''def read_baro_avg(site, time_col):
     t = []
     p = []
     proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
@@ -51,7 +75,7 @@ def read_baro_avg(site, time_col):
             if len(r[time_col]) > 0:
                 t.extend(r[time_col])
                 p.extend(r[var])
-    return unnamed(t, p)
+    return unnamed(t, p)'''
 
 '''def read_water_depth(site,time_col,node,baro_avg=None):
     """Get water depth in meter."""
@@ -65,7 +89,7 @@ def read_baro_avg(site, time_col):
         logger.error('No P_5803 data to calculate water depth')
     return None'''
 
-# - - - - -
+'''# - - - - -
 # TODO: merge the following two functions.
 # ... or should I?
 # map to node, correct for config change (moved sensor etc.), scale and convert unit, filter, remove junk... all optional
@@ -125,10 +149,9 @@ def read_water_depth_by_location(site, location, begin, end):
     # don't need(claim) that many digits...
     # must convert back to Python's native type, otherwise "can't marshal numpy.float64"
     d = [round(tmp.item(), 3) for tmp in d]
-    return [t, d]
+    return [t, d]'''
 
-
-def read_optode_by_location(site, location, begin, end, var):
+'''def read_optode_by_location(site, location, begin, end, var):
     time_col = 'ReceptionTime'
     
     if 'poh' == site:
@@ -159,12 +182,11 @@ def read_optode_by_location(site, location, begin, end, var):
     # must convert back to Python's native type, otherwise "can't marshal numpy.float64"
     d = [round(tmp, 3) for tmp in d]
     
-    return [t,d]
-
+    return [t,d]'''
 
 # this scheme doesn't make sense.
 
-def read_ctd_by_location(site, location, begin, end, var):
+'''def read_ctd_by_location(site, location, begin, end, var):
     time_col = 'ReceptionTime'
 
     if 'poh' == site:
@@ -191,11 +213,12 @@ def read_ctd_by_location(site, location, begin, end, var):
     # don't need(claim) that many digits...
     d = [round(tmp, 3) for tmp in d]
     
-    return [t, d]
+    return [t, d]'''
 
 
 if '__main__' == __name__:
-    from datetime import datetime, timedelta
-#    print get_last_N_minutes('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
-    print(query_time_range('poh', 'node-008', 'd2w', datetime.utcnow() - timedelta(hours=1)))
+    #from datetime import datetime, timedelta
+    #print get_last_N_minutes('/home/nuc/data/base-003/storage/sensor_data.db','ReceptionTime','node-009','d2w',30)
+    #print(query_time_range('poh', 'node-008', 'd2w', datetime.utcnow() - timedelta(hours=1)))
+    pass
     

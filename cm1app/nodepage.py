@@ -65,7 +65,7 @@ def data_site_node(site, node):
     R = {}
     variables = sorted(get_list_of_disp_vars(node),key=lambda x: x.lower())
     for k,var in enumerate(variables):
-        d = read_latest_group_average(site, 'ReceptionTime', node, var)
+        d = read_latest_group_average('ReceptionTime', node, var)
         if d is not None:
             r = {'var':var,
                  'ts':round(d[0], 1),

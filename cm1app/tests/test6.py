@@ -10,8 +10,8 @@ from cred import cred
 # fill in the secrets yourself.
 url = 'https://grogdata.soest.hawaii.edu/api/5/electron_us'
 coreid = u'000000000000000000000099'
-name = ''
-passwd = ''
+name = 'uhcm'
+passwd = cred['uhcm']
 
 class Test_v5_auth(unittest.TestCase):
 
