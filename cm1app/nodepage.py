@@ -1,11 +1,10 @@
-import sys, time
+import sys, time, json
 from os.path import expanduser
 sys.path.append(expanduser('~'))
-from flask import render_template, send_from_directory, request, escape
+from flask import Response, render_template, send_from_directory, request, escape
 from cm1app import app
-from json import dumps
 from node.config.c import get_list_of_disp_vars, get_node_attribute, get_variable_attribute
-from cm1app.query_data import read_latest_group_average
+from cm1app.query_data import read_latest_sample
 from cm1app.common import validate_id
 
 
@@ -21,6 +20,7 @@ def route_site_node(site, node):
                            #site=escape(site),
                            site=get_node_attribute(node, 'site'),
                            node=escape(node))
+
 
 @app.route('/<site>/dataportal/<node>/<variable>/')
 def route_dataportal(site, node, variable):
@@ -40,9 +40,12 @@ def route_dataportal(site, node, variable):
                            begin=escape(begin),
                            end=escape(end))
 
+
 @app.route('/<site>/nodepage/<node>.json')
 def data_site_node(site, node):
-    """Example: https://grogdata.soest.hawaii.edu/staging/nodepage/node-200.json"""
+    """Example:
+    https://grogdata.soest.hawaii.edu/staging/nodepage/node-200.json
+    """
     b,m = validate_id(node)
     if not b:
         return m
@@ -65,7 +68,7 @@ def data_site_node(site, node):
     R = {}
     variables = sorted(get_list_of_disp_vars(node),key=lambda x: x.lower())
     for k,var in enumerate(variables):
-        d = read_latest_group_average('ReceptionTime', node, var)
+        d = read_latest_sample('ReceptionTime', node, var)
         if d is not None:
             r = {'var':var,
                  'ts':round(d[0], 1),
@@ -88,4 +91,5 @@ def data_site_node(site, node):
 
         R[k] = r
     S['readings'] = R
-    return dumps(S, separators=(',', ':'))
+    return Response(json.dumps(S, separators=(',', ':')),
+                    mimetype='application/json; charset=utf-8')

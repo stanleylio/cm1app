@@ -5,91 +5,14 @@ from datetime import datetime, timedelta
 from node.helper import dt2ts
 from node.config.c import config_as_dict, get_list_of_devices, get_list_of_variables, get_variable_attribute
 from cm1app import dashboard, nodepage, v5
-from cm1app.common import validate_id
-
+from cm1app.common import validate_id, auto_time_col
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
-
 @app.route('/')
 def route_default():
     return render_template('index.html')
-
-# migrated varpage from this. I don't think anything else is using this now.
-'''@app.route('/<site>/data/<node>/<variable>.json')
-def site_node_variable(site, node, variable):
-    """Examples:
-http://192.168.0.20:5000/poh/data/node-009/d2w.json?minutes=1
-
-The "site" argument is ignored.
-"""
-
-    logger.debug((site, node, variable))
-
-    b,m = validate_id(node)
-    if not b:
-        return m
-
-    conn = _config_import()
-
-    try:
-        if node not in get_list_of_devices(conn=conn):
-            return 'No such node: {}'.format(escape(node))
-
-        if variable not in get_list_of_variables(node, conn=conn):
-            return 'No such variable: {}'.format(escape(variable))
-    
-        begin = request.args.get('begin')
-        end = request.args.get('end')
-        minutes = request.args.get('minutes')
-        max_count = request.args.get('max_count')
-
-        #variable = str(variable)    # storage.py doesn't like unicode variable names... TODO
-        unit = get_variable_attribute(node, variable, 'unit', conn=conn)
-        desc = get_variable_attribute(node, variable, 'description', conn=conn)
-        bounds = get_range(node, variable)
-        lb = get_variable_attribute(node, variable, 'lower_bound', conn=conn)
-        ub = get_variable_attribute(node, variable, 'upper_bound', conn=conn)
-        b = [lb, ub]
-        bounds = [None if tmp in [float('-inf'), float('inf')] else tmp for tmp in b]
-
-        d = {'unit':unit,
-             'description':desc,
-             'bounds':bounds,
-             'samples':None}
-
-        proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:8000/')
-        if begin is not None:
-            begin = float(begin)
-            end = float(end)
-            logger.debug('from {} to {}'.format(begin, end))
-            r = proxy.query_time_range(node, [time_col, variable], begin, end, time_col)
-        else:
-            if minutes is None:
-                minutes = 24*60
-            minutes = float(minutes)
-            logger.debug('minutes={}'.format(minutes))
-            r = proxy.get_last_N_minutes(node, variable, minutes)
-
-        # deal with max_count
-        #if 'error' not in r and max_count is not None:
-        if max_count is not None:
-            max_count = int(max_count)
-            if max_count > 0:
-                assert 2 == len(r.keys())   # a time column and a variable column
-                #time_col = list(set(r.keys()) - set([variable]))[0]
-                tmp = list(zip(r[time_col], r[variable]))
-                tmp = proxy.condense(tmp, max_count)
-                tmp = list(zip(*tmp))
-                r = {time_col:tmp[0], variable:tmp[1]}
-        
-        d['samples'] = r
-        return json.dumps(d, separators=(',',':'))
-    except:
-        logging.exception('')
-        return "it's beyond my paygrade"
-'''
 
 # wait who is using this again?
 @app.route('/data/2/config/listing')
@@ -162,8 +85,12 @@ def get_xy3(node, variables):
     variables = [v.strip() for v in variables.split(',')]
     begin = request.args.get('begin')
     end = request.args.get('end')
-    time_col = request.args.get('time_col').strip()
-
+    #time_col = request.args.get('time_col').strip()
+    time_col = request.args.get('time_col', default=None)
+    if time_col is None:
+        time_col = auto_time_col(node)
+    else:
+        time_col = time_col.strip()
     if begin is None:
         return 'missing: begin'
     if end is None:
@@ -171,7 +98,9 @@ def get_xy3(node, variables):
     if time_col is None:
         return 'missing: time_col'
     if time_col not in variables:
-        return '"time_col" must be among the list of variables. Most likely one of {"ReceptionTime","Timestamp","ts"}.'
+        variables.insert(0, time_col)
+    #if time_col not in variables:
+    #    return '"time_col" must be among the list of variables. Most likely one of {"ReceptionTime","Timestamp","ts"}.'
     try:
         begin = float(begin)
         end = float(end)
@@ -182,27 +111,29 @@ def get_xy3(node, variables):
         conn = MySQLdb.connect('localhost', user='webapp', charset='utf8mb4')
         cur = conn.cursor()
 
-        #cur.execute("""SELECT name FROM uhcm.`variables` WHERE nodeid=%s""", (node, ))
-        #if cur.fetchone() is None:
-        #    return 'unknown node {}'.format(escape(node))
-
-        #cur.execute("""SELECT * FROM uhcm.variables WHERE nodeid=%s and name=%s;""", (node, time_col, ))
-        #if cur.fetchone() is None:
-        #    return 'unknown time_col {}'.format(escape(time_col))
-
-        # wait, is it filtering "any NULL" or "all NULL"? I think I read
+        # Wait, is it filtering "any NULL" or "all NULL"? I think I read
         # it as "no NULL" in any *selected* columns, so it's ok if Vb is
         # never in the same row as d2w, because they are not selected in
         # the same call.
         # Turns out coalesce gets you the row that has at least one
-        # non-null. That's not what I'm looking for.
+        # non-null. I'm looking for all the rows that don't have any
+        # null.
         cmd = """SELECT {} FROM uhcm.`{}`
                 WHERE {} BETWEEN %s AND %s
-                {}
-                """.format(','.join(variables), node, time_col, ' '.join(['AND {} IS NOT NULL'.format(v) for v in variables]))
-        print(cmd)
+                {}""".format(','.join(['`{}`'.format(v) for v in variables]),
+                             node,
+                             time_col,
+                             ' '.join(['AND `{}` IS NOT NULL'.format(v) for v in variables]))
+        # Seems to be some kind of bug with parameter substitution. The
+        # IS NOT NULL condition is ignored for some reason.
+        #' '.join(['AND %s IS NOT NULL' for v in variables]))
+        #print(cmd)
+        #cur.execute(cmd, (begin, end, *variables, ))
         cur.execute(cmd, (begin, end, ))
-        return Response(json.dumps(list(cur.fetchall())),
+        d = {'time_col':time_col,
+             'd':list(cur.fetchall()),
+             }
+        return Response(json.dumps(d),
                         mimetype='application/json; charset=utf-8')
     except MySQLdb.OperationalError as e:
         m = '{}, {}, {}, {}, {}'.format(node, variables, time_col, begin, end, )

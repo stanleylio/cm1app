@@ -10,18 +10,35 @@
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12">
-			<h1 class="page-header">Data Access</h1>
+			<h1 class="page-header">Data Access API</h1>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
-			<p>In addition to CSV download on each variable's page, data can be accessed via the JSON API.</p>
-			<h2>API</h2>
+			<p>In addition to CSV download on each variable's page, data can be accessed via the API described here.</p>
+		
+			<h2>Organization</h2>
+			<p>The instruments are referred to as <b>nodes</b>. Each node report measurements of one or more <b>variables</b> periodically. Nodes are grouped into <b>site</b> base on their geographical proximity.</p>
+			
+			<h3>Endpoints</h3>
+			<h4>To get a list of sensor nodes at all sites</h4>
+			<blockquote><a href="/data/2/config/listing">https://grogdata.soest.hawaii.edu/data/2/config/listing</a></blockquote>
+			<h4>To get the metadata of a particular node (using node-049 as example)</h4>
+			<blockquote><a href="/site/data/dashboard.json?nodes=node-049">https://grogdata.soest.hawaii.edu/whatever/data/dashboard.json?nodes=<b>node-049</b></a></blockquote>
+			
+			<h3>To get time series data of a variable of a node</h3>
 			<blockquote>https://grogdata.soest.hawaii.edu/data/2/<span style="color: red"><b>&lt;nodeid&gt;</b></span>/<span style="color: fuchsia"><b>&lt;variables&gt;</b></span>.json?time_col=ReceptionTime&begin=<b>&lt;start time in UNIX time&gt;</b>&end=<b>&lt;end time in UNIX time&gt;</b></blockquote>
-			<h4>Examples</h4>
-			<blockquote><a href="/data/2/node-008/ReceptionTime,d2w.json?time_col=ReceptionTime&begin=1506401855.0&end=1506403655.0&time_col=ReceptionTime">https://grogdata.soest.hawaii.edu/data/2/<span style="color: red"><b>node-008</b></span>/<span style="color: fuchsia"><b>ReceptionTime,d2w</b></span>.json?time_col=ReceptionTime&begin=<b>1506401855</b>&end=<b>1506403655</b></a></blockquote>
-			<p><a href="/static/uhcm/static/api2_get_example.py">Fetch data</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a>)</p>
-			<p><a href="/static/uhcm/static/api2_plot_example.py">Plot data</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a> and <a href="https://matplotlib.org/">matplotlib</a>)</p>
+			<h4>Example</h4>
+			<blockquote><a href="/data/2/node-008/ReceptionTime,d2w.json?time_col=ReceptionTime&begin=1506401855.0&end=1506403655.0">https://grogdata.soest.hawaii.edu/data/2/<span style="color: red"><b>node-008</b></span>/<span style="color: fuchsia"><b>ReceptionTime,d2w</b></span>.json?time_col=ReceptionTime&begin=<b>1506401855</b>&end=<b>1506403655</b></a></blockquote>
+			
+			<h4>Alternative Endpoint</h4>
+			<p>Instead of specifying the time column to use (ReceptionTime, Timestamp, ts...), this endpoint automatically picks the time column. Using the example above:</p>
+			<blockquote><a href="https://grogdata.soest.hawaii.edu/data/3/node-008/d2w.json?begin=1506401855&end=1506403655">https://grogdata.soest.hawaii.edu/data/3/<span style="color: red"><b>node-008</b></span>/<span style="color: fuchsia"><b>d2w</b></span>.json?begin=<b>1506401855</b>&end=<b>1506403655</b></a></blockquote>
+			<p>Note that the response format is different from the endpoint described above.</p>
+
+			<h3>Example Python scripts to fetch data programmatically</h3>
+			<p><a href="/static/uhcm/static/api2_get_example.py">To fetch data</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a>)</p>
+			<p><a href="/static/uhcm/static/api2_plot_example.py">With additional plotting</a> (Python3. Requires <a href="http://docs.python-requests.org/en/master/">requests</a> and <a href="https://matplotlib.org/">matplotlib</a>)</p>
 
 			<!--br>
 			
@@ -36,14 +53,21 @@
 	<hr>
 	<div class="row">
 		<div class="col-xs-12">
-			<h2>Timestamp Format</h2>
-			<p>All measurements are tagged with a timestamp in <a href="https://en.wikipedia.org/wiki/Unix_time" target=_blank>POSIX time</a> format (so in UTC). The time when a reading reaches the database is named <em>ReceptionTime</em> (server's clock). The time when the data was measured at the sensors/loggers in the field is named <em>Timestamp</em> or more recently, <em>ts</em> (sensor/logger's clock). Some field sensors do not have internal real-time clock (such as the tide gauges), so they do not have the corresponding Timestamp/ts variable. Some of these do have a monotonically increasing 1Hz ticker, however.</p>
-			<p>During normal operation, the difference between ReceptionTime and Timestamp is negligable. However, when the link between field gateways and the database server is temporarily lost (WiFi dropout, internet blackouts...), sensor readings are queued up at the field gateways. When the link is restored, all queued messages are sent to the database as fast as the server can handle. In this case, ReceptionTime no longer correlates with the actual sample time (Timestamp/ts) (<a href="/static/uhcm/img/bad_rt_n17_air_pressure.png">example</a>).</p>
-			<p>All plots on this site are plotted against ReceptionTime. A handy UNIX time converter can be found <a href="https://www.epochconverter.com/" target=_blank>here</a>.</p>
+			<h2>Timestamp Convention</h2>
+			
+			<p>When a measurement reaches the database, the time of arrival is recorded as <strong><em>ReceptionTime</em></strong> using server's clock (synchronized with NTP, in UTC).</p>
+			
+			<p>Some sensors have an internal real-time clock. These would report the time when the measurements are taken. This variable is recorded as <strong><em>Timestamp</em></strong> or more recently, <strong><em>ts</em></strong> using the sensor's built-in real-time clock.</p>
+			
+			<h3>The difference between <em>ReceptionTime</em> and {<em>Timestamp</em>/<em>ts</em>, 1Hz ticker, and Sample Index}</h3>
+			<p>Some field sensors do not have an internal real-time clock, so they do not report a <em>Timestamp</em> or <em>ts</em> variable. These sensors either have a monotonically increasing 1Hz ticker, or their measurements are all indexed (so the time the measurement was taken can be inferred by correlating the ticker/index to <em>ReceptionTime</em>).</p>
+			
+			<p>During normal operation, the difference between <em>ReceptionTime</em> and <em>Timestamp</em>/<em>ts</em> is negligable. However, when the link between the internet gateways and the database server is temporarily lost (perhaps due to internet blackout, database maintenance...), sensor readings are queued up at the gateways. When the link is restored, all queued messages are sent to the database as fast as the server can handle. In this case, <em>ReceptionTime</em> no longer correlates with the actual time the measurements were taken (<a href="/static/uhcm/img/bad_rt_n17_air_pressure.png">example</a>) and must be recovered from the 1Hz ticker and/or the sample index</p>
+			
+			<p>Converters like <a href="https://www.epochconverter.com/" target=_blank>this</a> is handy when dealing with POSIX timestamps (no affiliation).</p>
 			
 			<h3>Burst Sampling</h3>
-			<p>Some devices such as the cellular tide gauges queue up several readings before transmitting at once (for power and bandwidth concern). All readings transmitted in a group would then have ReceptionTime very close to each other. For analysis, Timestamp/ts should be used instead of ReceptionTime.</p>
-			<p>Some instruments do however take a burst of readings in every interval (like node-004), but they always have internal real-time clock and a Timestamp for every reading.</p>
+			<p>Some devices such as the cellular tide gauges queue up several readings before transmitting at once (for power and bandwidth considerations). All readings transmitted in a group would then have <em>ReceptionTime</em> very close to each other since they arrive at the server at around the same time. For time series analysis, <em>Timestamp</em>/<em>ts</em> should be used instead of <em>ReceptionTime</em>.</p>
 		</div>
 	</div>
 	<hr>
@@ -59,22 +83,22 @@
 			<p>For <a href="/poh/nodepage/node-010/">Makai Pier</a>:</p>
 			<blockquote>(6197.6 - d2w) / 1e3</blockquote>
 			
-			<h4>The Experimental HTTP API</h4>
+			<!--h4>The Experimental HTTP API</h4>
 			<p>You can also fetch data programmatically using the (experimental) HTTP API. Here's an example to fetch the data from Feb 18 to April 9, 2017: <a href="/poh/data/location/makaha1/depth.json?begin=1487412000&end=1491818400&max_count=10000" target=_blank>Makaha1</a>; <a href="/poh/data/location/makaha2/depth.json?begin=1487412000&end=1491818400&max_count=10000" target=_blank>Makaha2</a>.</p>
 			<p>In Python with the requests library:</p>
 			<blockquote>url = 'https://grogdata.soest.hawaii.edu/poh/data/location/makaha1/depth.json?begin=1487412000&end=1491818400&max_count=10000'
 				<br>r = requests.get(url)
 				<br>r = r.json()
-			</blockquote>
+			</blockquote-->
 		</div>
 	</div>
-	<hr>
+	<!--hr>
 	<div class="row">
 		<div class="col-xs-12">
 			<h2>Database Download</h2>
 			<p>Access to the entire dataset is available as <a href="/static/uhcm/data/mysql.sql.gz">a compressed MySQL file.</a> The database file can be imported into any <a href="https://dev.mysql.com/downloads/mysql/" target=_blank>MySQL server</a> using the free <a href="https://www.mysql.com/products/workbench/" target=_blank>MySQL Workbench</a>. Once imported, analysis and data export can be done directly against the database. For instruction on how to import the MySQL file, see <a href="https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-management.html" target=_blank>this</a>.</p>
 		</div>
-	</div>
+	</div-->
 </div>
 <script src="/static/uhcm/static/lightbox2/js/lightbox.min.js" type="text/javascript"></script>
 <script>

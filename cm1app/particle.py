@@ -2,7 +2,7 @@ import sys, json, time, logging
 sys.path.append('/home/nuc')
 from datetime import datetime, timedelta
 from node.helper import dt2ts, ts2dt
-from node.config.c import get_list_of_sites, get_list_of_devices, coreid2nodeid
+from node.config.c import coreid2nodeid
 
 def parse_electron_msg(ts, s, sample_interval=60):
     s = s.split(',')
@@ -22,7 +22,10 @@ def parse_node_047_msg(m):
     return D
 
 def fish_handler(request):
-    """return (node-id,list of samples) if message is recognized; (None,"reason") otherwise"""
+    """
+    Return (node-id,list of samples) if message is recognized;
+    (None,"reason") otherwise.
+    """
     nodeid = coreid2nodeid(request.form['coreid'])
     if nodeid is None:
         return None, 'Unknown coreid {}'.format(request.form['coreid'])
@@ -46,7 +49,8 @@ def fish_handler(request):
             # Values in each sample are:
             tags = ['ts', 'd2w', 'std', 'sc']
             # After the semicolon is the battery voltage Vb.
-            # ts and d2w are "compressed" somewhat: they are the deltas from the first sample.
+            # ts and d2w are "compressed" somewhat: they are the deltas
+            # from the first sample.
 
             N = len(tags)
             d,v = request.form['data'].split(';')
@@ -59,8 +63,10 @@ def fish_handler(request):
                 d[k][1] += d[0][1]
             # caller likes it in a list of dicts
             D = [dict(zip(tags, s)) for s in d]
-            # Patch Vb back in - the last sample in the report has the Vb (it's closest to when Vb was measured)
-            # The other sample(s) don't have Vb so those will show up as NULL in the database.
+            # Patch Vb back in - the last sample in the report has the
+            # Vb (it's closest to when Vb was measured)
+            # The other sample(s) don't have Vb so those will show up as
+            # NULL in the database.
             D[-1]['Vb'] = float(v)
             return nodeid, D
 
@@ -71,7 +77,8 @@ def fish_handler(request):
             return nodeid, D
         
         elif request.form['event'] in [u's', u'debug']:
-            # A Particle Photon in Casey's soil warming setup uses this. The debug messages from tide gauges also use this.
+            # A Particle Photon in Casey's soil warming setup uses this.
+            # The debug messages from tide gauges also use this.
             d = json.loads(request.form['data'])
             return nodeid, [d]
         
