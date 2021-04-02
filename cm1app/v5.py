@@ -22,19 +22,20 @@ logging.basicConfig(level=logging.DEBUG)
 
 def check_auth(username, password):
     try:
-        if cred.get(username, None) == bcrypt.hashpw(password.encode(), cred[username]):
-            return True
+        return cred.get(username, None) == bcrypt.hashpw(password.encode(), cred[username])
     except TypeError:
         # the legacy stuff is not in binary so bcrypt would complain.
         pass
     # legacy.
     return username in cred and cred[username] == password
 
+
 def authenticate():
     return Response(
         'bad credential',
         401,
         {'WWW-Authenticate':'Basic realm="Login Required"'})
+
 
 def requires_auth(f):
     @wraps(f)
@@ -44,6 +45,7 @@ def requires_auth(f):
             return authenticate()
         return f(*args, **kwargs)
     return decorated
+
 
 @app.route('/api/5/raw', methods=['POST'])
 @requires_auth
@@ -60,6 +62,7 @@ def s5rawsubmit():
     except:
         logging.exception('{}: {}'.format(request.form['src'], request.form['m']))
         return 'Error'
+
 
 @app.route('/api/5/electron_us', methods=['POST'])
 @requires_auth
@@ -91,6 +94,7 @@ Also maintains a plain-text copy of all messages."""
     except:
         logging.exception(request)
         return 'Error'
+
 
 @app.route('/api/5/ingress', methods=['POST'])
 @requires_auth

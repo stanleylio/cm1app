@@ -3,7 +3,7 @@ import sys, logging, math
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from datetime import datetime
-from node.storage.storage2 import Storage, auto_time_col
+from node.storage.storage2 import Storage
 from node.helper import dt2ts
 
 
@@ -68,7 +68,8 @@ def query_time_range2(node, variables, begin, end, time_col):
 def get_last_N_minutes(node, var, minutes):
     assert type(minutes) in [float, int] and minutes > 0
     store = Storage()
-    time_col = auto_time_col(store.get_list_of_columns(node))
+    #time_col = auto_time_col(store.get_list_of_columns(node))
+    time_col = 'ReceptionTime'
     r = store.read_last_N_minutes(node, time_col, minutes, nonnull=var)
     r = strip_none_nan(r)
     return r

@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}System Status{% endblock %}
 {% block content %}
-<!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
-<!--script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
 <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
@@ -11,9 +9,8 @@
 <div class="container">
 	<div class="page-header row">
 		<div class="col">
-			<!--a title="Project website" href="http://www.soest.hawaii.edu/oceanography/glazer/Brian_T._Glazer/research/DataLoggers/PoH/HeeiaDataHome"><h2>Real-time In-situ Coastal Monitoring</h2></a-->
 			<h3><a href="/project_info/"><b>Real-time Coastal Monitoring</b></a></h3>
-			<h6>A real-time coastal sensor network developed at the University of Hawaii</h6>
+			<h6>A real-time coastal sensor network developed at the University of Hawaii at Manoa</h6>
 		</div>
 	</div>
 
@@ -53,37 +50,23 @@
 		</div>
 
 		<div class="col-xs-12 col-xs-offset-0 col-md-6 col-md-offset-0">
-			<!--h3>News</h3>
-			<h4>December 5, 2018</h4>
-			<p>New site Mokauea created.</p>
-			<h4>July 19, 2018</h4>
-			<p>New site Nomilo created. <a href="/nomilo/nodepage/node-078">node-078</a>, <a href="/nomilo/nodepage/node-105">node-105</a>, <a href="/nomilo/nodepage/node-121">node-121</a>, <a href="/nomilo/nodepage/node-123">node-123</a>, <a href="/nomilo/nodepage/node-130">node-130</a>, and base station <a href="/nomilo/nodepage/base-013">base-013</a> deployed.</p>
-			<h4>June 30, 2018</h4>
-			<p>New tide gauges <a href="/smart/nodepage/node-088">node-088</a>, <a href="/smart/nodepage/node-098">node-098</a>, and met. station <a href="/smart/nodepage/node-109">node-109</a> deployed.</p>
-			<h4>January 17, 2018</h4>
-			<p>node-006 deployed; node-009 and node-049 back for upgrade; base-003 decommissioned.</p>
-			<h4>November 23, 2017</h4>
-			<p>Marine Sciences Building meteological station online (10Hz real-time wind, node-084).</p>
-			<h4>November 18, 2017</h4>
-			<p>New site &quot;Molokaʻi&quot; installed with node-036 and node-048.</p>
-			<h4>September 23, 2017</h4>
-			<p>Server shutdown from 0600 to 0930 HST due to scheduled power outage.</p>
-			<h4>June 27, 2017</h4>
-			<p><a href="https://flic.kr/p/TMVk4G" target=_blank>node-008</a> has been replaced. Replacement for node-015 pending.</p>
-			<h4>May 22, 2017</h4>
-			<p><a href="https://flic.kr/p/TMVk4G" target=_blank>node-008</a> has been upgraded (v4.1) and raised (now 7'4" above bottom)</p>
-			<h4>April 27, 2017</h4>
-			<p>node-011, node-012, and node-025 have been taken down for upgrade. Redeployment TBD.</p>
-			<h4>March 27, 2017</h4>
-			<p><em>Ongoing upgrade and maintenance.</em> System will be fully operational after Spring Break.</p>
-			<hr-->
-
 			<div class="d-none d-sm-block d-md-none"><hr></div>
 
 			<h4>About this page</h4>
-			<p>The table shows the current status of the SMART Coastlines Monitoring System. Click on any row to see recent readings and plots from that node. To learn more about this project, click <a href="/project_info">here</a>.</p>
-			<p>Each row in the table corresponds to a sensor package (called a "node"). A row turns <span class="list-group-item-danger">red</span> if there is no recent reading from that node (e.g. the node is offline for maintenance). The row is <span class="list-group-item-warning">yellow</span> if any reading from that node is out of range (e.g. biofouling or in need of calibration). The row is <span class="list-group-item-success">green</span> otherwise.</p>
+			<p>The table shows the status of the instruments in SMART system. Each row in the table corresponds to a sensor package (called a <em>node</em>) Click on a row to view the data from that node.</p>
+			<p>To learn more about this project, click <a href="/project_info">here</a>.</p>
 			
+			<h5>Color scheme</h5>
+			<p>
+			<ul>
+				<li><span class="list-group-item-danger">OFFLINE</span>: There is no recent reading from that node (e.g. during maintenance)</li>
+				<li><span class="list-group-item-warning">DEGRADED</span>: Some variables are out of range (e.g. out of calibration)</li>
+				<li><span class="list-group-item-secondary">DECOMMISSIONED</span>: Not expecting new data, but historical data are still accessible</li>
+				<li><span class="list-group-item-success">ONLINE</span>: None of the above</li>
+			</ul>
+			</p>
+
+			<h5>Know your node ID?</h5>
 			<div id="node_selector_container"></div>
 		</div>
 	</div>

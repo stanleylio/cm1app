@@ -1,4 +1,15 @@
-import logging, xmlrpc.client, socket, json, MySQLdb
+"""
+
+... hum. You can use parameter substitution for some but not all places,
+like you can't do
+    SELECT %s,%s FROM table
+but you can do
+    SELECT ts,d2w FROM table WHERE col=%s
+
+But I guess having webapp as a SELECT only user prevent SQL injection. I
+guess.
+"""
+import logging, xmlrpc.client, socket, json, MySQLdb, time
 from flask import Flask, render_template, request, escape, Response
 from cm1app import app
 from datetime import datetime, timedelta
@@ -85,7 +96,6 @@ def get_xy3(node, variables):
     variables = [v.strip() for v in variables.split(',')]
     begin = request.args.get('begin')
     end = request.args.get('end')
-    #time_col = request.args.get('time_col').strip()
     time_col = request.args.get('time_col', default=None)
     if time_col is None:
         time_col = auto_time_col(node)
@@ -95,12 +105,30 @@ def get_xy3(node, variables):
         return 'missing: begin'
     if end is None:
         return 'missing: end'
-    if time_col is None:
-        return 'missing: time_col'
+
+    # This is tricky. Say if 'ts' is among the list of variables, then
+    # select ts,ts gives you nothing useful so you want to use
+    # ReceptionTime as your index even if time_col has been explicitly
+    # defined.
+    #
+    # Sure it's ill-defined (if you say "ts" is the time index and not a
+    # variable being measured, then having ts in the list of requested
+    # variables is an incorrect usage). But I also don't want more
+    # "rules" that the API users need to remember ("you are allowed to
+    # request any variables listed, except the time indices").
+    #
+    # On the other hand you can't exclude or hide the ts/Timestamp
+    # because for ones that are not as reliable (e.g. the ECO FLNTUSB),
+    # you really do want to inspect ts vs. ReceptionTime sometimes to
+    # make sure the instrument RTC is working.
+    #
+    # Without some sort of formal proof it's just an endless game of
+    # whack a mole.
+    if time_col in variables:
+        time_col = 'ReceptionTime'
     if time_col not in variables:
         variables.insert(0, time_col)
-    #if time_col not in variables:
-    #    return '"time_col" must be among the list of variables. Most likely one of {"ReceptionTime","Timestamp","ts"}.'
+    
     try:
         begin = float(begin)
         end = float(end)

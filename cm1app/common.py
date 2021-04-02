@@ -26,7 +26,7 @@ def validate_id(nodeid, var=None):
     return True, ''
 
 
-def auto_time_col(nodeid):
+def auto_time_col(nodeid, *, conn=None):
     """Find the best time index to plot against. An attempt is made to
     give preference to the instrument's built-in clock (ts/Timestamp),
     but only if its latest reading is ~1hr of ReceptionTime. Otherwise
@@ -37,7 +37,10 @@ def auto_time_col(nodeid):
     so the comparison against ReceptionTime fails. That also makes it
     default to ReceptionTime.
     """
-    conn = MySQLdb.connect(host='localhost', user='webapp', charset='utf8mb4')
+    should_close = False
+    if conn is None:
+        conn = MySQLdb.connect(host='localhost', user='webapp', charset='utf8mb4')
+        should_close = True
     cur = conn.cursor()
 
     try:
@@ -46,7 +49,10 @@ def auto_time_col(nodeid):
         # ... nah. Do this in b.py at "compile" time and you can just
         # read it off the db in runtime.
         cur.execute("""SELECT time_col FROM uhcm.devices WHERE nodeid=%s""", (nodeid, ))
-        return cur.fetchone()[0]
+        tmp = cur.fetchone()[0]
+        if should_close:
+            conn.close()
+        return tmp
     
         '''r = cur.fetchone()
         if r:
@@ -85,5 +91,6 @@ def auto_time_col(nodeid):
     except:
         logging.exception(nodeid)
 
-    conn.close()
+    if should_close:
+        conn.close()
     return 'ReceptionTime'

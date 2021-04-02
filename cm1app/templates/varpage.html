@@ -21,60 +21,48 @@
 			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
 			  crossorigin="anonymous"></script-->
 <div class="container">
-	<div class="row">
+	<div class="row my-4">
 		<div class="col" id="container">
-			<!--div id="container" style="width: 100%; height: 500px; margin-top: 2em; margin-bottom: 2em;">
-				<img src="/static/uhcm/static/circleball.gif">
-			</div-->
 			<img src="/static/uhcm/static/circleball.gif">
 		</div>
 	</div>
 	
-	<div class="row">
+	<div class="row my-4">
 		<div class="col-sm-4 col-sm-offset-1">
 			<div class="btn-group" role="group" aria-label="...">
-				<button type="button" id="local_button" class="btn">LOCAL Time</button>
-				<button type="button" id="utc_button" class="btn">UTC Time</button>
+				<button type="button" id="local_button" class="btn">LOCAL</button>
+				<button type="button" id="utc_button" class="btn">UTC</button>
 			</div>
 		</div>
 	</div>
 	
-	<hr>
-	
-	<div class="row">
-		<div class="col-sm-8">
+	<div class="row my-4">
+		<div class="col">
 			<div id="stats_table"></div>
 		</div>
 	</div>
 	
-	<hr>
-	
-	<div class="row">
-		<div class="col-xs-12 col-sm-6">
+	<div class="row my-4">
+		<div class="col-xs-12 mx-2">
 			<h5>Start Date</h5>
 			<div id="beginpicker"></div>
 		</div>
-		<div class="col-xs-12 col-sm-6">
+		<div class="col-xs-12 mx-2">
 			<h5>End Date</h5>
 			<div id="endpicker"></div>
 		</div>
 	</div>
 	
-	<hr>
-	
-	<div class="row">
+	<div class="row my-4">
 		<div class="col-xs-10 col-xs-offset-1">
 			<div style="width: 100%; color: #909090">
-				<!--p>gaps in data are not showing... something to do with highstock.js.</p-->
+				<button type="button" class="btn btn-primary" id="download_button" download="" type="text/csv">Download as CSV</button>
 				<p>The plot above might not show all points in the data. Use the <a href="/data_access/">API</a> for full access.</p>
-				<button type="button" class="btn btn-primary" id="download_button" download="" type="text/csv">Download as CSV (Chrome/Firefox)</button>
 			</div>
 		</div>
 	</div>
 	
-	<hr>
-	
-	<div class="row">
+	<div class="row my-4">
 		<div class="col-xs-12 col-md-6">
 			<h5>Advanced</h5>
 			<p>Scale and shift the data points in the plot above. Reload the page to apply. Changes are retained in the current browser. CSV download is not affected.</p>

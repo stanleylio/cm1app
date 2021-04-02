@@ -1,10 +1,10 @@
-import sys, time, json
+import sys, time, json, MySQLdb
 from os.path import expanduser
 sys.path.append(expanduser('~'))
 from flask import Response, render_template, send_from_directory, request, escape
 from cm1app import app
 from node.config.c import get_list_of_disp_vars, get_node_attribute, get_variable_attribute
-from cm1app.query_data import read_latest_sample
+from cm1app.dashboard import read_latest_sample
 from cm1app.common import validate_id
 
 
@@ -67,29 +67,33 @@ def data_site_node(site, node):
     
     R = {}
     variables = sorted(get_list_of_disp_vars(node),key=lambda x: x.lower())
-    for k,var in enumerate(variables):
-        d = read_latest_sample('ReceptionTime', node, var)
-        if d is not None:
-            r = {'var':var,
-                 'ts':round(d[0], 1),
-                 'val':round(d[1], 3),
-                 'unit':get_variable_attribute(node, var, 'unit'),
-                 'interval':get_variable_attribute(node, var, 'interval_second'),
-                 'desc':get_variable_attribute(node, var, 'description'),
-                 }
-        else:
-            r = {'var':var,
-                 'ts':None,
-                 'val':None,
-                 'unit':None,
-                 'interval':None,
-                 'desc':None,
-                 }
-        lb = get_variable_attribute(node, var, 'lower_bound')
-        ub = get_variable_attribute(node, var, 'upper_bound')
-        r['range'] = [lb, ub]
+    conn = MySQLdb.connect('localhost', user='webapp', charset='utf8mb4')
 
-        R[k] = r
+    with conn:
+        for k,var in enumerate(variables):
+            d = read_latest_sample('ReceptionTime', node, var, conn)
+            if d is not None:
+                r = {'var':var,
+                     'ts':round(d[0], 1),
+                     'val':round(d[1], 3),
+                     'unit':get_variable_attribute(node, var, 'unit'),
+                     'interval':get_variable_attribute(node, var, 'interval_second'),
+                     'desc':get_variable_attribute(node, var, 'description'),
+                     }
+            else:
+                r = {'var':var,
+                     'ts':None,
+                     'val':None,
+                     'unit':None,
+                     'interval':None,
+                     'desc':None,
+                     }
+            lb = get_variable_attribute(node, var, 'lower_bound')
+            ub = get_variable_attribute(node, var, 'upper_bound')
+            r['range'] = [lb, ub]
+
+            R[k] = r
+
     S['readings'] = R
     return Response(json.dumps(S, separators=(',', ':')),
                     mimetype='application/json; charset=utf-8')
