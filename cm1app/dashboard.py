@@ -5,7 +5,6 @@ sys.path.append('/home/nuc')
 from flask import Flask, Markup, Response, request, escape
 from datetime import timedelta
 from cm1app import app
-#from node.storage.storage2 import Storage
 from node.config.c import get_list_of_sites, get_list_of_devices, get_node_attribute, get_variable_attribute, get_list_of_disp_vars
 from cm1app.common import auto_time_col
 

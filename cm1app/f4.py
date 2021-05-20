@@ -1,13 +1,12 @@
 """
-
 ... hum. You can use parameter substitution for some but not all places,
 like you can't do
     SELECT %s,%s FROM table
 but you can do
     SELECT ts,d2w FROM table WHERE col=%s
 
-But I guess having webapp as a SELECT only user prevent SQL injection. I
-guess.
+But I guess having webapp as a SELECT only user spares me from SQL
+injection. I guess.
 """
 import logging, xmlrpc.client, socket, json, MySQLdb, time
 from flask import Flask, render_template, request, escape, Response
@@ -18,18 +17,26 @@ from node.config.c import config_as_dict, get_list_of_devices, get_list_of_varia
 from cm1app import dashboard, nodepage, v5
 from cm1app.common import validate_id, auto_time_col
 
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
+
 
 @app.route('/')
 def route_default():
     return render_template('index.html')
 
-# wait who is using this again?
+
+# Q: Wait who is using this again?
+# A: That node selector on the dashboard. It's the only place where a
+# list of ALL devices are needed. The other places like the dashboard
+# are either generated with a given site ID, or a list of nodes is
+# explicitly given.
 @app.route('/data/2/config/listing')
 def get_listing():
     return Response(json.dumps(config_as_dict(), separators=(',',':')),
                     mimetype='application/json; charset=utf-8')
+
 
 # check __init__.py for the line that enables CORS at this endpoint
 @app.route('/data/2/<node>/<variables>.json')
@@ -83,6 +90,7 @@ def get_xy2(node, variables):
     except:
         logging.exception('')
         return "it's beyond my paygrade 2"
+
 
 @app.route('/data/3/<node>/<variables>.json')
 def get_xy3(node, variables):
