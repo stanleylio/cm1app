@@ -12,7 +12,7 @@ from node.helper import dt2ts
 from node.z import send
 from cm1app.particle import fish_handler
 from cm1app.publish import to_uhcm_xchg
-from cred import cred, permission
+from cred import cred
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -102,9 +102,6 @@ def s5ingress():
     """"""
     try:
         src = request.form['src']
-        if src not in permission.get(request.authorization['username'], []):
-            logging.debug('{} does not own {}'.format(request.authorization['username'], src))
-            return 'Error'
         data = json.loads(request.form['data'])
         #print(request.remote_addr, src, data)
         to_uhcm_xchg(send(None, data, src=src), '{}.samples'.format(src))
