@@ -15,5 +15,5 @@ pycparser==2.20
 redis==3.5.3
 six==1.16.0
 typing-extensions==3.10.0.0
-Werkzeug==2.0.1
+Werkzeug==2.2.3
 zipp==3.4.1
