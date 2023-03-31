@@ -12,7 +12,7 @@ mysqlclient==2.0.3
 pika==1.2.0
 pkg-resources==0.0.0
 pycparser==2.20
-redis==3.5.3
+redis==4.4.4
 six==1.16.0
 typing-extensions==3.10.0.0
 Werkzeug==2.0.1
